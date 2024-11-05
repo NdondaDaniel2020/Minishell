@@ -1,5 +1,10 @@
 #include "minishell.h"
 
+void	execute_command(char *command)
+{
+	//
+}
+
 int main(void)
 {
 	char *input;
