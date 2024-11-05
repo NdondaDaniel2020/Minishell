@@ -11,6 +11,8 @@
 # **************************************************************************** #
 
 CC = cc
+DIR_LIBFT = ./libft/
+LIBFT = $(DIR_LIBFT)libft.a
 NAME = ./minishell
 SRC = ./src/
 INCLUDE = ./include
@@ -25,9 +27,12 @@ PLIBFT = ./libft
 
 all:    $(NAME)
 
-$(NAME):
-	$(CC) $(FLAGS) -c $(SRC_FILES) -I$(INCLUDE)
-	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(FLAGRL) -I$(INCLUDE)
+$(NAME): $(LIBFT)
+	$(CC) $(FLAGS) -c $(SRC_FILES) -I$(INCLUDE) -I$(DIR_LIBFT)
+	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(FLAGRL) -I$(INCLUDE) -I$(DIR_LIBFT) -L$(LIBFT)
+
+$(LIBFT):
+	$(MAKE) bonus -c $(DIR_LIBFT)
 
 r:
 	cc exmpl/run.c -o run -lreadline -lncurses ;./run
