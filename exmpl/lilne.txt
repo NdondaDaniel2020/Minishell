@@ -1,0 +1,1 @@
+cc rascunho.c -o main -lreadline -lncurses ;./minishell
