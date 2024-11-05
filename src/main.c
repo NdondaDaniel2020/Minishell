@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 int main(void)
 {
 	char *input;
