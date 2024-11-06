@@ -12,9 +12,50 @@
 
 #include "minishell.h"
 
+char	*get_option(char *command)
+{
+	int		i;
+	int		j;
+	int		c;
+	bool	status;
+	char	*opt_geted;
+
+	i = 0;
+	c = 0;
+	opt_geted = NULL;
+	while (command[i] && command[i] == ' ')
+		i++;
+	while (command[i] && command[i] != ' ')
+		i++;
+	while (command[i] && command[i] == ' ')
+		i++;
+	if (command[i] && command[i] == '-' && command[i + 1])
+	{
+		j = i;
+		status = true;
+		while (status)
+		{
+			while (command[i] && command[i++] != ' ')
+				c++;
+			if (command[i] && command[i] != '-')
+				status = false;
+		}
+		ft_putnbr_fd(c, 1);
+		ft_putchar_fd(' ', 1);
+		ft_putchar_fd('\n', 1);
+		opt_geted = ft_calloc(c + 1, sizeof(char));
+		c = 0;
+		while (j < (i - 1))
+			opt_geted[c++] = command[j++];
+		opt_geted[c] = '\0';
+	}
+	return (opt_geted);
+}
+
 static void	execute_command(char *command)
 {
 	char	*cmd;
+	char	*opt;
 	char	*arg;
 
 	/*
@@ -23,9 +64,10 @@ static void	execute_command(char *command)
 	*/
 	arg = get_argument(command);
 	cmd = get_command(command);
+	opt = get_option(command);
 	// if (!ft_strncmp(cmd, "echo", ft_strlen(cmd)))
 	// 	printf("[%s][%s]\n", cmd, prm);
-	printf("[%s][%s]\n", cmd, arg);
+	printf("[%s][%s][%s]\n", cmd, opt, arg);
 }
 
 int	main(void)

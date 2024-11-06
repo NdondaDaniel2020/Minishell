@@ -3,6 +3,7 @@
 
 #include "libft.h"
 #include <stdlib.h>
+#include <stdbool.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 

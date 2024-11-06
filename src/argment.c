@@ -12,22 +12,7 @@
 
 #include "minishell.h"
 
-/* percorrer argumento ate onde inicia o comando*/
-static void	scroll_command(char *command, int *i, int *c)
-{
-	while (command[*i] && command[(*i)++] == ' ')
-		(*c)++;
-	while (command[*i] && command[*i] != ' ')
-		(*i)++;
-	if (command[*i] == ' ' && command[*i + 1] == '-')
-	{
-		(*i)++;
-		while (command[*i] && command[*i] != ' ')
-			(*i)++;
-	}
-}
-
-/*pegar comando ex: echo -n "ask" -->  echo -n*/
+/*pegar comando ex: echo -n "ask" -->  echo*/
 char	*get_command(char *command)
 {
 	int		i;
@@ -39,7 +24,10 @@ char	*get_command(char *command)
 	j = 0;
 	c = 0;
 	command_geted = NULL;
-	scroll_command(command, &i, &c);
+	while (command[i] && command[i++] == ' ')
+		c++;
+	while (command[i] && command[i] != ' ')
+		i++;
 	command_geted = ft_calloc(i + 1, sizeof(char));
 	while ((c + j) < i)
 	{
