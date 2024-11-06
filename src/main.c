@@ -43,20 +43,61 @@ char	*get_command(char *command)
 	return (command_geted);
 }
 
+/* percorrer argumento ate onde inicia o arqumento*/
+static void scroll_argument(char *command, int *i)
+{
+	while (command[*i] && command[*i] == ' ')
+		(*i)++;
+	while (command[*i] && command[*i] != ' ')
+		(*i)++;
+	if (command[*i] == ' ' && command[*i + 1] == '-')
+	{
+		(*i)++;
+		while (command[*i] && command[*i] != ' ')
+			(*i)++;
+	}
+}
+
+/*pegar argumento ex: echo -n "ask" "test"-->  ask test*/
+char	*get_argument(char *command)
+{
+	int		i;
+	int		j;
+	int		c;
+	char	*arg_geted;
+
+	i = 0;
+	arg_geted = NULL;
+	scroll_argument(command, &i);
+	if (command[i] != '\0')
+	{
+		i++;
+		c = i;
+		j = 0;
+		while (command[i++])
+			j++;
+		arg_geted = ft_calloc(j + 1, sizeof(char));
+		j = 0;
+		while (command[c])
+			arg_geted[j++] = command[c++];
+	}
+	return (arg_geted);
+}
+
 static void	execute_command(char *command)
 {
 	char	*cmd;
-	char	*prm;
+	char	*arg;
 
 	/*
 		printf("[%s][%s]\n", command, );
 		if (ft_strnstr(command, "/bin/", ft_strlen(command)))
 	*/
-	prm = get_param(command);
+	arg = get_argument(command);
 	cmd = get_command(command);
 	// if (!ft_strncmp(cmd, "echo", ft_strlen(cmd)))
 	// 	printf("[%s][%s]\n", cmd, prm);
-	printf("[%s][%s]\n", cmd, prm);
+	printf("[%s][%s]\n", cmd, arg);
 }
 
 int	main(void)
