@@ -1,0 +1,43 @@
+• Não interpretar aspas não fechadas ou caracteres especiais que não são
+exigidos pelo assunto, como \ (barra invertida) ou ; (ponto e vírgula).
+
+• Lidar com ’ (aspas simples), que deve impedir o shell de interpretar
+os metacaracteres na sequência entre aspas.
+
+• Lidar com " (aspas duplas), que deve impedir o shell de interpretar
+os metacaracteres na sequência entre aspas, exceto $ (cifrão).
+
+/////
+• Implementar redirecionamentos:
+	◦ < deve redirecionar a entrada.
+	◦ > deve redirecionar a saída.
+	◦ << deve receber um delimitador e, em seguida, ler a entrada até
+	uma linha contendo o delimitador ser vista. No entanto, não
+	precisa atualizar o histórico!
+	◦ >> deve redirecionar a saída no modo append.
+
+• Implementar pipes (| caractere). A saída de cada comando no pipeline é
+conectada à entrada do próximo comando por meio de um pipe.
+
+• Lidar com variáveis ​​de ambiente ($ seguido por uma sequência de caracteres) que
+devem se expandir para seus valores.
+
+• Lidar com $? que deve se expandir para o status de saída do pipeline de primeiro plano
+executado mais recentemente.
+
+• Lidar com ctrl-C, ctrl-D e ctrl-\ que devem se comportar como no bash.
+
+• No modo interativo:
+	◦ ctrl-C exibe um novo prompt em uma nova linha.
+	◦ ctrl-D sai do shell.
+	◦ ctrl-\ não faz nada.
+/////
+
+• Seu shell deve implementar os seguintes builtins:
+	◦ echo com opção -n
+	◦ cd com apenas um caminho relativo ou absoluto
+	◦ pwd sem opções
+	◦ export sem opções
+	◦ unset sem opções
+	◦ env sem opções ou argumentos
+	◦ exit sem opções

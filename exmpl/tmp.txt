@@ -1,0 +1,41 @@
+
+/* percorrer parametro ate onde inicia o arqumento*/
+static void scroll_parameter(char *command, int *i)
+{
+	while (command[*i] && command[*i] == ' ')
+		(*i)++;
+	while (command[*i] && command[*i] != ' ')
+		(*i)++;
+	if (command[*i] == ' ' && command[*i + 1] == '-')
+	{
+		(*i)++;
+		while (command[*i] && command[*i] != ' ')
+			(*i)++;
+	}
+}
+
+/* pegar paametros*/
+char	*get_param(char *command)
+{
+	int		i;
+	int		j;
+	int		c;
+	char	*param;
+
+	i = 0;
+	param = NULL;
+	scroll_parameter(command, &i);
+	if (command[i] != '\0')
+	{
+		i++;
+		c = i;
+		j = 0;
+		while (command[i++])
+			j++;
+		param = ft_calloc(j + 1, sizeof(char));
+		j = 0;
+		while (command[c])
+			param[j++] = command[c++];
+	}
+	return (param);
+}
