@@ -16,7 +16,8 @@ LIBFT = $(DIR_LIBFT)libft.a
 NAME = ./minishell
 SRC = ./src/
 INCLUDE = ./include
-FILES = main.c
+FILES = main.c \
+		argment.c
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)

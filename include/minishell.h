@@ -6,4 +6,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+char	*get_argument(char *command);
+char	*get_command(char *command);
+
 #endif
