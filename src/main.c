@@ -12,62 +12,64 @@
 
 #include "minishell.h"
 
-char	*get_option(char *command)
+void	pwd(void)
 {
-	int		i;
-	int		j;
-	int		c;
-	bool	status;
-	char	*opt_geted;
+    char cwd[5048];
 
-	i = 0;
-	c = 0;
-	opt_geted = NULL;
-	while (command[i] && command[i] == ' ')
-		i++;
-	while (command[i] && command[i] != ' ')
-		i++;
-	while (command[i] && command[i] == ' ')
-		i++;
-	if (command[i] && command[i] == '-' && command[i + 1])
+    getcwd(cwd, sizeof(cwd));
+	printf("%s\n", cwd);
+}
+
+int is_directory_valid(const char *path)
+{
+    struct stat path_stat;
+
+    if (stat(path, &path_stat) != 0)
+        return 0;
+    return S_ISDIR(path_stat.st_mode);
+}
+
+void cd(char *dir)
+{
+	char	*home;
+
+    if (is_directory_valid(dir))
+		chdir(dir);
+	else if ((ft_strnstr(dir, "~", ft_strlen(dir)) &&
+			!ft_strnstr(dir, "~/", ft_strlen(dir))) ||
+			ft_strnstr(dir, "cd", ft_strlen(dir)) ||
+			ft_strnstr(dir, " ", ft_strlen(dir)))
 	{
-		j = i;
-		status = true;
-		while (status)
-		{
-			while (command[i] && command[i++] != ' ')
-				c++;
-			if (command[i] && command[i] != '-')
-				status = false;
-		}
-		ft_putnbr_fd(c, 1);
-		ft_putchar_fd(' ', 1);
-		ft_putchar_fd('\n', 1);
-		opt_geted = ft_calloc(c + 1, sizeof(char));
-		c = 0;
-		while (j < (i - 1))
-			opt_geted[c++] = command[j++];
-		opt_geted[c] = '\0';
+		home = getenv("HOME");
+		chdir(home);
 	}
-	return (opt_geted);
+	else  if (ft_strnstr(dir, "~/", ft_strlen(dir)))
+	{
+		home = getenv("HOME");
+		dir = ft_strjoin(home, &dir[1]);
+		chdir(dir);
+	}
 }
 
 static void	execute_command(char *command)
 {
-	char	*cmd;
-	char	*opt;
-	char	*arg;
+	int		i;
+	char	**split_cmd;
 
-	/*
-		printf("[%s][%s]\n", command, );
-		if (ft_strnstr(command, "/bin/", ft_strlen(command)))
-	*/
-	arg = get_argument(command);
-	cmd = get_command(command);
-	opt = get_option(command);
-	// if (!ft_strncmp(cmd, "echo", ft_strlen(cmd)))
-	// 	printf("[%s][%s]\n", cmd, prm);
-	printf("[%s][%s][%s]\n", cmd, opt, arg);
+	i = 0;
+	split_cmd = ft_split(command, ' ');
+	if (!ft_strncmp(split_cmd[0], "echo", ft_strlen(split_cmd[0])))
+		printf("ECHO\n");
+	else if (!ft_strncmp(split_cmd[0], "pwd", ft_strlen(split_cmd[0])))
+		pwd();
+	else if (!ft_strncmp(split_cmd[0], "cd", ft_strlen(split_cmd[0])))
+	{
+		i = 0;
+		while (split_cmd[i])
+			i++;
+		cd(split_cmd[i - 1]);
+	}
+	// free split
 }
 
 int	main(void)
