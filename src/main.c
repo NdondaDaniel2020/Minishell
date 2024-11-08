@@ -12,64 +12,25 @@
 
 #include "minishell.h"
 
-void	pwd(void)
-{
-    char cwd[5048];
-
-    getcwd(cwd, sizeof(cwd));
-	printf("%s\n", cwd);
-}
-
-int is_directory_valid(const char *path)
-{
-    struct stat path_stat;
-
-    if (stat(path, &path_stat) != 0)
-        return 0;
-    return S_ISDIR(path_stat.st_mode);
-}
-
-void cd(char *dir)
-{
-	char	*home;
-
-    if (is_directory_valid(dir))
-		chdir(dir);
-	else if ((ft_strnstr(dir, "~", ft_strlen(dir)) &&
-			!ft_strnstr(dir, "~/", ft_strlen(dir))) ||
-			ft_strnstr(dir, "cd", ft_strlen(dir)) ||
-			ft_strnstr(dir, " ", ft_strlen(dir)))
-	{
-		home = getenv("HOME");
-		chdir(home);
-	}
-	else  if (ft_strnstr(dir, "~/", ft_strlen(dir)))
-	{
-		home = getenv("HOME");
-		dir = ft_strjoin(home, &dir[1]);
-		chdir(dir);
-	}
-}
-
 static void	execute_command(char *command)
 {
-	int		i;
-	char	**split_cmd;
+	t_data	data;
 
-	i = 0;
-	split_cmd = ft_split(command, ' ');
-	if (!ft_strncmp(split_cmd[0], "echo", ft_strlen(split_cmd[0])))
-		printf("ECHO\n");
-	else if (!ft_strncmp(split_cmd[0], "pwd", ft_strlen(split_cmd[0])))
-		pwd();
-	else if (!ft_strncmp(split_cmd[0], "cd", ft_strlen(split_cmd[0])))
-	{
-		i = 0;
-		while (split_cmd[i])
-			i++;
-		cd(split_cmd[i - 1]);
-	}
-	// free split
+	data.split_cmd = ft_split(command, ' ');
+	if (!ft_strncmp(data.split_cmd[0], "echo",
+		ft_strlen(data.split_cmd[0])))
+		echo(&data);
+	else if (!ft_strncmp(data.split_cmd[0], "pwd",
+		ft_strlen(data.split_cmd[0])))
+		pwd(&data);
+	else if (!ft_strncmp(data.split_cmd[0], "cd",
+		ft_strlen(data.split_cmd[0])))
+		cd(&data);
+	else if (!ft_strncmp(data.split_cmd[0], "exit",
+		ft_strlen(data.split_cmd[0])))
+		exit_(&data);
+	// free_matrix(data.split_cmd);
+	// free(retrn);
 }
 
 int	main(void)

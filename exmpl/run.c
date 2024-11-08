@@ -67,16 +67,11 @@ int is_directory_valid(const char *path)
 
 void cd(char *dir)
 {
-    char	cwd[1024];
+    char	cwd[5000];
 	char	*home;
-    // if (getcwd(cwd, sizeof(cwd)) != NULL)
-	//     printf("Diretório de trabalho atual: %s\n", cwd);
 
-    // if (is_directory_valid(dir))
 	home = getenv("HOME");
-	printf("[%s][%s]\n", dir, home);
 	chdir(dir);
-	// chdir("~/");
 
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         printf("%s\n", cwd);

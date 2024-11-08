@@ -17,7 +17,9 @@ NAME = ./minishell
 SRC = ./src/
 INCLUDE = ./include
 FILES = main.c \
-		argment.c
+		util.c \
+		builtin_1.c \
+		builtin_2.c \
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)

@@ -8,4 +8,19 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+typedef struct s_data
+{
+	char	*output;
+	char	*put_amb;
+	char	**split_cmd;
+}			t_data;
+
+void	cd(t_data *data);
+void	pwd(t_data *data);
+void	echo(t_data *data);
+void	exit_(t_data *data);
+
+void	free_matrix(char **matrix);
+char	*ft_charjoin_free(char *s1, char c);
+
 #endif
