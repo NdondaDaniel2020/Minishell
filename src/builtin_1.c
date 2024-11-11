@@ -34,7 +34,7 @@ static int	is_directory_valid(const char *path)
 
     if (stat(path, &path_stat) != 0)
         return (0);
-    return S_ISDIR(path_stat.st_mode);
+    return (1);
 }
 
 void	cd(t_data *data)
@@ -56,6 +56,7 @@ void	cd(t_data *data)
 		home = getenv("HOME");
 		chdir(home);
 		data->output = home;
+		return ;
 	}
 	else  if (ft_strnstr(dir, "~/", ft_strlen(dir)))
 	{
@@ -68,11 +69,6 @@ void	cd(t_data *data)
 
 void	exit_(t_data *data)
 {
-	// if (data->output)
-	// 	free(data->output);
-	// if (data->put_amb)
-	// 	free(data->put_amb);
-	// free_matrix(data->split_cmd);
-	(void)data;
+	free_all_data(data);
 	exit(0);
 }

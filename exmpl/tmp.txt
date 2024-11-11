@@ -1,41 +1,20 @@
+==7927== Invalid free() / delete / delete[] / realloc()
+==7927==    at 0x48431EF: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7927==    by 0x109440: free_matrix (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x109780: free_all_data (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x1092ED: execute_command (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x109334: main (in /mnt/d/NdDaniel/Code/Minishell/minishell)
 
-/* percorrer parametro ate onde inicia o arqumento*/
-static void scroll_parameter(char *command, int *i)
-{
-	while (command[*i] && command[*i] == ' ')
-		(*i)++;
-	while (command[*i] && command[*i] != ' ')
-		(*i)++;
-	if (command[*i] == ' ' && command[*i + 1] == '-')
-	{
-		(*i)++;
-		while (command[*i] && command[*i] != ' ')
-			(*i)++;
-	}
-}
+==7927==  Address 0x4b20d50 is 0 bytes inside a block of size 5 free'd
+==7927==    at 0x48431EF: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7927==    by 0x109753: free_all_data (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x1092ED: execute_command (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x109334: main (in /mnt/d/NdDaniel/Code/Minishell/minishell)
 
-/* pegar paametros*/
-char	*get_param(char *command)
-{
-	int		i;
-	int		j;
-	int		c;
-	char	*param;
-
-	i = 0;
-	param = NULL;
-	scroll_parameter(command, &i);
-	if (command[i] != '\0')
-	{
-		i++;
-		c = i;
-		j = 0;
-		while (command[i++])
-			j++;
-		param = ft_calloc(j + 1, sizeof(char));
-		j = 0;
-		while (command[c])
-			param[j++] = command[c++];
-	}
-	return (param);
-}
+==7927==  Block was alloc'd at
+==7927==    at 0x4840808: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7927==    by 0x109D9D: word_create (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x109EDF: ft_split (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x1091F1: execute_command (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927==    by 0x109334: main (in /mnt/d/NdDaniel/Code/Minishell/minishell)
+==7927== 

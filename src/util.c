@@ -38,15 +38,47 @@ char	*ft_charjoin_free(char *s1, char c)
 	return (join);
 }
 
+void	init_data(t_data *data)
+{
+	data->output = NULL;
+	data->put_amb = NULL;
+	data->split_cmd = NULL;
+}
+
 void	free_matrix(char **matrix)
 {
-	int	i;
+    int	i;
 
-	i = 0;
-	while (matrix[i])
+    if (!matrix)
+        return ;
+    i = 0;
+    while (matrix[i])
+    {
+        free(matrix[i]);
+        matrix[i] = NULL;
+        i++;
+    }
+    free(matrix);
+    matrix = NULL;
+}
+
+void	free_all_data(t_data *data)
+{
+    if (!data)
+        return ;
+    if (data->output)
 	{
-		free(matrix[i]);
-		i++;
+		free(data->output);
+		data->output = NULL;
 	}
-	free(matrix);
+    if (data->put_amb)
+	{
+		free(data->put_amb);
+		data->put_amb = NULL;
+	}
+    if (data->split_cmd)
+    {
+        free_matrix(data->split_cmd);
+        data->split_cmd = NULL;
+    }
 }

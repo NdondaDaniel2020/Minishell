@@ -12,25 +12,27 @@
 
 #include "minishell.h"
 
-static void	execute_command(char *command)
+// static  cd src/
+void	execute_command(char *command)
 {
 	t_data	data;
 
+	init_data(&data);
 	data.split_cmd = ft_split(command, ' ');
-	if (!ft_strncmp(data.split_cmd[0], "echo",
-		ft_strlen(data.split_cmd[0])))
-		echo(&data);
-	else if (!ft_strncmp(data.split_cmd[0], "pwd",
-		ft_strlen(data.split_cmd[0])))
-		pwd(&data);
-	else if (!ft_strncmp(data.split_cmd[0], "cd",
-		ft_strlen(data.split_cmd[0])))
+
+	if (!ft_strncmp(data.split_cmd[0], "cd", ft_strlen(data.split_cmd[0])))
 		cd(&data);
-	else if (!ft_strncmp(data.split_cmd[0], "exit",
-		ft_strlen(data.split_cmd[0])))
+
+	if (!ft_strncmp(data.split_cmd[0], "pwd", ft_strlen(data.split_cmd[0])))
+		pwd(&data);
+
+	if (!ft_strncmp(data.split_cmd[0], "exit", ft_strlen(data.split_cmd[0])))
 		exit_(&data);
-	// free_matrix(data.split_cmd);
-	// free(retrn);
+
+	if (!ft_strncmp(data.split_cmd[0], "echo", ft_strlen(data.split_cmd[0])))
+		echo(&data);
+
+	free_all_data(&data);
 }
 
 int	main(void)
@@ -41,8 +43,11 @@ int	main(void)
 	{
 		input = readline("TeamWork> ");
 		add_history(input);
-		execute_command(input);
-		free(input);
+		if (ft_strlen(input) != 0)
+		{
+			execute_command(input);
+			free(input);
+		}
 	}
 	return (0);
 }

@@ -20,7 +20,9 @@ void	pwd(t_data *data);
 void	echo(t_data *data);
 void	exit_(t_data *data);
 
+void	init_data(t_data *data);
 void	free_matrix(char **matrix);
+void	free_all_data(t_data *data);
 char	*ft_charjoin_free(char *s1, char c);
 
 #endif
