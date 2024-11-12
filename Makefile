@@ -20,6 +20,7 @@ FILES = main.c \
 		util.c \
 		builtin_1.c \
 		builtin_2.c \
+		btree_util.c \
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)

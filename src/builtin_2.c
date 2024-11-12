@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 static void	get_env_variable(int *i1, int *i2, t_data *data)
 {
 	int		c;
@@ -91,3 +91,5 @@ void	echo(t_data *data)
 		ft_putchar_fd('\n', 1);
 	}
 }
+*/
+/*data->btree->content[i]*/

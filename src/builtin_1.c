@@ -28,13 +28,13 @@ void	pwd(t_data *data)
     data->output = cwd;
 }
 
-static int	is_directory_valid(const char *path)
+static int is_directory_valid(const char *path)
 {
     struct stat path_stat;
 
     if (stat(path, &path_stat) != 0)
         return (0);
-    return (1);
+    return (S_ISDIR(path_stat.st_mode));
 }
 
 void	cd(t_data *data)
@@ -44,9 +44,10 @@ void	cd(t_data *data)
 	char	*home;
 
 	i = 0;
-	while (data->split_cmd[i])
+	while (data->btree->content[i])
 		i++;
-	dir = data->split_cmd[i - 1];
+	i--;
+	dir = data->btree->content[i];
     if (is_directory_valid(dir))
 		chdir(dir);
 	else if ((ft_strnstr(dir, "~", ft_strlen(dir)) && !ft_strnstr(dir,

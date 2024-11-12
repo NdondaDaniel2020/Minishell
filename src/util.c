@@ -40,9 +40,10 @@ char	*ft_charjoin_free(char *s1, char c)
 
 void	init_data(t_data *data)
 {
+	data->btree = NULL;
 	data->output = NULL;
+	data->command = NULL;
 	data->put_amb = NULL;
-	data->split_cmd = NULL;
 }
 
 void	free_matrix(char **matrix)
@@ -68,17 +69,17 @@ void	free_all_data(t_data *data)
         return ;
     if (data->output)
 	{
-		free(data->output);
-		data->output = NULL;
+		if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
+		{
+			free(data->output);
+			data->output = NULL;
+		}
 	}
     if (data->put_amb)
 	{
 		free(data->put_amb);
 		data->put_amb = NULL;
 	}
-    if (data->split_cmd)
-    {
-        free_matrix(data->split_cmd);
-        data->split_cmd = NULL;
-    }
+    if (data->btree)
+        remove_all_tree(data->btree);
 }
