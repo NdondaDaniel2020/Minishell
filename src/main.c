@@ -47,8 +47,8 @@ void	master(char *command)
 			pwd(&data);
 		else if (!ft_strncmp(aux->content[0], "cd", ft_strlen(aux->content[0])))
 			cd(&data);
-		// else if (!ft_strncmp(aux->content[0], "echo", ft_strlen(aux->content[0])))
-		// 	echo(&data);
+		else if (!ft_strncmp(aux->content[0], "echo", ft_strlen(aux->content[0])))
+			echo(&data);
 
 		// else
 			// pegar path: e concatenar com cada parte do bin para ver se funciona

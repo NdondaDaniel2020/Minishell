@@ -62,34 +62,34 @@ static void	scroll_word(int i1, t_data *data)
 	if (data->split_cmd[i1 + 1])
 		ft_putchar_fd(' ', 1);
 }
-
+*/
 void	echo(t_data *data)
 {
 	int	i1;
 
 	i1 = 0;
 	data->output = ft_calloc(1, sizeof(char));
-	while (data->split_cmd[i1])
+	while (data->btree->content[i1])
 		i1++;
-	if (i1 == 1)
-	{
-		data->output = ft_charjoin_free(data->output, '\n');
-		ft_putchar_fd('\n', 1);
-		return ;
-	}
-	i1 = 1;
-	while (ft_strnstr(data->split_cmd[i1], "-n", ft_strlen(data->split_cmd[i1])))
-		i1++;
-	while (data->split_cmd[i1])
-	{
-		scroll_word(i1, data);
-		i1++;
-	}
-	if (ft_strncmp(data->split_cmd[1], "-n", ft_strlen(data->split_cmd[1])))
-	{
-		data->output = ft_charjoin_free(data->output, '\n');
-		ft_putchar_fd('\n', 1);
-	}
+	// if (i1 == 1)
+	// {
+	// 	data->output = ft_charjoin_free(data->output, '\n');
+	// 	ft_putchar_fd('\n', 1);
+	// 	return ;
+	// }
+	// i1 = 1;
+	// while (ft_strnstr(data->split_cmd[i1], "-n", ft_strlen(data->split_cmd[i1])))
+	// 	i1++;
+	// while (data->split_cmd[i1])
+	// {
+	// 	scroll_word(i1, data);
+	// 	i1++;
+	// }
+	// if (ft_strncmp(data->split_cmd[1], "-n", ft_strlen(data->split_cmd[1])))
+	// {
+	// 	data->output = ft_charjoin_free(data->output, '\n');
+	// 	ft_putchar_fd('\n', 1);
+	// }
 }
-*/
+
 /*data->btree->content[i]*/
