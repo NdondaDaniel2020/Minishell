@@ -38,9 +38,6 @@ void	master(char *command)
 	aux = data.btree;
 	while (aux)
 	{
-		// ft_printf("[%i]", aux->item);
-		// ft_printf("[%s]\n", aux->content[0]);
-		
 		if (!ft_strncmp(aux->content[0], "exit", ft_strlen(aux->content[0])))
 			exit_(&data);
 		else if (!ft_strncmp(aux->content[0], "pwd", ft_strlen(aux->content[0])))
@@ -49,22 +46,18 @@ void	master(char *command)
 			cd(&data);
 		else if (!ft_strncmp(aux->content[0], "echo", ft_strlen(aux->content[0])))
 			echo(&data);
-
 		// else
 			// pegar path: e concatenar com cada parte do bin para ver se funciona
 			// se nao funcionar mostrar sms de erro
-
 		aux = aux->right;
 	}
-	free_all_data(&data);
+	// free_all_data(&data);
 }
 
 int	main(void)
 {
 	// char	*input;
-
-	master("cd src/");
-	master("pwd");
+	master("echo -n TEST TST AXD VASDF $HOME $HOME $HOME $HOME $HOME $HOME $HOME $HOME");
 	// while (1)
 	// {
 	// 	input = readline("TeamWork> ");

@@ -18,6 +18,7 @@ typedef struct		s_btree
 
 typedef struct s_data
 {
+	bool	space;
 	char	*command;
 	char	*output;
 	char	*put_amb;
@@ -35,6 +36,7 @@ void	exit_(t_data *data);
 void	init_data(t_data *data);
 void	free_matrix(char **matrix);
 void	free_all_data(t_data *data);
+char	*ft_charjoin(char *s1, char c);
 char	*ft_charjoin_free(char *s1, char c);
 
 

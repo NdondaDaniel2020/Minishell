@@ -12,6 +12,31 @@
 
 #include "minishell.h"
 
+char	*ft_charjoin(char *s1, char c)
+{
+	char	*join;
+	int		l1;
+	int		i;
+
+	if (!s1 && !c)
+		return (NULL);
+	i = 0;
+	l1 = ft_strlen(s1);
+	join = malloc((l1 + 2) * sizeof(char));
+	if (!join)
+		return (NULL);
+	while (i < (l1 + 1))
+	{
+		if (i < l1)
+			join[i] = s1[i];
+		else
+			join[i] = c;
+		i++;
+	}
+	join[i] = '\0';
+	return (join);
+}
+
 char	*ft_charjoin_free(char *s1, char c)
 {
 	char	*join;
@@ -41,6 +66,7 @@ char	*ft_charjoin_free(char *s1, char c)
 void	init_data(t_data *data)
 {
 	data->btree = NULL;
+	data->space = false;
 	data->output = NULL;
 	data->command = NULL;
 	data->put_amb = NULL;
@@ -69,11 +95,13 @@ void	free_all_data(t_data *data)
         return ;
     if (data->output)
 	{
-		if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
-		{
-			free(data->output);
-			data->output = NULL;
-		}
+		// if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
+		// {
+		// 	free(data->output);
+		// 	data->output = NULL;
+		// }
+		// free(data->output);
+		// data->output = NULL;
 	}
     if (data->put_amb)
 	{
