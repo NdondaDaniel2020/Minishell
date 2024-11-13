@@ -51,13 +51,14 @@ void	master(char *command)
 			// se nao funcionar mostrar sms de erro
 		aux = aux->right;
 	}
-	// free_all_data(&data);
+	free_all_data(&data);
 }
 
 int	main(void)
 {
 	// char	*input;
-	master("echo -n TEST TST AXD VASDF $HOME $HOME $HOME $HOME $HOME $HOME $HOME $HOME");
+	master("echo -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n  TEST");
+	// master("echo -n TEST TST AXD VASDF $HOME $HOME $HOME $HOME $HOME $HOME $HOME $HOME");
 	// while (1)
 	// {
 	// 	input = readline("TeamWork> ");

@@ -120,7 +120,7 @@ static void	scroll_word(int i1, t_data *data)void	echo(t_data *data)
 	}
 	if (data->output[0] == '\0')
 		free(data->output);
-}
+	}
 
 		}
 		else if (data->btree->content[i1][i2] == '$')
@@ -153,6 +153,7 @@ void	echo(t_data *data)
 		scroll_word(i1, data);
 		i1++;
 	}
+	
 	if (ft_strncmp(data->btree->content[i1 - 1], "-n", ft_strlen(data->btree->content[i1 - 1])))
 	{
 		data->output = ft_charjoin_free(data->output, '\n');
