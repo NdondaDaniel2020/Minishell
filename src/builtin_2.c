@@ -144,7 +144,7 @@ void	put_environment(int i1, int *i2, t_data *data)
 	data->put_amb = getenv(env_var);
 	put_env(i1, env_var, data);
 	// put_single_quote(i1, i2, data);
-	while (*i2 > 0 && data->btree->content[i1][*i2])
+	while (*i2 > 0 && data->btree->content[i1][*i2])  //  o erro esta aqui
 	{
 		if (data->btree->content[i1][*i2] == '\'')
 		{
@@ -156,7 +156,6 @@ void	put_environment(int i1, int *i2, t_data *data)
 		}
 		(*i2)++;
 	}
-
 	data->space = true;
 }
 
