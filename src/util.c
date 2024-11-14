@@ -103,11 +103,11 @@ void	free_all_data(t_data *data)
 		// free(data->output);
 		// data->output = NULL;
 	}
-    if (data->put_amb)
-	{
-		free(data->put_amb);
-		data->put_amb = NULL;
-	}
+    // if (data->put_amb)
+	// {
+	// 	free(data->put_amb);
+	// 	data->put_amb = NULL;
+	// }
     if (data->btree)
         remove_all_tree(data->btree);
 }

@@ -57,7 +57,8 @@ void	master(char *command)
 int	main(void)
 {
 	// char	*input;
-	master("echo -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n -n  TEST");
+
+	master("echo -n '\"$HOME\"' \"'$HOME'\" $HOME $HOME TEST");
 	// master("echo -n TEST TST AXD VASDF $HOME $HOME $HOME $HOME $HOME $HOME $HOME $HOME");
 	// while (1)
 	// {

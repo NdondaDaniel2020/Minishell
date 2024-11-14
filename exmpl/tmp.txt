@@ -145,6 +145,7 @@ void	echo(t_data *data)
 		ft_putchar_fd('\n', 1);
 		return ;
 	}
+
 	i1 = 1;
 	while (data->btree->content[i1] && ft_strnstr(data->btree->content[i1], "-n", ft_strlen(data->btree->content[i1])))
 		i1++;
