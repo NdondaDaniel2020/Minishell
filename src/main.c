@@ -25,6 +25,7 @@ void	insert_data(t_data *data, char *command)
 		i++;
 	}
 	free(spliting);
+	data->path = ft_split(getenv("PATH"), ':');
 }
 
 void	master(char *command)
@@ -46,9 +47,18 @@ void	master(char *command)
 			cd(&data);
 		else if (!ft_strncmp(aux->content[0], "echo", ft_strlen(aux->content[0])))
 			echo(&data);
-		// else
+		else
+		{
+			int i = 0;
+			while (data.path[i])
+			{
+				ft_printf("[%s/%s]\n", data.path[i], aux->content[0]);
+				i++;
+			}
 			// pegar path: e concatenar com cada parte do bin para ver se funciona
 			// se nao funcionar mostrar sms de erro
+			// executar os binarios dentro de fork();
+		}
 		aux = aux->right;
 	}
 	free_all_data(&data);
@@ -58,8 +68,8 @@ int	main(void)
 {
 	// char	*input;
 
-	master("echo -n '\"$HOME\"' \"'$HOME'\" $HOME $HOME TEST");
-	// master("echo -n TEST TST AXD VASDF $HOME $HOME $HOME $HOME $HOME $HOME $HOME $HOME");
+	// master("echo -n '\"$HOME\"' \"'$HOME'\" $HOME $HOME TEST");
+	master("ls");
 	// while (1)
 	// {
 	// 	input = readline("TeamWork> ");

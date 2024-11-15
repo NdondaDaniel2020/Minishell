@@ -22,6 +22,7 @@ typedef struct s_data
 	char	*command;
 	char	*output;
 	char	*put_amb;
+	char	**path;
 	t_btree	*btree;
 }			t_data;
 
@@ -52,13 +53,13 @@ t_btree	*insert_into_btree(t_btree *root, int item, char *content);
 t_btree	*remove_tree_trunk(t_btree *root, int item);
 t_btree	*remove_tree_leaf(t_btree *root);
 t_btree	*remove_tree(t_btree *root, int item);
-
 t_btree	*remove_all_tree(t_btree *root);
 
 int		search_btree(t_btree *root, int item);
-void	show_btree(t_btree *root);
 int		len_btree(t_btree *root);
+void	show_btree(t_btree *root);
 
+/* functions */
 int		count_word(char **words);
 void	init_valid(t_valid	*valid);
 void	traverse_n(int *i, t_data *data);
