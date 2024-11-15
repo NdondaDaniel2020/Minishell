@@ -25,6 +25,12 @@ typedef struct s_data
 	t_btree	*btree;
 }			t_data;
 
+typedef struct s_valid
+{
+	bool	is_quota;
+	bool	is_transition;
+}			t_valid;
+
 /*builtin*/
 void	cd(t_data *data);
 void	pwd(t_data *data);
@@ -52,5 +58,13 @@ t_btree	*remove_all_tree(t_btree *root);
 int		search_btree(t_btree *root, int item);
 void	show_btree(t_btree *root);
 int		len_btree(t_btree *root);
+
+int		count_word(char **words);
+void	init_valid(t_valid	*valid);
+void	traverse_n(int *i, t_data *data);
+
+int	put_environment(int i1, int i2, t_valid	*valid, t_data *data);
+int	traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
+int	trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
 #endif

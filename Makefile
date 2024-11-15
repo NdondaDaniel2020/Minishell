@@ -19,7 +19,9 @@ INCLUDE = ./include
 FILES = main.c \
 		util.c \
 		builtin_1.c \
-		builtin_2.c \
+		echo_1.c \
+		echo_2.c \
+		echo_3.c \
 		btree_util.c \
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
