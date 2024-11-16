@@ -23,6 +23,7 @@ FILES = main.c \
 		echo_2.c \
 		echo_3.c \
 		btree_util.c \
+		env.c \
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)

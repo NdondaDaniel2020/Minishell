@@ -1,26 +1,33 @@
+#include <term.h>
+#include <errno.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <dirent.h>
 #include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
+#include <string.h>
+#include <curses.h>
+#include <termios.h> 	
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/resource.h>
 
-int main()
+int main() 
 {
-    char *path;
-	char *home;
-
-	// Obtém o valor da variável de ambiente "HOME"
-    home = getenv("HOME");
-    if (home != NULL) {
-        printf("O diretório home é: %s\n", home);
-    } else {
-        printf("A variável de ambiente HOME não está definida.\n");
+    char *argv[] = {"clear", NULL};
+     char *envp[] = {"TERM=xterm-256color", NULL}; 
+    
+    // Executa o novo programa
+    if (execve("/bin/clear", argv, envp) == -1)
+    {
+        perror("Erro ao executar execve");
+        exit(EXIT_FAILURE);
     }
-
-    // Obtém o valor da variável de ambiente "PATH"
-    path = getenv("PATH");
-    if (path != NULL) {
-        printf("O PATH é: %s\n", path);
-    } else {
-        printf("A variável de ambiente PATH não está definida.\n");
-    }
+    // Este código não será executado se execve for bem-sucedido
+    printf("Este código não será executado.\n");
 
     return 0;
 }

@@ -80,7 +80,6 @@ int main() {
             sleep(1); // Pausa para simular processamento
         }
     }
-
     return 0;
 }
 */
@@ -204,7 +203,6 @@ int main() {
         // Libera a memória alocada
         free(input);
     }
-
     return 0;
 }
 */
@@ -247,7 +245,6 @@ int main()
             printf("Processo filho foi parado por um sinal %d.\n", WSTOPSIG(status));
         }
     }
-
     return 0;
 }
 */

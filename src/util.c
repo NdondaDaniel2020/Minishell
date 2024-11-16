@@ -65,6 +65,7 @@ char	*ft_charjoin_free(char *s1, char c)
 
 void	init_data(t_data *data)
 {
+	data->envp = NULL;
 	data->path = NULL;
 	data->btree = NULL;
 	data->space = false;
@@ -103,5 +104,15 @@ void	free_all_data(t_data *data)
 		}
 	}
     if (data->btree)
+    {
         remove_all_tree(data->btree);
+    }
+    if (data->path)
+    {
+        free_matrix(data->path);
+    }
+	if (data->envp)
+	{
+		free_matrix(data->envp);
+	}
 }

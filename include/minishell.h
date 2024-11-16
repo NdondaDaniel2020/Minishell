@@ -3,8 +3,10 @@
 
 #include "libft.h"
 #include <stdlib.h>
+#include <dirent.h>
 #include <stdbool.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 
@@ -23,6 +25,7 @@ typedef struct s_data
 	char	*output;
 	char	*put_amb;
 	char	**path;
+	char	**envp;
 	t_btree	*btree;
 }			t_data;
 
@@ -68,4 +71,9 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data);
 int	traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
 int	trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
+
+char	**concat_env(char **env1, char **env2);
+char    **get_env_1(void);
+char    **get_env_2(void);
+void	env(t_data *data);
 #endif
