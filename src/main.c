@@ -66,9 +66,6 @@ char	*get_valid_path(t_data *data)
 
 void	other_command(t_data *data)
 {
-	/* 
-	   executar os binarios dentro de fork();
-	*/
 	int		pid;
 	char	*path;
 	
@@ -115,6 +112,8 @@ void	master(char *command)
 			cd(&data);
 		else if (!ft_strncmp(aux->content[0], "echo", ft_strlen(aux->content[0])))
 			echo(&data);
+		else if (!ft_strncmp(aux->content[0], "env", ft_strlen(aux->content[0])))
+			env(&data);
 		else
 			other_command(&data);
 		aux = aux->right;

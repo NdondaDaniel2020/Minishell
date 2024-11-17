@@ -21,8 +21,7 @@ conectada à entrada do próximo comando por meio de um pipe.
 
 • Lidar com variáveis ​​de ambiente ($ seguido por uma sequência de caracteres) que
 devem se expandir para seus valores.
-
-• Lidar com $? que deve se expandir para o status de saída do pipeline de primeiro plano
+ee saída do pipeline de primeiro plano
 executado mais recentemente.
 
 • Lidar com ctrl-C, ctrl-D e ctrl-\ que devem se comportar como no bash.
