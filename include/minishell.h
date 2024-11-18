@@ -48,7 +48,7 @@ void	free_matrix(char **matrix);
 void	free_all_data(t_data *data);
 char	*ft_charjoin(char *s1, char c);
 char	*ft_charjoin_free(char *s1, char c);
-
+void	*ft_realloc(void* ptr, size_t original_size, size_t new_size);
 
 /*btree*/
 t_btree	*insert_into_btree(t_btree *root, int item, char *content);
@@ -76,4 +76,8 @@ char	**concat_env(char **env1, char **env2);
 char    **get_env_1(void);
 char    **get_env_2(void);
 void	env(t_data *data);
+
+void	export(t_data *data);
+
+
 #endif

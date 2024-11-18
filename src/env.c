@@ -98,7 +98,10 @@ void	env(t_data *data)
 	i = 0;
 	while (data->envp[i])
 	{
-		ft_printf("%s\n", data->envp[i]);
+		if (ft_strchr(data->envp[i], '='))
+		{
+			ft_printf("%s\n", data->envp[i]);
+		}
 		i++;
 	}
 }

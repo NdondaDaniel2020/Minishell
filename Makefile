@@ -24,6 +24,7 @@ FILES = btree_util_1.c \
 		echo_3.c \
 		env.c \
 		exit.c \
+		export.c \
 		main.c \
 		pwd.c \
 		util_1.c \

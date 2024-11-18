@@ -15,5 +15,6 @@
 void	exit_(t_data *data)
 {
 	free_all_data(data);
+	ft_printf("exit\n");
 	exit(0);
 }

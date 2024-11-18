@@ -90,7 +90,7 @@ void	other_command(t_data *data)
 		free(path);
 	}
 	else
-		ft_printf("COMANDO INAVALIDO\n"); /* meter o verdadeiro erro */
+		ft_printf("command not found: %s\n", data->btree->content[0]); /* meter o verdadeiro erro */
 }
 
 void	master(char *command)
@@ -114,6 +114,10 @@ void	master(char *command)
 			echo(&data);
 		else if (!ft_strncmp(aux->content[0], "env", ft_strlen(aux->content[0])))
 			env(&data);
+		else if (!ft_strncmp(aux->content[0], "export", ft_strlen(aux->content[0])))
+			export(&data);
+		// else if (!ft_strncmp(aux->content[0], "unset", ft_strlen(aux->content[0])))
+			// unset(&data);
 		else
 			other_command(&data);
 		aux = aux->right;
