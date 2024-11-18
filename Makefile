@@ -16,14 +16,19 @@ LIBFT = $(DIR_LIBFT)libft.a
 NAME = ./minishell
 SRC = ./src/
 INCLUDE = ./include
-FILES = main.c \
-		util.c \
-		builtin_1.c \
+FILES = btree_util_1.c \
+		btree_util_2.c \
+		cd.c \
 		echo_1.c \
 		echo_2.c \
 		echo_3.c \
-		btree_util.c \
 		env.c \
+		exit.c \
+		main.c \
+		pwd.c \
+		util_1.c \
+		util_2.c
+
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)

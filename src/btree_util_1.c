@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_2.c                                        :+:      :+:    :+:   */
+/*   btree_util_1.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -90,64 +90,4 @@ t_btree	*remove_tree(t_btree *root, int item)
 			root->right = remove_tree(root->right, item);
 		return (root);
 	}
-}
-
-
-
-
-int	search_btree(t_btree *root, int item)
-{
-	if (root != NULL)
-	{
-		if (item == root->item)
-			return (root->item);
-		if (item < root->item)
-			return search_btree(root->left, item);
-		if (item > root->item)
-			return search_btree(root->right, item);
-	}
-	return (-999);
-}
-
-void	show_btree(t_btree *root)
-{
-	if (root != NULL)
-	{
-		int	i;
-
-		i = 0;
-		ft_printf("[%i]-", root->item);
-		while (root->content[i])
-		{
-			ft_printf("[%s]", root->content[i]);
-			i++;
-		}
-		ft_printf("\n");
-		show_btree(root->left);
-		show_btree(root->right);
-	}
-	return ;
-}
-
-int	len_btree(t_btree *root)
-{
-	if (root == NULL)
-		return (0);
-	else
-		return (1 + len_btree(root->left) + len_btree(root->right));
-}
-
-t_btree	*remove_all_tree(t_btree *root)
-{
-	int	i;
-	int	len;
-
-	i = 0;
-	len = len_btree(root);
-	while (i < len)
-	{
-		root = remove_tree(root, i);
-		i++;
-	}
-	return (root);
 }

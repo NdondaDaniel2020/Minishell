@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_1.c                                        :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,22 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	pwd(t_data *data)
-{
-    char *cwd;
-
-	cwd = ft_calloc(5048, sizeof(char));
-    if (!cwd)
-	    data->output = NULL;
-    if (getcwd(cwd, 5048) == NULL)
-	{
-        free(cwd);
-		data->output = NULL;
-    }
-	ft_printf("%s\n", cwd);
-    data->output = cwd;
-}
 
 static int is_directory_valid(const char *path)
 {
@@ -66,10 +50,4 @@ void	cd(t_data *data)
 		chdir(dir);
 	}
 	data->output = dir;
-}
-
-void	exit_(t_data *data)
-{
-	free_all_data(data);
-	exit(0);
 }
