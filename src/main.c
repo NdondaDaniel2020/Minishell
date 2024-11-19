@@ -26,7 +26,15 @@ void	insert_data(t_data *data, char *command)
 	}
 	free(spliting);
 	data->path = ft_split(getenv("PATH"), ':');
-	data->envp = concat_env(get_env_1(), get_env_2());
+	if (data->envp == NULL)
+	{
+		ft_printf("\n{{NULL}}\n");
+		data->envp = concat_env(get_env_1(), get_env_2());
+	}
+	else
+	{
+		ft_printf("\n{{NAO NULL}}\n");
+	}
 }
 
 char	*get_valid_path(t_data *data)
@@ -93,51 +101,50 @@ void	other_command(t_data *data)
 		ft_printf("command not found: %s\n", data->btree->content[0]); /* meter o verdadeiro erro */
 }
 
-void	master(char *command)
+void	master(char *command, t_data *data)
 {
 	t_btree	*aux;
-	t_data	data;
 
-	init_data(&data);
-	data.command = command;
-	insert_data(&data, command);
-	aux = data.btree;
+	init_data(data);
+	data->command = command;
+	insert_data(data, command);
+	aux = data->btree;
 	while (aux)
 	{
 		if (!ft_strncmp(aux->content[0], "exit", ft_strlen(aux->content[0])))
-			exit_(&data);
+			exit_(data);
 		else if (!ft_strncmp(aux->content[0], "pwd", ft_strlen(aux->content[0])))
-			pwd(&data);
+			pwd(data);
 		else if (!ft_strncmp(aux->content[0], "cd", ft_strlen(aux->content[0])))
-			cd(&data);
+			cd(data);
 		else if (!ft_strncmp(aux->content[0], "echo", ft_strlen(aux->content[0])))
-			echo(&data);
+			echo(data);
 		else if (!ft_strncmp(aux->content[0], "env", ft_strlen(aux->content[0])))
-			env(&data);
+			env(data);
 		else if (!ft_strncmp(aux->content[0], "export", ft_strlen(aux->content[0])))
-			export(&data);
+			export(data);
 		// else if (!ft_strncmp(aux->content[0], "unset", ft_strlen(aux->content[0])))
-			// unset(&data);
+			// unset(data);
 		else
-			other_command(&data);
+			other_command(data);
 		aux = aux->right;
 	}
-	free_all_data(&data);
+	free_all_data(data);
 }
 
 int	main(void)
 {
+	t_data	data;
 	char	*input;
 
-	// master("pwd");
-	// master("clear");
+	
 	while (1)
 	{
 		input = readline("TeamWork> ");
 		add_history(input);
 		if (ft_strlen(input) != 0)
 		{
-			master(input);
+			master(input, &data);
 			free(input);
 		}
 	}
