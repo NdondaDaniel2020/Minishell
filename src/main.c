@@ -18,6 +18,7 @@ void	insert_data(t_data *data, char *command)
 	char	**spliting;
 
 	i = 0;
+	data->command = command;
 	spliting = ft_split(command, '|');
 	while (spliting[i])
 	{
@@ -25,88 +26,12 @@ void	insert_data(t_data *data, char *command)
 		i++;
 	}
 	free(spliting);
-	data->path = ft_split(getenv("PATH"), ':');
-	if (data->envp == NULL)
-	{
-		ft_printf("\n{{NULL}}\n");
-		data->envp = concat_env(get_env_1(), get_env_2());
-	}
-	else
-	{
-		ft_printf("\n{{NAO NULL}}\n");
-	}
-}
-
-char	*get_valid_path(t_data *data)
-{
-	
-	int				i;
-	DIR				*open_dir;
-	char			*dir_path;
-	struct dirent	*entry;
-
-	i = 0;
-	while (data->path[i])
-	{
-		open_dir = opendir(data->path[i]);
-		if (open_dir)
-		{
-			entry = readdir(open_dir);
-			while (entry != NULL)
-			{
-				if (!ft_strncmp(entry->d_name, data->btree->content[0],
-					ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
-					== ft_strlen(data->btree->content[0]))
-				{
-					dir_path = ft_charjoin(data->path[i], '/');
-					dir_path = ft_strjoin_free(dir_path, entry->d_name);
-					closedir(open_dir);
-					return (dir_path);
-				}
-				entry = readdir(open_dir);
-			}
-		}
-		closedir(open_dir);
-		i++;
-	}
-	return (NULL);
-}
-
-void	other_command(t_data *data)
-{
-	int		pid;
-	char	*path;
-	
-
-	if (ft_strnstr(data->btree->content[0], "/", ft_strlen(data->btree->content[0])))
-		path = ft_strdup(data->btree->content[0]);
-	else
-		path = get_valid_path(data);
-	if (path)
-	{
-		pid = fork();
-		if (pid == 0)
-		{
-			// ft_printf("%s -> %s\n", path, data->btree->content[0]);
-			execve(path, data->btree->content, data->envp);
-		}
-		else
-		{
-			wait(NULL);
-			// ft_printf("[pai %i] -> %s\n", pid, path);
-		}
-		free(path);
-	}
-	else
-		ft_printf("command not found: %s\n", data->btree->content[0]); /* meter o verdadeiro erro */
 }
 
 void	master(char *command, t_data *data)
 {
 	t_btree	*aux;
 
-	init_data(data);
-	data->command = command;
 	insert_data(data, command);
 	aux = data->btree;
 	while (aux)
@@ -137,7 +62,9 @@ int	main(void)
 	t_data	data;
 	char	*input;
 
-	
+	init_data(&data);
+	data.path = ft_split(getenv("PATH"), ':');
+	data.envp = concat_env(get_env_1(), get_env_2());
 	while (1)
 	{
 		input = readline("TeamWork> ");

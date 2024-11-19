@@ -73,13 +73,18 @@ static void	check_character(int i1, bool *add_var, t_btree *aux)
 			break ;
 		}
 		if (!ft_isalnum(aux->content[i1][i2]) &&
-			aux->content[i1][i2] !=  '_' &&
-			aux->content[i1][i2] !=  '=')
+			aux->content[i1][i2] !=  '_' && aux->content[i1][i2] !=  '=' &&
+			aux->content[i1][i2] !=  '\'' && aux->content[i1][i2] !=  '\"'
+			&& aux->content[i1][i2] !=  '$' && aux->content[i1][i2] !=  '\\'
+			&& aux->content[i1][i2] !=  ' ' && aux->content[i1][i2] !=  '.'
+			&& aux->content[i1][i2] !=  '/' && aux->content[i1][i2] !=  ':'
+			&&)
 		{
 			ft_printf("export: not an identifier: %s\n", aux->content[i1]);
 			*add_var = false;
 			break ;
 		}
+		// retificar a entrada de valores  um plitt no primeiro e verificar se o valor e valido
 		i2++;
 	}
 }
@@ -118,13 +123,6 @@ void	add_environment_variable(char *env_var, t_data *data)
         data->envp = ft_realloc((void *)data->envp, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
         data->envp[i] = ft_strdup(env_var);
         data->envp[i + 1] = NULL;
-		i = 0;
-		while (data->envp[i])
-		{
-			ft_printf("[[%i] %s]\n", i, data->envp[i]);
-			i++;
-		}
-		ft_printf("[[%i]] ", i);
 	}
 	// se ja existe e valo e diferente, alterar
 }

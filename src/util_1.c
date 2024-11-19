@@ -94,24 +94,17 @@ void	free_all_data(t_data *data)
 {
     if (!data)
         return ;
-    if (data->output)
-	{
-		if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
-		{
-			free(data->output);
-			data->output = NULL;
-		}
-	}
+    // if (data->output)
+	// {
+	// 	if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
+	// 	{
+	// 		free(data->output);
+	// 		data->output = NULL;
+	// 	}
+	// }
     if (data->btree)
     {
-        remove_all_tree(data->btree);
+		remove_all_tree(data->btree);
+        data->btree = NULL;
     }
-    if (data->path)
-    {
-        free_matrix(data->path);
-    }
-	// if (data->envp)
-	// {
-	// 	free_matrix(data->envp);
-	// }
 }

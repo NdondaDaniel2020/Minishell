@@ -78,6 +78,6 @@ char    **get_env_2(void);
 void	env(t_data *data);
 
 void	export(t_data *data);
-
+void	other_command(t_data *data);
 
 #endif

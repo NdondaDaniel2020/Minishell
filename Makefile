@@ -26,6 +26,7 @@ FILES = btree_util_1.c \
 		exit.c \
 		export.c \
 		main.c \
+		other_command.c \
 		pwd.c \
 		util_1.c \
 		util_2.c
