@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   export_2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-void	print_env_order(t_data *data)
+static void	print_env_order(t_data *data)
 {
-	int 	i1;
-	int 	i2;
+	int		i1;
+	int		i2;
 	char	alpha;
 
 	i1 = 0;
@@ -51,7 +51,7 @@ bool	print_export(t_data *data)
 	while (aux->content[i1])
 		i1++;
 	if (!ft_strncmp(aux->content[i1 - 1], "export",
-		ft_strlen(aux->content[i1 - 1])))
+			ft_strlen(aux->content[i1 - 1])))
 	{
 		print_env_order(data);
 		return (true);
@@ -61,30 +61,28 @@ bool	print_export(t_data *data)
 
 static void	check_character(int i1, bool *add_var, t_btree *aux)
 {
-	int i2;
+	int	i2;
 
 	i2 = 0;
 	while (aux->content[i1][i2])
 	{
-		if (aux->content[i1][i2] ==  '=' && ft_strlen(aux->content[i1]) == 1)
+		if (aux->content[i1][i2] == '=' && ft_strlen(aux->content[i1]) == 1)
 		{
 			ft_printf("export: `=': not a valid identifier\n");
 			*add_var = false;
 			break ;
 		}
-		if (!ft_isalnum(aux->content[i1][i2]) &&
-			aux->content[i1][i2] !=  '_' && aux->content[i1][i2] !=  '=' &&
-			aux->content[i1][i2] !=  '\'' && aux->content[i1][i2] !=  '\"'
-			&& aux->content[i1][i2] !=  '$' && aux->content[i1][i2] !=  '\\'
-			&& aux->content[i1][i2] !=  ' ' && aux->content[i1][i2] !=  '.'
-			&& aux->content[i1][i2] !=  '/' && aux->content[i1][i2] !=  ':'
-			&&)
+		if (!ft_isalnum(aux->content[i1][i2])
+			&& aux->content[i1][i2] != '_' && aux->content[i1][i2] != '='
+			&& aux->content[i1][i2] != '\'' && aux->content[i1][i2] != '\"'
+			&& aux->content[i1][i2] != '$' && aux->content[i1][i2] != '\\'
+			&& aux->content[i1][i2] != ' ' && aux->content[i1][i2] != '.'
+			&& aux->content[i1][i2] != '/' && aux->content[i1][i2] != ':')
 		{
 			ft_printf("export: not an identifier: %s\n", aux->content[i1]);
 			*add_var = false;
 			break ;
 		}
-		// retificar a entrada de valores  um plitt no primeiro e verificar se o valor e valido
 		i2++;
 	}
 }
@@ -94,7 +92,7 @@ bool	check_error(int i1, t_btree *aux)
 	bool	add_var;
 
 	add_var = true;
-	if (!ft_isalpha(aux->content[i1][0]) && aux->content[i1][0] != '-')
+	if (!ft_isalpha(aux->content[i1][0]) && aux->content[i1][0] != '_')
 	{
 		ft_printf("export: `%s': not a valid identifier\n", aux->content[i1]);
 		add_var = false;
@@ -104,45 +102,16 @@ bool	check_error(int i1, t_btree *aux)
 	return (add_var);
 }
 
-void	add_environment_variable(char *env_var, t_data *data)
+int	ft_strnchrcmp(const char *s1, const char *s2, size_t n, char chr)
 {
-	// unique
-	int		i;
-	bool	unique;
+	size_t	i;
 
 	i = 0;
-	unique = true;
-	while (data->envp[i])
+	while ((s1[i] || s2[i]) && (i < n) && s1[i] != chr)
 	{
-		if (!ft_strncmp(data->envp[i], env_var, ft_strlen(env_var)))
-			unique = false;
+		if (s1[i] != s2[i])
+			return (s1[i] - s2[i]);
 		i++;
 	}
-	if (unique)
-	{
-        data->envp = ft_realloc((void *)data->envp, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
-        data->envp[i] = ft_strdup(env_var);
-        data->envp[i + 1] = NULL;
-	}
-	// se ja existe e valo e diferente, alterar
-}
-
-void	export(t_data *data)
-{
-	int		i1;
-	bool	add_var;
-	t_btree	*aux;
-
-	i1 = 1;
-	aux = data->btree;
-	if (print_export(data))
-		return ;
-	while (aux->content[i1])
-	{
-		add_var = check_error(i1, aux);
-		if (add_var)
-			add_environment_variable(aux->content[i1], data);
-		i1++;
-	}
-	ft_putchar_fd('\n', 1);
+	return (0);
 }

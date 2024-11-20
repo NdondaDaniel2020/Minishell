@@ -48,8 +48,8 @@ void	master(char *command, t_data *data)
 			env(data);
 		else if (!ft_strncmp(aux->content[0], "export", ft_strlen(aux->content[0])))
 			export(data);
-		// else if (!ft_strncmp(aux->content[0], "unset", ft_strlen(aux->content[0])))
-			// unset(data);
+		else if (!ft_strncmp(aux->content[0], "unset", ft_strlen(aux->content[0])))
+			unset(data);
 		else
 			other_command(data);
 		aux = aux->right;
@@ -77,3 +77,6 @@ int	main(void)
 	}
 	return (0);
 }
+
+// master("export __ASDF==ASDF", &data);
+// master("export", &data);

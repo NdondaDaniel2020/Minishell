@@ -24,10 +24,13 @@ FILES = btree_util_1.c \
 		echo_3.c \
 		env.c \
 		exit.c \
-		export.c \
+		export_1.c \
+		export_2.c \
+		export_3.c \
 		main.c \
 		other_command.c \
 		pwd.c \
+		unset.c \
 		util_1.c \
 		util_2.c
 

@@ -77,7 +77,13 @@ char    **get_env_1(void);
 char    **get_env_2(void);
 void	env(t_data *data);
 
+void	unset(t_data *data);
 void	export(t_data *data);
 void	other_command(t_data *data);
+
+bool	check_error(int i1, t_btree *aux);
+bool	print_export(t_data *data);
+int		ft_strnchrcmp(const char *s1, const char *s2, size_t n, char chr);
+void	add_environment_variable(char *env_var, t_data *data);
 
 #endif
