@@ -12,14 +12,33 @@
 
 #include "minishell.h"
 
+static char	*read_all_path(int i, t_data *data, DIR *open_dir)
+{
+	char			*dir_path;
+	struct dirent	*entry;
+
+	entry = readdir(open_dir);
+	while (entry != NULL)
+	{
+		if (!ft_strncmp(entry->d_name, data->btree->content[0],
+			ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
+			== ft_strlen(data->btree->content[0]))
+		{
+			dir_path = ft_charjoin(data->path[i], '/');
+			dir_path = ft_strjoin_free(dir_path, entry->d_name);
+			closedir(open_dir);
+			return (dir_path);
+		}
+		entry = readdir(open_dir);
+	}
+	return (NULL);
+}
 
 static char	*get_valid_path(t_data *data)
 {
-	
 	int				i;
-	DIR				*open_dir;
 	char			*dir_path;
-	struct dirent	*entry;
+	DIR				*open_dir;
 
 	i = 0;
 	while (data->path[i])
@@ -27,20 +46,9 @@ static char	*get_valid_path(t_data *data)
 		open_dir = opendir(data->path[i]);
 		if (open_dir)
 		{
-			entry = readdir(open_dir);
-			while (entry != NULL)
-			{
-				if (!ft_strncmp(entry->d_name, data->btree->content[0],
-					ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
-					== ft_strlen(data->btree->content[0]))
-				{
-					dir_path = ft_charjoin(data->path[i], '/');
-					dir_path = ft_strjoin_free(dir_path, entry->d_name);
-					closedir(open_dir);
-					return (dir_path);
-				}
-				entry = readdir(open_dir);
-			}
+			dir_path = read_all_path(i, data, open_dir);
+			if (dir_path)
+				return (dir_path);
 		}
 		closedir(open_dir);
 		i++;
@@ -52,7 +60,7 @@ void	other_command(t_data *data)
 {
 	int		pid;
 	char	*path;
-	
+
 	if (ft_strnstr(data->btree->content[0], "/", ft_strlen(data->btree->content[0])))
 		path = ft_strdup(data->btree->content[0]);
 	else

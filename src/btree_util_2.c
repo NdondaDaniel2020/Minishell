@@ -12,26 +12,26 @@
 
 #include "minishell.h"
 
-int	search_btree(t_btree *root, int item) /* apagar */
+int	search_btree(t_btree *root, int item)  /* apagar */
 {
 	if (root != NULL)
 	{
 		if (item == root->item)
 			return (root->item);
 		if (item < root->item)
-			return search_btree(root->left, item);
+			return (search_btree(root->left, item));
 		if (item > root->item)
-			return search_btree(root->right, item);
+			return (search_btree(root->right, item));
 	}
 	return (-999);
 }
 
 void	show_btree(t_btree *root)  /* apagar */
 {
+	int	i;
+
 	if (root != NULL)
 	{
-		int	i;
-
 		i = 0;
 		ft_printf("[%i]-", root->item);
 		while (root->content[i])

@@ -15,7 +15,7 @@
 void	exit_(t_data *data)
 {
 	if (data->path)
-        free_matrix(data->path);
+		free_matrix(data->path);
 	if (data->envp)
 		free_matrix(data->envp);
 	free_all_data(data);

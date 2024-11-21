@@ -57,26 +57,46 @@ void	master(char *command, t_data *data)
 	free_all_data(data);
 }
 
+void	get_current_directory(t_data *data)
+{
+	char	*cwd;
+	char	*pwd;
+	char	*oldpwd;
+
+	cwd = ft_calloc(5048, sizeof(char));
+	getcwd(cwd, 5048);
+	pwd = ft_strjoin("export PWD=", cwd);
+	oldpwd = ft_strjoin("export OLDPWD=", cwd);
+	free(cwd);
+	data->btree = insert_into_btree(data->btree, 0, pwd);
+	export(data);
+	free_all_data(data);
+	data->btree = insert_into_btree(data->btree, 1, oldpwd);
+	export(data);
+	free_all_data(data);
+}
+
 int	main(void)
 {
 	t_data	data;
-	char	*input;
+	// char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = concat_env(get_env_1(), get_env_2());
-	while (1)
-	{
-		input = readline("TeamWork> ");
-		add_history(input);
-		if (ft_strlen(input) != 0)
-		{
-			master(input, &data);
-			free(input);
-		}
-	}
+	get_current_directory(&data);
+	master("export ASD=ASDASD", &data);
+	master("export ", &data);
+	master("exit", &data);
+	// while (1)
+	// {
+	// 	input = readline("TeamWork> ");
+	// 	add_history(input);
+	// 	if (ft_strlen(input) != 0)
+	// 	{
+	// 		master(input, &data);
+	// 		free(input);
+	// 	}
+	// }
 	return (0);
 }
-
-// master("export __ASDF==ASDF", &data);
-// master("export", &data);

@@ -75,36 +75,38 @@ void	init_data(t_data *data)
 
 void	free_matrix(char **matrix)
 {
-    int	i;
+	int	i;
 
-    if (!matrix)
-        return ;
-    i = 0;
-    while (matrix[i])
-    {
-        free(matrix[i]);
-        matrix[i] = NULL;
-        i++;
-    }
-    free(matrix);
-    matrix = NULL;
+	if (!matrix)
+		return ;
+	i = 0;
+	while (matrix[i])
+	{
+		free(matrix[i]);
+		matrix[i] = NULL;
+		i++;
+	}
+	free(matrix);
+	matrix = NULL;
 }
 
 void	free_all_data(t_data *data)
 {
-    if (!data)
-        return ;
-    // if (data->output)
-	// {
-	// 	if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
-	// 	{
-	// 		free(data->output);
-	// 		data->output = NULL;
-	// 	}
-	// }
-    if (data->btree)
-    {
+	if (!data)
+		return ;
+    /*
+	if (data->output)
+	{
+		if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
+		{
+			free(data->output);
+			data->output = NULL;
+		}
+	}
+	*/
+	if (data->btree)
+	{
 		remove_all_tree(data->btree);
-        data->btree = NULL;
-    }
+		data->btree = NULL;
+	}
 }

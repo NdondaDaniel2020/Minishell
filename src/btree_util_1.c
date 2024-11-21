@@ -57,7 +57,6 @@ t_btree	*remove_tree_trunk(t_btree *root, int item)
 	aux = root->left;
 	while (aux->right != NULL)
 		aux = aux->right;
-
 	root->item = aux->item;
 	aux->item = item;
 	root->left = remove_tree(root->left, item);
