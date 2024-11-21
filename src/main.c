@@ -90,21 +90,24 @@ void	update_pwd(t_data *data)
 int	main(void)
 {
 	t_data	data;
-	char	*input;
+	// char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = concat_env(get_env_1(), get_env_2());
 	update_pwd(&data);
-	while (1)
-	{
-		input = readline("TeamWork> ");
-		add_history(input);
-		if (ft_strlen(input) != 0)
-		{
-			master(input, &data);
-			free(input);
-		}
-	}
+	master("cd src/", &data);
+	// master(" ", &data);
+	master("exit", &data);
+	// while (1)
+	// {
+	// 	input = readline("TeamWork> ");
+	// 	add_history(input);
+	// 	if (ft_strlen(input) != 0)
+	// 	{
+	// 		master(input, &data);
+	// 		free(input);
+	// 	}
+	// }
 	return (0);
 }
