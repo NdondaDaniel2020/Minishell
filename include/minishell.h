@@ -21,6 +21,7 @@ typedef struct		s_btree
 typedef struct s_data
 {
 	bool	space;
+	bool	automatic_input;
 	char	*command;
 	char	*output;
 	char	*put_amb;

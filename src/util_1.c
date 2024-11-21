@@ -71,6 +71,7 @@ void	init_data(t_data *data)
 	data->output = NULL;
 	data->command = NULL;
 	data->put_amb = NULL;
+	data->automatic_input = false;
 }
 
 void	free_matrix(char **matrix)

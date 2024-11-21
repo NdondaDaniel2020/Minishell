@@ -57,21 +57,25 @@ void	master(char *command, t_data *data)
 	free_all_data(data);
 }
 
-void	get_current_directory(t_data *data)
+void	update_pwd(t_data *data)
 {
 	char	*cwd;
 	char	*pwd;
 	char	*oldpwd;
 
 	cwd = ft_calloc(5048, sizeof(char));
+	if (!cwd)
+		return ;
 	getcwd(cwd, 5048);
 	pwd = ft_strjoin("export PWD=", cwd);
 	oldpwd = ft_strjoin("export OLDPWD=", cwd);
 	free(cwd);
+	data->automatic_input = true;
 	data->btree = insert_into_btree(data->btree, 0, pwd);
 	export(data);
 	free_all_data(data);
-	data->btree = insert_into_btree(data->btree, 1, oldpwd);
+	data->automatic_input = true;
+	data->btree = insert_into_btree(data->btree, 0, oldpwd);
 	export(data);
 	free_all_data(data);
 }
@@ -84,8 +88,8 @@ int	main(void)
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = concat_env(get_env_1(), get_env_2());
-	get_current_directory(&data);
-	master("export ASD=ASDASD", &data);
+	update_pwd(&data);
+	master("export ___ASD=ASDASD", &data);
 	master("export ", &data);
 	master("exit", &data);
 	// while (1)

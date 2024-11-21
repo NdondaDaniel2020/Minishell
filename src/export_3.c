@@ -101,4 +101,9 @@ void	add_environment_variable(char *env_var, t_data *data)
 		add_new_variable(i, env_var, data);
 	else if (is_equal)
 		change_value(point_equal, env_var, data);
+	if (data->automatic_input)
+	{
+		data->automatic_input = false;
+		free(env_var);
+	}
 }
