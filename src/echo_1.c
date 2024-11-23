@@ -62,7 +62,9 @@ void	echo(t_data *data)
 	i1 = count_word(data->btree->content);
 	if (echo_is_empty(i1, data))
 		return ;
-	i1 = 1;
+	i1 = 0;
+	while (!ft_strncmp(data->btree->content[i1], "echo", ft_strlen(data->btree->content[i1])))
+		i1++;
 	traverse_n(&i1, data);
 	data->output = ft_calloc(1, sizeof(char));
 	while (data->btree->content[i1])

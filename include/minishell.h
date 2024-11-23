@@ -85,9 +85,7 @@ int	traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
 int	trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
 
-char	**concat_env(char **env1, char **env2);
-char    **get_env_1(void);
-char    **get_env_2(void);
+char	**get_environment(void);
 void	env(t_data *data);
 
 void	unset(t_data *data);

@@ -53,7 +53,7 @@ $(LIBFT):
 	@$(MAKE) bonus -C $(DIR_LIBFT)
 
 r:
-	@cc exmpl/run.c -o run -lreadline -lncurses ;./run
+	@cc exmpl/run.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
 
 clean:
 	@/bin/rm -f $(OBJ)

@@ -30,25 +30,29 @@ void	insert_data(t_data *data, char *command)
 
 void	master(char *command, t_data *data)
 {
+	int		i;
 	t_btree	*aux;
 
+	i = 0;
 	insert_data(data, command);
 	aux = data->btree;
+	if (ft_strlen(aux->content[i]) == 0)
+		i++;
 	while (aux)
 	{
-		if (!ft_strncmp(aux->content[0], "exit", ft_strlen(aux->content[0])))
+		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
 			exit_(data);
-		else if (!ft_strncmp(aux->content[0], "pwd", ft_strlen(aux->content[0])))
+		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
 			pwd(data);
-		else if (!ft_strncmp(aux->content[0], "cd", ft_strlen(aux->content[0])))
+		else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
 			cd(data);
-		else if (!ft_strncmp(aux->content[0], "echo", ft_strlen(aux->content[0])))
+		else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
 			echo(data);
-		else if (!ft_strncmp(aux->content[0], "env", ft_strlen(aux->content[0])))
+		else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
 			env(data);
-		else if (!ft_strncmp(aux->content[0], "export", ft_strlen(aux->content[0])))
+		else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
 			export(data);
-		else if (!ft_strncmp(aux->content[0], "unset", ft_strlen(aux->content[0])))
+		else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
 			unset(data);
 		else
 			other_command(data);
@@ -57,31 +61,14 @@ void	master(char *command, t_data *data)
 	free_all_data(data);
 }
 
-/*
-	master("export ___ASD=ASDASD", &data);
-	master("export ", &data);
-	master("exit", &data);
-*/
-
 int	main(void)
 {
 	t_data	data;
-	char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
-	data.envp = concat_env(get_env_1(), get_env_2());
-	
-	while (1)
-	{
-		input = readline("TeamWork> ");
-		add_history(input);
-		if (ft_strlen(input) != 0)
-		{
-			master(input, &data);
-			free(input);
-		}
-	}
-	
+	data.envp = get_environment();
+	master("export", &data);
+	master("exit", &data);
 	return (0);
 }
