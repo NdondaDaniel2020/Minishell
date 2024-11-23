@@ -36,6 +36,16 @@ typedef struct s_valid
 	bool	is_transition;
 }			t_valid;
 
+typedef struct s_split
+{
+	int		len;
+	int		in_quotes;
+	int		substr_count;
+	char	**result;
+	char	*start;
+	char	*end;
+} 			t_split;
+
 /*builtin*/
 void	cd(t_data *data);
 void	pwd(t_data *data);
@@ -64,6 +74,8 @@ int		len_btree(t_btree *root);
 void	show_btree(t_btree *root);
 
 /* functions */
+char	**split_2(char *str, char chr);
+
 int		count_word(char **words);
 void	init_valid(t_valid	*valid);
 void	traverse_n(int *i, t_data *data);

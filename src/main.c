@@ -19,7 +19,7 @@ void	insert_data(t_data *data, char *command)
 
 	i = 0;
 	data->command = command;
-	spliting = ft_split(command, '|');
+	spliting = split_2(command, '|');
 	while (spliting[i])
 	{
 		data->btree = insert_into_btree(data->btree, i, spliting[i]);
@@ -57,30 +57,6 @@ void	master(char *command, t_data *data)
 	free_all_data(data);
 }
 
-void	update_pwd(t_data *data)
-{
-	/* add nivel de acesso*/
-	char	*cwd;
-	char	*pwd;
-	char	*oldpwd;
-
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return ;
-	getcwd(cwd, 5048);
-	pwd = ft_strjoin("export PWD=", cwd);
-	oldpwd = ft_strjoin("export OLDPWD=", cwd);
-	free(cwd);
-	data->automatic_input = true;
-	data->btree = insert_into_btree(data->btree, 0, pwd);
-	export(data);
-	free_all_data(data);
-	data->automatic_input = true;
-	data->btree = insert_into_btree(data->btree, 0, oldpwd);
-	export(data);
-	free_all_data(data);
-}
-
 /*
 	master("export ___ASD=ASDASD", &data);
 	master("export ", &data);
@@ -90,24 +66,22 @@ void	update_pwd(t_data *data)
 int	main(void)
 {
 	t_data	data;
-	// char	*input;
+	char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = concat_env(get_env_1(), get_env_2());
-	update_pwd(&data);
-	master("cd src/", &data);
-	// master(" ", &data);
-	master("exit", &data);
-	// while (1)
-	// {
-	// 	input = readline("TeamWork> ");
-	// 	add_history(input);
-	// 	if (ft_strlen(input) != 0)
-	// 	{
-	// 		master(input, &data);
-	// 		free(input);
-	// 	}
-	// }
+	
+	while (1)
+	{
+		input = readline("TeamWork> ");
+		add_history(input);
+		if (ft_strlen(input) != 0)
+		{
+			master(input, &data);
+			free(input);
+		}
+	}
+	
 	return (0);
 }

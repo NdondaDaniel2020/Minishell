@@ -59,21 +59,6 @@ static char	*analize_env(char *env)
 	return (ft_strdup(env));
 }
 
-static void	add_new_variable(int i, char *env_var, t_data *data)
-{
-	data->envp = ft_realloc((void *)data->envp, sizeof(char *) * (i + 1),
-			sizeof(char *) * (i + 2));
-	data->envp[i] = ft_strdup(env_var);
-	data->envp[i + 1] = NULL;
-	free(env_var);
-}
-
-static void	change_value(int point_equal, char *env_var, t_data *data)
-{
-	free(data->envp[point_equal]);
-	data->envp[point_equal] = ft_strdup(env_var);
-}
-
 void	add_environment_variable(char *env_var, t_data *data)
 {
 	int		i;
@@ -98,9 +83,18 @@ void	add_environment_variable(char *env_var, t_data *data)
 	}
 	env_var = analize_env(env_var);
 	if (unique && !is_equal)
-		add_new_variable(i, env_var, data);
+	{
+		data->envp = ft_realloc((void *)data->envp, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
+		data->envp[i] = ft_strdup(env_var);
+		data->envp[i + 1] = NULL;
+		free(env_var);
+	}
 	else if (is_equal)
-		change_value(point_equal, env_var, data);
+	{
+		free(data->envp[point_equal]);
+		data->envp[point_equal] = ft_strdup(env_var);
+	}
+
 	if (data->automatic_input)
 	{
 		data->automatic_input = false;

@@ -1,19 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_2.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/06 10:05:31 by nmatondo          #+#    #+#             */
+/*   Updated: 2024/11/06 10:05:31 by nmatondo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-typedef struct s_split
-{
-	int			len;
-    int			in_quotes;
-    int			substr_count;
-    char		**result;
-    char		*start;
-    char		*end;
-} 			t_split;
-
+#include "minishell.h"
 
 static int	count_substrings(char *str, char chr)
 {
@@ -83,20 +80,4 @@ char	**split_2(char *str, char chr)
 	split.result[i] = strdup(split.start);
 	split.result[split.substr_count] = NULL;
 	return (split.result);
-}
-
-// Função principal para teste
-int main()
-{
-    char *str = "TEST|\"(TEST  1234)\"|'()()'|\"(TEST          1234)\"'()  ()'|'\"$HOME\"'|\"'$HOME'\"||||||||||\"'\"$HOME\"'\"'$HOME'\"\"";
-	char **result = split_2(str, '|');
-
-    for (int i = 0; result[i] != NULL; i++)
-    {
-        printf("%s\n", result[i]);
-        free(result[i]);
-    }
-    free(result);
-
-    return 0;
 }

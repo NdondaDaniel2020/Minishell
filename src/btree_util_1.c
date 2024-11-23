@@ -19,7 +19,7 @@ t_btree	*insert_into_btree(t_btree *root, int item, char *content)
 	if (root == NULL)
 	{
 		new = (t_btree *)malloc(sizeof(t_btree));
-		new->content = ft_split(content, ' ');
+		new->content = split_2(content, ' ');
 		new->item = item;
 		new->left = NULL;
 		new->right = NULL;

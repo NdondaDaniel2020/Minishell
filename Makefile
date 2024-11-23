@@ -30,6 +30,7 @@ FILES = btree_util_1.c \
 		main.c \
 		other_command.c \
 		pwd.c \
+		split_2.c \
 		unset.c \
 		util_1.c \
 		util_2.c
