@@ -64,12 +64,17 @@ void	master(char *command, t_data *data)
 int	main(void)
 {
 	t_data	data;
+	char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
-	data.envp = get_environment();
-	master("cd src", &data);
-	master("export ", &data);
-	master("exit", &data);
+	data.envp = get_all_environment();
+	while (1)
+	{
+		input = readline("TeamWork> ");
+		add_history(input);
+		master(input, &data);
+		free(input);
+	}
 	return (0);
 }
