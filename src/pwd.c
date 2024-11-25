@@ -25,5 +25,5 @@ void	pwd(t_data *data)
 		data->output = NULL;
 	}
 	ft_printf("%s\n", cwd);
-	data->output = cwd;
+	free(cwd);
 }
