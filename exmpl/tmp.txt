@@ -24,7 +24,6 @@ void	update_pwd(t_data *data)
 	free_all_data(data);
 }
 
-
 void	update_pwd_in_cd(t_data *data)
 {
 	/* add nivel de acesso*/
