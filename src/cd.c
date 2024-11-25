@@ -33,7 +33,6 @@ static int	condition_home(char *dir)
 
 static void	update_pwd_oldwpd(t_data *data)
 {
-	int		i;
 	char	*cwd;
 	char	*pwd;
 	char	*oldpwd;
@@ -41,16 +40,7 @@ static void	update_pwd_oldwpd(t_data *data)
 	cwd = ft_calloc(5048, sizeof(char));
 	if (!cwd)
 		return ;
-	i = 0;
-	while (data->envp[i])
-	{
-		if (!ft_strncmp(data->envp[i], "PWD", 3))
-		{
-			oldpwd = ft_strjoin("OLD", data->envp[i]);
-			break ;
-		}
-		i++;
-	}
+	oldpwd = ft_strjoin("OLD", get_env("PWD", data));
 	add_environment_variable(oldpwd, data);
 	free(oldpwd);
 	getcwd(cwd, 5048);
@@ -77,14 +67,13 @@ void	cd(t_data *data)
 	{
 		home = getenv("HOME");
 		chdir(home);
-		data->output = home;
-		return ;
 	}
 	else if (ft_strnstr(dir, "~/", ft_strlen(dir)))
 	{
 		home = getenv("HOME");
 		dir = ft_strjoin(home, &dir[1]);
 		chdir(dir);
+		free(dir);
 	}
 	update_pwd_oldwpd(data);
 	data->output = dir;
