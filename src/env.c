@@ -97,7 +97,7 @@ static int	len_matrix(char **matrix)
 	return (i);
 }
 
-char	**get_environment(void)
+char	**get_all_environment(void)
 {
 	int		i;
 	char	*path;
@@ -124,6 +124,20 @@ char	**get_environment(void)
 		i++;
 	}
 	return (new_env);
+}
+
+char	*get_env(char *env, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (data->envp[i])
+	{
+		if (!ft_strncmp(data->envp[i], env, ft_strlen(env)))
+			return (data->envp[i]);
+		i++;
+	}
+	return (NULL);
 }
 
 void	env(t_data *data)
