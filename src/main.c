@@ -68,7 +68,8 @@ int	main(void)
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_environment();
-	master("export", &data);
+	master("export __ASD==", &data);
+	master("export ", &data);
 	master("exit", &data);
 	return (0);
 }

@@ -37,7 +37,6 @@ void	cd(t_data *data)
 	char	*dir;
 	char	*home;
 
-
 	i = 0;
 	while (data->btree->content[i])
 		i++;
