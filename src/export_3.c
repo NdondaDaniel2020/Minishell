@@ -35,7 +35,7 @@ static void	print_env_order(t_data *data)
 	i2 = 0;
 	while (data->envp[i2])
 	{
-		if (ft_isalpha(data->envp[i2][0]) == 0)
+		if (ft_isalpha(data->envp[i2][0]) == 0 && !ft_strchr(data->envp[i2], '?'))
 			ft_printf("declare -x %s\n", data->envp[i2]);
 		i2++;
 	}

@@ -32,9 +32,10 @@ static bool	echo_is_empty(int i, t_data *data)
 {
 	if (i == 1)
 	{
-		data->output = ft_calloc(1, sizeof(char));
-		data->output = ft_charjoin_free(data->output, '\n');
+		(void)i;
+		(void)data;
 		ft_putchar_fd('\n', 1);
+		// valor u=outputclear
 		return (1);
 	}
 	return (0);
@@ -44,12 +45,7 @@ static void	add_bar_n(int i, t_data *data)
 {
 	if (ft_strncmp(data->btree->content[i - 1], "-n",
 			ft_strlen(data->btree->content[i - 1])))
-	{
-		data->output = ft_charjoin_free(data->output, '\n');
 		ft_putchar_fd('\n', 1);
-	}
-	if (data->output[0] == '\0')
-		free(data->output);
 }
 
 void	echo(t_data *data)
@@ -66,7 +62,6 @@ void	echo(t_data *data)
 	while (!ft_strncmp(data->btree->content[i1], "echo", ft_strlen(data->btree->content[i1])))
 		i1++;
 	traverse_n(&i1, data);
-	data->output = ft_calloc(1, sizeof(char));
 	while (data->btree->content[i1])
 	{
 		i2 = 0;
@@ -80,4 +75,5 @@ void	echo(t_data *data)
 		i1++;
 	}
 	add_bar_n(i1, data);
+	// valor u=output
 }

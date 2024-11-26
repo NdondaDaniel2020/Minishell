@@ -4,112 +4,72 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef struct s_split
+int	count_word(char **words)
 {
-	int			len;
-    int			in_quotes;
-    int			substr_count;
-    char		**result;
-    char		*start;
-    char		*end;
-} 			t_split;
+	int	i;
 
-
-void	init_split(t_split *split, char *str)
-{
-	split->len = 0;
-	split->in_quotes = 0;
-	split->substr_count = count_substrings(str);
-	split->result = malloc((split->substr_count + 1) * sizeof(char *));
-	split->start = str;
-	split->end = str;
+	i = 0;
+	while (words[i])
+		i++;
+	return (i);
 }
 
-// Função para contar substrings
-int count_substrings(const char *str)
+void	init_valid(t_valid	*valid)
 {
-    int count = 0;
-    int in_quotes = 0;
-
-    while (*str)
-    {
-        if (*str == '"' || *str == '\'')
-        {
-            in_quotes = !in_quotes;
-        }
-        else if (isspace(*str) && !in_quotes)
-        {
-            count++;
-            while (isspace(*str)) str++;
-            continue;
-        }
-        str++;
-    }
-    return (count + 1);
+	valid->is_quota = false;
+	valid->is_transition = false;
 }
 
-void	traverse_array(t_split *split)
+static bool	echo_is_empty(int i, t_data *data)
 {
-	
+	if (i == 1)
+	{
+		data->output = ft_calloc(1, sizeof(char));
+		data->output = ft_charjoin_free(data->output, '\n');
+		ft_putchar_fd('\n', 1);
+		return (1);
+	}
+	return (0);
 }
 
-// Função split
-char **split(char *str)
+static void	add_bar_n(int i, t_data *data)
 {
-    int			i;
-	t_split		split;
-
-    i = 0;
-	init_split(&split, str);
-    while (*split.end)
-    {
-        if (*split.end == '"' || *split.end == '\'')
-            split.in_quotes = !split.in_quotes;
-        else if (isspace(*split.end) && !split.in_quotes)
-        {
-
-            split.len = split.end - split.start;
-            result[i] = malloc((split.len + 1) * sizeof(char));
-            strncpy(result[i], split.start, split.len);
-            result[i][split.len] = '\0';
-            i++;
-            while (isspace(*split.end))
-				split.end++;
-            split.start = split.end;
-
-            continue ;
-        }
-        split.end++;
-    }
-    split.result[i] = strdup(split.start);
-    split.result[split.substr_count] = NULL;
-    return (split.result);
+	if (ft_strncmp(data->btree->content[i - 1], "-n",
+			ft_strlen(data->btree->content[i - 1])))
+	{
+		data->output = ft_charjoin_free(data->output, '\n');
+		ft_putchar_fd('\n', 1);
+	}
+	if (data->output[0] == '\0')
+		free(data->output);
 }
 
-// Função para liberar a memória alocada pelo split
-void free_split(char **split_result)
+void	echo(t_data *data)
 {
-    int i = 0;
-    while (split_result[i] != NULL)
-    {
-        free(split_result[i]);
-        i++;
-    }
-    free(split_result);
-}
+	int		i1;
+	int		i2;
+	t_valid	valid;
 
-// Função principal para teste
-int main()
-{
-    char *str = "TEST \"(TEST  1234)\" '()()' \"(TEST          1234)\"'()  ()' '\"$HOME\"' \"'$HOME'\"         \"'\"$HOME\"'\"'$HOME'\"\"";
-	char **result = split(str);
-
-    for (int i = 0; result[i] != NULL; i++)
-    {
-        printf("%s\n", result[i]);
-        free(result[i]);
-    }
-    free(result);
-
-    return 0;
+	init_valid(&valid);
+	i1 = count_word(data->btree->content);
+	if (echo_is_empty(i1, data))
+		return ;
+	i1 = 0;
+	while (!ft_strncmp(data->btree->content[i1], "echo", ft_strlen(data->btree->content[i1])))
+		i1++;
+	traverse_n(&i1, data);
+	data->output = ft_calloc(1, sizeof(char));
+	while (data->btree->content[i1])
+	{
+		i2 = 0;
+		while (data->btree->content[i1][i2])
+		{
+			i2 = traverse_the_array(i1, i2, &valid, data);
+			i2 = trasition_master_master(i1, i2, &valid, data);
+		}
+		if (data->btree->content[i1 + 1] && data->space)
+			ft_putchar_fd(' ', 1);
+		i1++;
+	}
+	add_bar_n(i1, data);
 }

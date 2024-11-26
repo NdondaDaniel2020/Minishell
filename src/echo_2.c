@@ -42,7 +42,6 @@ static bool	condition_traverse_the_array(int i, int i1, int i2, t_data *data)
 
 static void	put_char_and_join(int i1, int i2, t_data *data)
 {
-	data->output = ft_charjoin_free(data->output, data->btree->content[i1][i2]);
 	ft_putchar_fd(data->btree->content[i1][i2], 1);
 	data->space = true;
 }
@@ -81,8 +80,6 @@ int	trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data)
 			if (data->btree->content[i1][i2] == '\'')
 			{
 				ft_putchar_fd(data->btree->content[i1][i2], 1);
-				data->output = ft_charjoin_free(data->output,
-						data->btree->content[i1][i2]);
 				i2++;
 			}
 			i2++;

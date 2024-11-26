@@ -12,38 +12,39 @@
 
 #include "minishell.h"
 
-static int get_shlvl_value(const char *shlvl_str)
+static int	get_shlvl_value(const char *shlvl_str)
 {
-    size_t	prefix_len;
-    
+	size_t	prefix_len;
+
 	prefix_len = 6;
-    if (strncmp(shlvl_str, "SHLVL=", prefix_len) != 0)
-        return (-1);
-
-    return (atoi(shlvl_str + prefix_len));
+	if (strncmp(shlvl_str, "SHLVL=", prefix_len) != 0)
+		return (-1);
+	return (atoi(shlvl_str + prefix_len));
 }
 
-static void int_to_str(int num, char *buffer)
+static void	int_to_str(int num, char *buffer)
 {
-    int len = 0;
-    int temp = num;
+	int	len;
+	int	temp;
 
-    while (temp > 0)
-    {
-        len++;
-        temp /= 10;
-    }
-    if (num == 0)
-        len = 1;
-    buffer[len] = '\0';
-    while (len > 0)
-    {
-        buffer[--len] = (num % 10) + '0';
-        num /= 10;
-    }
+	len = 0;
+	temp = num;
+	while (temp > 0)
+	{
+		len++;
+		temp /= 10;
+	}
+	if (num == 0)
+		len = 1;
+	buffer[len] = '\0';
+	while (len > 0)
+	{
+		buffer[--len] = (num % 10) + '0';
+		num /= 10;
+	}
 }
 
-static char *increment_shlv(char *shlvl_str)
+static char	*increment_shlv(char *shlvl_str)
 {
 	int		shlvl;
 	char	*new_shlvl_str;
@@ -73,7 +74,7 @@ static char	**list_environment(void)
 	static char	*env[] = {"SYSTEMD_EXEC_PID", "SSH_AUTH_SOCK",
 		"SESSION_MANAGER", "GNOME_TERMINAL_SCREEN", "LANG",
 		"XDG_CURRENT_DESKTOP", "XDG_GREETER_DATA_DIR", "LIBVIRT_DEFAULT_URI",
-		"GPG_AGENT_INFO", "DESKTOP_SESSION","QT_IM_MODULE", "XDG_MENU_PREFIX",
+		"GPG_AGENT_INFO", "DESKTOP_SESSION", "QT_IM_MODULE", "XDG_MENU_PREFIX",
 		"XDG_SESSION_PATH", "USER", "DBUS_SESSION_BUS_ADDRESS", "DOCKER_HOST",
 		"SSH_AGENT_LAUNCHER", "GTK_MODULES", "XDG_CONFIG_DIRS",
 		"GTK_IM_MODULE", "XDG_SESSION_DESKTOP", "QT_ACCESSIBILITY",
@@ -82,7 +83,7 @@ static char	**list_environment(void)
 		"XDG_DATA_DIRS", "XDG_SEAT_PATH", "SHELL", "XMODIFIERS",
 		"XDG_SESSION_TYPE", "HOME", "COLORTERM", "XAUTHORITY", "PWD",
 		"XDG_SESSION_CLASS", "TERM", "GDMSESSION", "DISPLAY", "SHLVL",
-		"OLDPWD", "_", NULL};
+		"OLDPWD", "_", "?", NULL};
 
 	return (env);
 }
@@ -147,7 +148,7 @@ void	env(t_data *data)
 	i = 0;
 	while (data->envp[i])
 	{
-		if (ft_strchr(data->envp[i], '='))
+		if (ft_strchr(data->envp[i], '=') && !ft_strchr(data->envp[i], '?'))
 		{
 			ft_printf("%s\n", data->envp[i]);
 		}

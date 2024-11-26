@@ -47,8 +47,6 @@ static int	put_single_quote(int i1, int i2, t_data *data)
 			if (data->btree->content[i1][i2] == '\'')
 			{
 				ft_putchar_fd(data->btree->content[i1][i2], 1);
-				data->output = ft_charjoin_free(data->output,
-						data->btree->content[i1][i2]);
 				i2++;
 				break ;
 			}
@@ -62,13 +60,11 @@ static void	put_env(int i1, char *env_var, t_data *data)
 {
 	if (data->put_amb)
 	{
-		data->output = ft_strjoin_free(data->output, data->put_amb);
 		ft_printf("%s", data->put_amb);
 		data->space = true;
 	}
 	else if (data->put_amb == NULL && data->btree->content[i1 + 1] == NULL)
 	{
-		data->output = ft_strjoin_free(data->output, "\n");
 		ft_printf("\n");
 		data->space = true;
 	}
