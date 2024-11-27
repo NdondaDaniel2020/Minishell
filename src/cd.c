@@ -76,5 +76,5 @@ void	cd(t_data *data)
 		free(dir);
 	}
 	update_pwd_oldwpd(data);
-	data->output = dir;
+	// data->output = dir;
 }

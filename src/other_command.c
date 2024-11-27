@@ -21,7 +21,7 @@ static char	*read_all_path(int i, t_data *data, DIR *open_dir)
 	while (entry != NULL)
 	{
 		if (!ft_strncmp(entry->d_name, data->btree->content[0],
-			ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
+				ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
 			== ft_strlen(data->btree->content[0]))
 		{
 			dir_path = ft_charjoin(data->path[i], '/');
@@ -61,7 +61,8 @@ void	other_command(t_data *data)
 	int		pid;
 	char	*path;
 
-	if (ft_strnstr(data->btree->content[0], "/", ft_strlen(data->btree->content[0])))
+	if (ft_strnstr(data->btree->content[0], "/",
+			ft_strlen(data->btree->content[0])))
 		path = ft_strdup(data->btree->content[0]);
 	else
 		path = get_valid_path(data);

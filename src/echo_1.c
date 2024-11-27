@@ -59,7 +59,8 @@ void	echo(t_data *data)
 	if (echo_is_empty(i1, data))
 		return ;
 	i1 = 0;
-	while (!ft_strncmp(data->btree->content[i1], "echo", ft_strlen(data->btree->content[i1])))
+	while (!ft_strncmp(data->btree->content[i1], "echo",
+			ft_strlen(data->btree->content[i1])))
 		i1++;
 	traverse_n(&i1, data);
 	while (data->btree->content[i1])

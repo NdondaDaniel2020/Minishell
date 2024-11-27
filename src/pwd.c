@@ -16,13 +16,15 @@ void	pwd(t_data *data)
 {
 	char *cwd;
 
+	(void)data;
 	cwd = ft_calloc(5048, sizeof(char));
 	if (!cwd)
-		data->output = NULL;
+		return ;
+		// data->output = NULL;
 	if (getcwd(cwd, 5048) == NULL)
 	{
 		free(cwd);
-		data->output = NULL;
+		// data->output = NULL;
 	}
 	ft_printf("%s\n", cwd);
 	free(cwd);

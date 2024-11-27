@@ -130,12 +130,18 @@ char	**get_all_environment(void)
 char	*get_env(char *env, t_data *data)
 {
 	int	i;
+	int	ix;
 
 	i = 0;
 	while (data->envp[i])
 	{
 		if (!ft_strncmp(data->envp[i], env, ft_strlen(env)))
-			return (data->envp[i]);
+		{
+			ix = 0;
+			while (data->envp[i][ix] != '=')
+				ix++;
+			return (data->envp[i] + ix + 1);
+		}
 		i++;
 	}
 	return (NULL);

@@ -95,7 +95,7 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data)
 		i++;
 	}
 	i2 = put_single_quote(i1, i2, data);
-	data->put_amb = getenv(env_var);
+	data->put_amb = get_env(env_var, data);
 	put_env(i1, env_var, data);
 	if (i2 >= 0)
 		valid->is_transition = true;
