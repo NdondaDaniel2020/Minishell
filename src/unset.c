@@ -65,18 +65,41 @@ void	remove_env(int i1, char *env, t_data *data)
 		i1++;
 	}
 	free_env(aux_env, &is_removed, data);
+	change_environment_variables_question_mark(0, data);
+}
+
+static bool	check_error_unset(char *env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		if (!ft_isalpha(env[i]) && env[i] != '_')
+		{
+			ft_printf("unset: %s: invalid parameter name\n", env);
+			return (false);
+		}
+		i++;
+	}
+	return (true);
 }
 
 void	unset(t_data *data)
 {
-	int	i;
-	int	i1;
+	int		i;
+	int		i1;
+	bool	rev_var;
 
 	i = 1;
 	i1 = 0;
 	while (data->btree->content[i])
 	{
-		remove_env(i1, data->btree->content[i], data);
+		rev_var = check_error_unset(data->btree->content[i]);
+		if (rev_var)
+			remove_env(i1, data->btree->content[i], data);
+		else
+			change_environment_variables_question_mark(1, data);
 		i++;
 	}
 }
