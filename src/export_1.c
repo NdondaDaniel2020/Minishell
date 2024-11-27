@@ -27,6 +27,8 @@ void	export(t_data *data)
 		add_var = check_error(i1, aux);
 		if (add_var)
 			add_environment_variable(aux->content[i1], data);
+		else
+			change_environment_variables_question_mark(1, data);
 		i1++;
 	}
 }
