@@ -14,18 +14,27 @@
 
 void	pwd(t_data *data)
 {
-	char *cwd;
+	int		i;
+	char	*cwd;
 
-	(void)data;
+	i = len_matrix(data->btree->content);
+	if (i > 1)
+	{
+		ft_printf("pwd: too many arguments\n");
+		change_environment_variables_question_mark(1, data);
+		return ;
+	}
 	cwd = ft_calloc(5048, sizeof(char));
 	if (!cwd)
+	{
+		change_environment_variables_question_mark(2, data);
 		return ;
-		// data->output = NULL;
+	}
 	if (getcwd(cwd, 5048) == NULL)
 	{
 		free(cwd);
-		// data->output = NULL;
 	}
 	ft_printf("%s\n", cwd);
 	free(cwd);
+	change_environment_variables_question_mark(0, data);
 }
