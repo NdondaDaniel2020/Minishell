@@ -72,9 +72,12 @@ int	main(void)
 	while (1)
 	{
 		input = readline("TeamWork> ");
-		add_history(input);
-		master(input, &data);
-		free(input);
+		if (input[0] != '\0')
+		{
+			add_history(input);
+			master(input, &data);
+			free(input);
+		}
 	}
 	return (0);
 }
