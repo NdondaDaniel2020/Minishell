@@ -83,12 +83,12 @@ static char	**list_environment(void)
 		"XDG_DATA_DIRS", "XDG_SEAT_PATH", "SHELL", "XMODIFIERS",
 		"XDG_SESSION_TYPE", "HOME", "COLORTERM", "XAUTHORITY", "PWD",
 		"XDG_SESSION_CLASS", "TERM", "GDMSESSION", "DISPLAY", "SHLVL",
-		"OLDPWD", "_", "?", NULL};
+		"OLDPWD", "_", "?=0", NULL};
 
 	return (env);
 }
 
-static int	len_matrix(char **matrix)
+int	len_matrix(char **matrix)
 {
 	int	i;
 
