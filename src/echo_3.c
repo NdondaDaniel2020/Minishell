@@ -23,7 +23,8 @@ static char	*allocate_memory_to_env(int i1, int i2, t_data *data)
 	while (data->btree->content[i1][i2 + c] &&
 		!ft_isalpha(data->btree->content[i1][i2 + c]))
 	{
-		if (data->btree->content[i1][i2 + c] == '\'')
+		if (data->btree->content[i1][i2 + c] == '\'' ||
+			 data->btree->content[i1][i2 + c] == '?')
 			i++;
 		c++;
 	}
@@ -87,7 +88,8 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data)
 		(data->btree->content[i1][i2 + i] != ' ' &&
 		data->btree->content[i1][i2 + i] != '\"'))
 	{
-		if (ft_isalpha(data->btree->content[i1][i2 + i]))
+		if (ft_isalpha(data->btree->content[i1][i2 + i]) ||
+			data->btree->content[i1][i2 + i] == '?')
 		{
 			env_var[c] = data->btree->content[i1][i2 + i];
 			c++;
