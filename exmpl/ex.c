@@ -16,6 +16,224 @@
 #include <sys/resource.h>
 
 /*
+// 
+int main()
+{
+    int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)
+    pid_t pid;
+    char buffer[100]; // Buffer para armazenar a mensagem recebida
+
+    // Criação do pipe
+    if (pipe(pipefd) == -1)
+	{
+        perror("Erro ao criar o pipe");
+        return 1;
+    }
+
+    // Criação do processo filho
+    pid = fork();
+
+    if (pid < 0)
+	{
+        perror("Erro ao criar o processo filho");
+        return 1;
+    }
+	else if (pid == 0)
+	{
+        // Código do processo filho
+        close(pipefd[0]); // Fecha a extremidade de leitura do pipe no processo filho
+
+        char mensagem[] = "Olá, este é o processo filho!";
+        write(pipefd[1], mensagem, strlen(mensagem) + 1); // Escreve a mensagem no pipe
+        close(pipefd[1]); // Fecha a extremidade de escrita após enviar a mensagem
+
+        printf("Processo filho: mensagem enviada ao processo pai.\n");
+        return 0; // O processo filho termina
+    }
+	else
+	{
+        // Código do processo pai
+        close(pipefd[1]); // Fecha a extremidade de escrita do pipe no processo pai
+
+        // Espera que o processo filho termine
+        wait(NULL);
+
+        // Lê a mensagem enviada pelo processo filho
+        read(pipefd[0], buffer, sizeof(buffer));
+        printf("Processo pai recebeu a mensagem: %s\n", buffer);
+
+        close(pipefd[0]); // Fecha a extremidade de leitura após a leitura
+    }
+
+    return 0;
+}
+*/
+/*
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <string.h>
+
+int main() {
+    int pipe_fd[2]; // Descritores do pipe
+    char mensagem[] = "Esta mensagem será filtrada pelo grep\n";
+    char *grep_args[] = {"/usr/bin/grep", "mensagem", NULL}; // Comando e argumentos
+
+    // Criando o pipe
+    if (pipe(pipe_fd) == -1) {
+        perror("Erro ao criar o pipe");
+        return 1;
+    }
+
+    pid_t pid = fork(); // Criando o processo filho
+
+    if (pid == -1) {
+        perror("Erro ao criar o processo filho");
+        return 1;
+    }
+
+    if (pid == 0) {
+        // Processo filho
+        close(pipe_fd[1]); // Fecha o lado de escrita do pipe
+
+        // Redireciona a entrada padrão para o lado de leitura do pipe
+        dup2(pipe_fd[0], STDIN_FILENO);
+        close(pipe_fd[0]); // Fecha o lado de leitura após redirecionamento
+
+        // Executa o comando grep usando execve
+        execve("/usr/bin/grep", grep_args, NULL);
+
+        // Se execve falhar
+        perror("Erro ao executar execve");
+        return 1;
+    } else {
+        // Processo pai
+        close(pipe_fd[0]); // Fecha o lado de leitura do pipe
+
+        // Escreve uma mensagem no pipe
+        write(pipe_fd[1], mensagem, strlen(mensagem));
+        close(pipe_fd[1]); // Fecha o lado de escrita
+
+        // Aguarda o processo filho concluir
+        wait(NULL);
+        printf("Processo filho terminou.\n");
+    }
+
+    return 0;
+}
+*/
+/*
+// exemplo de uso de pipe
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <string.h>
+
+int main() {
+    int fd[2];
+    pipe(fd);
+
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Processo filho: redireciona stdout para o pipe e executa "ls"
+        close(fd[0]); // Fecha o lado de leitura
+        dup2(fd[1], STDOUT_FILENO); // Redireciona stdout para o pipe
+        close(fd[1]); // Fecha o lado de escrita
+
+        char *args[] = {"/bin/ls", NULL};
+        execve("/bin/ls", args, NULL);
+    } else {
+        // Processo pai: lê do pipe e espera o filho terminar
+        close(fd[1]); // Fecha o lado de escrita
+        char buffer[1024];
+        read(fd[0], buffer, sizeof(buffer));
+        close(fd[0]); // Fecha o lado de leitura
+
+        printf("Saída do comando 'ls':\n%s\n", buffer);
+        wait(NULL); // Espera o processo filho terminar
+    }
+
+    return 0;
+}
+*/
+/*
+// exemplo de uso de pipe
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+int main() {
+    int fd[2];
+    char buffer[128];
+
+    if (pipe(fd) == -1) {
+        perror("Erro ao criar o pipe");
+        return 1;
+    }
+
+    if (fork() == 0) {
+        // Processo filho: escreve no pipe
+        close(fd[0]); // Fecha o lado de leitura
+        char mensagem[] = "Olá do processo filho!";
+        write(fd[1], mensagem, strlen(mensagem) + 1);
+        close(fd[1]); // Fecha o lado de escrita
+    } else {
+        // Processo pai: lê do pipe
+        close(fd[1]); // Fecha o lado de escrita
+        read(fd[0], buffer, sizeof(buffer));
+        printf("Mensagem recebida: %s\n", buffer);
+        close(fd[0]); // Fecha o lado de leitura
+    }
+
+    return 0;
+}
+*/
+/*
+// exemplo de uso de dup2
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int main() {
+    int fd = open("saida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0) {
+        perror("Erro ao abrir o arquivo");
+        return 1;
+    }
+
+    dup2(fd, STDOUT_FILENO); // Redireciona stdout para o arquivo
+    printf("Esta mensagem será escrita no arquivo!\n");
+
+    close(fd);
+    return 0;
+}
+*/
+/*
+// Exemplo de uso de dup
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int main() {
+    int fd = open("saida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0) {
+        perror("Erro ao abrir o arquivo");
+        return 1;
+    }
+
+    int new_fd = dup(fd); // Duplica o descritor
+    write(new_fd, "Escrevendo com dup\n", 20);
+
+    close(fd);
+    close(new_fd);
+    return 0;
+}
+*/
+/*
+// ex exemplo de uso de execve
 int main() 
 {
     char *argv[] = {"/bin/ls", "-l", "/home", NULL}; // Argumentos para o novo programa
@@ -35,6 +253,16 @@ int main()
     return 0;
 }
 */
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
 /*
 // ex 1
 int main()
@@ -61,7 +289,8 @@ int main()
 */
 /*
 // ex 2
-int main() {
+int main()
+{
     pid_t pid = fork();
 
     if (pid < 0) {
@@ -114,58 +343,6 @@ int main() {
         }
 
         printf("Processo pai continuando sua execução.\n");
-    }
-
-    return 0;
-}
-*/
-/*
-int main()
-{
-    int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)
-    pid_t pid;
-    char buffer[100]; // Buffer para armazenar a mensagem recebida
-
-    // Criação do pipe
-    if (pipe(pipefd) == -1)
-	{
-        perror("Erro ao criar o pipe");
-        return 1;
-    }
-
-    // Criação do processo filho
-    pid = fork();
-
-    if (pid < 0)
-	{
-        perror("Erro ao criar o processo filho");
-        return 1;
-    }
-	else if (pid == 0)
-	{
-        // Código do processo filho
-        close(pipefd[0]); // Fecha a extremidade de leitura do pipe no processo filho
-
-        char mensagem[] = "Olá, este é o processo filho!";
-        write(pipefd[1], mensagem, strlen(mensagem) + 1); // Escreve a mensagem no pipe
-        close(pipefd[1]); // Fecha a extremidade de escrita após enviar a mensagem
-
-        printf("Processo filho: mensagem enviada ao processo pai.\n");
-        return 0; // O processo filho termina
-    }
-	else
-	{
-        // Código do processo pai
-        close(pipefd[1]); // Fecha a extremidade de escrita do pipe no processo pai
-
-        // Espera que o processo filho termine
-        wait(NULL);
-
-        // Lê a mensagem enviada pelo processo filho
-        read(pipefd[0], buffer, sizeof(buffer));
-        printf("Processo pai recebeu a mensagem: %s\n", buffer);
-
-        close(pipefd[0]); // Fecha a extremidade de leitura após a leitura
     }
 
     return 0;

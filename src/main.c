@@ -33,13 +33,14 @@ void	master(char *command, t_data *data)
 	int		i;
 	t_btree	*aux;
 
-	i = 0;
 	insert_data(data, command);
 	aux = data->btree;
-	if (ft_strlen(aux->content[i]) == 0)
-		i++;
 	while (aux)
 	{
+		i = 0;
+		if (ft_strlen(aux->content[i]) == 0)
+			i++;
+		
 		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
 			exit_(data);
 		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
@@ -55,7 +56,8 @@ void	master(char *command, t_data *data)
 		else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
 			unset(data);
 		else
-			other_command(data);
+			other_command(data);		
+		
 		aux = aux->right;
 	}
 	free_all_data(data);
