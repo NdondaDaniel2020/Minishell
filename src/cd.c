@@ -56,11 +56,14 @@ void	cd(t_data *data)
 	char	*dir;
 	char	*home;
 
-	i = 0;
-	while (data->btree->content[i])
-		i++;
-	i--;
-	dir = data->btree->content[i];
+	i = len_matrix(data->btree->content);
+	if (i > 2)
+	{
+		ft_printf("cd: too many arguments\n");
+		change_environment_variables_question_mark(1, data);
+		return ;
+	}
+	dir = data->btree->content[1];
 	if (is_directory_valid(dir))
 		chdir(dir);
 	else if (condition_home(dir))
@@ -75,6 +78,12 @@ void	cd(t_data *data)
 		chdir(dir);
 		free(dir);
 	}
+	else
+	{
+		change_environment_variables_question_mark(1, data);
+		ft_printf("cd: %s: No such file or directory\n", dir);
+		return ;
+	}
 	update_pwd_oldwpd(data);
-	// data->output = dir;
+	change_environment_variables_question_mark(0, data);
 }
