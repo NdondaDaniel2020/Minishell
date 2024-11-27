@@ -31,22 +31,33 @@ static int	condition_home(char *dir)
 	return (0);
 }
 
-static void	update_pwd_oldwpd(t_data *data)
+static void	update_pwd(t_data *data)
 {
 	char	*cwd;
 	char	*pwd;
+
+	cwd = ft_calloc(5048, sizeof(char));
+	if (!cwd)
+		return ;
+	getcwd(cwd, 5048);
+	pwd = ft_strjoin("PWD=", cwd);
+	add_environment_variable(pwd, data);
+	free(pwd);
+	free(cwd);
+}
+
+static void	update_oldwpd(t_data *data)
+{
+	char	*cwd;
 	char	*oldpwd;
 
 	cwd = ft_calloc(5048, sizeof(char));
 	if (!cwd)
 		return ;
-	oldpwd = ft_strjoin("OLD", get_env("PWD", data));
+	getcwd(cwd, 5048);
+	oldpwd = ft_strjoin("OLDPWD=", cwd);
 	add_environment_variable(oldpwd, data);
 	free(oldpwd);
-	getcwd(cwd, 5048);
-	pwd = ft_strjoin("PWD=", cwd);
-	add_environment_variable(pwd, data);
-	free(pwd);
 	free(cwd);
 }
 
@@ -63,6 +74,7 @@ void	cd(t_data *data)
 		change_environment_variables_question_mark(1, data);
 		return ;
 	}
+	update_oldwpd(data);
 	dir = data->btree->content[1];
 	if (is_directory_valid(dir))
 		chdir(dir);
@@ -84,6 +96,6 @@ void	cd(t_data *data)
 		ft_printf("cd: %s: No such file or directory\n", dir);
 		return ;
 	}
-	update_pwd_oldwpd(data);
+	update_pwd(data);
 	change_environment_variables_question_mark(0, data);
 }
