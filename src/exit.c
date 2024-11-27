@@ -14,6 +14,7 @@
 
 void	exit_(t_data *data)
 {
+	change_environment_variables_question_mark(0, data);
 	if (data->path)
 		free_matrix(data->path);
 	if (data->envp)
