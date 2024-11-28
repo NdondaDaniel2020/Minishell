@@ -84,16 +84,13 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data)
 	c = 0;
 	i = 0;
 	env_var = allocate_memory_to_env(i1, i2, data);
-	while (data->btree->content[i1][i2 + i] &&
+	while (data->btree->content[i1][i2 + i] && 
 		(data->btree->content[i1][i2 + i] != ' ' &&
 		data->btree->content[i1][i2 + i] != '\"'))
 	{
 		if (ft_isalpha(data->btree->content[i1][i2 + i]) ||
 			data->btree->content[i1][i2 + i] == '?')
-		{
-			env_var[c] = data->btree->content[i1][i2 + i];
-			c++;
-		}
+			env_var[c++] = data->btree->content[i1][i2 + i];
 		i++;
 	}
 	i2 = put_single_quote(i1, i2, data);
@@ -101,6 +98,7 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data)
 	put_env(i1, env_var, data);
 	if (i2 >= 0)
 		valid->is_transition = true;
-	data->space = true;
+	if (data->put_amb)
+		data->space = true;
 	return (i2);
 }
