@@ -135,7 +135,9 @@ char	*get_env(char *env, t_data *data)
 	i = 0;
 	while (data->envp[i])
 	{
-		if (!ft_strncmp(data->envp[i], env, ft_strlen(env)))
+		if (!ft_strncmp(data->envp[i], env, ft_strlen(env)) &&
+			(data->envp[i][ft_strlen(env)] == '=' ||
+			data->envp[i][ft_strlen(env)] == '\0'))
 		{
 			ix = 0;
 			while (data->envp[i][ix] != '=')
