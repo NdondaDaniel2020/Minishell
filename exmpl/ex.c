@@ -16,7 +16,6 @@
 #include <sys/resource.h>
 
 /*
-// 
 int main()
 {
     int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)

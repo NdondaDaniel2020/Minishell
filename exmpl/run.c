@@ -1,137 +1,95 @@
 
 #include "../libft/libft.h"
-#include <stdlib.h>
+#include <term.h>
+#include <errno.h>
+#include <stdio.h>
+#include <fcntl.h>
 #include <dirent.h>
-#include <stdbool.h>
-#include <sys/stat.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
+#include <string.h>
+#include <curses.h>
+#include <termios.h> 	
 #include <sys/wait.h>
-#include <readline/history.h>
-#include <readline/readline.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/resource.h>
 
-static int get_shlvl_value(const char *shlvl_str)
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int mai()
 {
-    size_t	prefix_len;
-    
-	prefix_len = 6;
-    if (strncmp(shlvl_str, "SHLVL=", prefix_len) != 0)
-        return (-1);
+    // Abre o arquivo no modo de escrita
+    int fd;
+	int pid;
+	int new_fd;
 
-    return (atoi(shlvl_str + prefix_len));
+	fd = open("saida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	new_fd = dup(STDOUT_FILENO);
+
+	pid = fork();
+	if (pid == 0)
+	{
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
+		execlp("ls", "ls", "-l", NULL);
+	}
+	else
+	{
+		waitpid(pid, NULL, 0);
+		dup2(new_fd, STDOUT_FILENO);
+		close(new_fd);
+		unlink("saida.txt");
+		execlp("ls", "ls", "-l", NULL);
+	}
+    return 1;
 }
 
-static void int_to_str(int num, char *buffer)
+int main()
 {
-    int len = 0;
-    int temp = num;
+    int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)
+    pid_t pid;
+    char buffer[1000]; // Buffer para armazenar a mensagem recebida
 
-    while (temp > 0)
-    {
-        len++;
-        temp /= 10;
+   	int new_fd;
+
+
+    pipe(pipefd);
+	new_fd = dup(STDOUT_FILENO);
+
+    pid = fork();
+    if (pid < 0)
+	{
+        perror("Erro ao criar o processo filho");
+        return 1;
     }
-    if (num == 0)
-        len = 1;
-    buffer[len] = '\0';
-    while (len > 0)
-    {
-        buffer[--len] = (num % 10) + '0';
-        num /= 10;
+	else if (pid == 0)
+	{
+        // Código do processo filho
+        close(pipefd[0]); // Fecha a extremidade de leitura do pipe no processo filho
+
+		dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+		execlp("ls", "ls", "-l", NULL);
+        return (0);
     }
-}
-
-static char *increment_shlv(char *shlvl_str)
-{
-	int		shlvl;
-	char	*new_shlvl_str;
-	char	shlvl_str_value[12];
-	size_t	prefix_len;
-	size_t	new_str_len;
-
-	prefix_len = 6;
-	shlvl = get_shlvl_value(shlvl_str);
-	if (shlvl == -1)
-		return (NULL);
-	shlvl++;
-	int_to_str(shlvl, shlvl_str_value);
-	new_str_len = prefix_len + strlen(shlvl_str_value) + 1;
-	new_shlvl_str = (char *)malloc(new_str_len);
-	if (new_shlvl_str == NULL)
-		return (NULL);
-	ft_strlcpy(new_shlvl_str, "SHLVL=", 7);
-	ft_strlcat(new_shlvl_str, shlvl_str_value,
-		ft_strlen(new_shlvl_str) + ft_strlen(new_shlvl_str) + 1);
-	free(shlvl_str);
-	return (new_shlvl_str);
-}
-
-static char	**list_environment(void)
-{
-	static char	*env[] = {"SYSTEMD_EXEC_PID", "SSH_AUTH_SOCK",
-		"SESSION_MANAGER", "GNOME_TERMINAL_SCREEN", "LANG",
-		"XDG_CURRENT_DESKTOP", "XDG_GREETER_DATA_DIR", "LIBVIRT_DEFAULT_URI",
-		"GPG_AGENT_INFO", "DESKTOP_SESSION","QT_IM_MODULE", "XDG_MENU_PREFIX",
-		"XDG_SESSION_PATH", "USER", "DBUS_SESSION_BUS_ADDRESS", "DOCKER_HOST",
-		"SSH_AGENT_LAUNCHER", "GTK_MODULES", "XDG_CONFIG_DIRS",
-		"GTK_IM_MODULE", "XDG_SESSION_DESKTOP", "QT_ACCESSIBILITY",
-		"GNOME_DESKTOP_SESSION_ID", "KRB5CCNAME", "LOGNAME",
-		"GNOME_TERMINAL_SERVICE", "VTE_VERSION", "PATH", "XDG_RUNTIME_DIR",
-		"XDG_DATA_DIRS", "XDG_SEAT_PATH", "SHELL", "XMODIFIERS",
-		"XDG_SESSION_TYPE", "HOME", "COLORTERM", "XAUTHORITY", "PWD",
-		"XDG_SESSION_CLASS", "TERM", "GDMSESSION", "DISPLAY", "SHLVL",
-		"OLDPWD", "_", NULL};
-
-	return (env);
-}
-
-char	**get_environment(void)
-{
-	int		i;
-	char	*path;
-	char	*env;
-	char	**new_env;
-	char	**list_env;
-
-	i = 0;
-	list_env = list_environment();
-	while (list_env[i])
-		i++;
-	new_env = ft_calloc(i + 1, sizeof(char *));
-	i = 0;
-	while (list_env[i])
+	else
 	{
-		path = getenv(list_env[i]);
-		if (path)
-		{
-			env = ft_strjoin_free(ft_strjoin(list_env[i], "="), path);
-			if (!ft_strncmp(env, "SHLVL", ft_strlen(env) - 2))
-			{
-				env = increment_shlv(env);
-			}
-		}
-		else
-			env = ft_strdup(list_env[i]);
-		new_env[i] = env;
-		i++;
-	}
-	return (new_env);
-}
+        // Código do processo pai
+        close(pipefd[1]);
 
-int	main(void)
-{
-	int		i = 0;
-	char	**list;
+        // Espera que o processo filho termine
+        wait(NULL);
 
-	list = get_environment();
-	while (list[i])
-	{
-		ft_printf("%s\n", list[i]);
-		i++;
-	}
-	i = 0;
-	while (list[i])
-	{
-		free(list[i]);
-		i++;
-	}
-	free(list);
+        // Lê a mensagem enviada pelo processo filho
+        read(pipefd[0], buffer, sizeof(buffer));
+        printf("[%s]\n", buffer);
+        close(pipefd[0]); // Fecha a extremidade de leitura após a leitura
+    }
+
+    return 0;
 }
