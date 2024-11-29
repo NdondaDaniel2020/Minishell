@@ -58,29 +58,48 @@ static char	*get_valid_path(t_data *data)
 
 void	other_command(t_data *data)
 {
+	int		i;
 	int		pid;
 	char	*path;
 
-	if (ft_strnstr(data->btree->content[0], "/",
-			ft_strlen(data->btree->content[0])))
-		path = ft_strdup(data->btree->content[0]);
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	i = 0;
+	if (ft_strlen(data->btree->content[i]) == 0)
+		i++;
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	if (ft_strnstr(data->btree->content[i], "/", ft_strlen(data->btree->content[i])))
+		path = ft_strdup(data->btree->content[i]);
 	else
 		path = get_valid_path(data);
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	ft_printf("%s\n", path);
+
 	if (path)
 	{
 		pid = fork();
 		if (pid == 0)
 		{
-			// ft_printf("%s -> %s\n", path, data->btree->content[0]);
 			execve(path, data->btree->content, data->envp);
 		}
 		else
 		{
 			wait(NULL);
-			// ft_printf("[pai %i] -> %s\n", pid, path);
 		}
 		free(path);
 	}
 	else
-		ft_printf("command not found: %s\n", data->btree->content[0]); /* meter o verdadeiro erro */
+	{
+		change_environment_variables_question_mark(127, data);
+		write(2, "command not found: ", 18);
+		ft_putstr_fd(data->btree->content[i], 2);
+		return ;
+	}
+	change_environment_variables_question_mark(0, data);
+
+	//////////////////////////////////////////////////////////////////////////////////
 }

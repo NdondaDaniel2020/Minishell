@@ -77,7 +77,9 @@ static bool	check_error_unset(char *env)
 	{
 		if (!ft_isalpha(env[i]) && env[i] != '_')
 		{
-			ft_printf("unset: %s: invalid parameter name\n", env);
+			write(2, "unset: ", 7);
+			ft_putstr_fd(env, 2);
+			write(2, ": invalid parameter name\n", 25);
 			return (false);
 		}
 		i++;

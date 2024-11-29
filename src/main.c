@@ -66,20 +66,26 @@ void	master(char *command, t_data *data)
 int	main(void)
 {
 	t_data	data;
-	char	*input;
+	// char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
-	while (1)
-	{
-		input = readline("TeamWork> ");
-		if (input[0] != '\0')
-		{
-			add_history(input);
-			master(input, &data);
-			free(input);
-		}
-	}
+	master("pwd argumento", &data);
+	master("cd /caminho1 /caminho2", &data);
+	master("echo -z 'texto'", &data);
+	master("export 123VALOR=teste", &data);
+	master("unset -z VAR", &data);
+	master("exit", &data);
+	// while (1)
+	// {
+	// 	input = readline("TeamWork> ");
+	// 	if (input[0] != '\0')
+	// 	{
+	// 		add_history(input);
+	// 		master(input, &data);
+	// 		free(input);
+	// 	}
+	// }
 	return (0);
 }

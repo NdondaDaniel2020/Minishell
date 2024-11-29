@@ -1,0 +1,88 @@
+
+		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
+			exit_(data);
+		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
+			pwd(data);
+		else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
+			cd(data);
+		else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
+			echo(data);
+		else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
+			env(data);
+		else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
+			export(data);
+		else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
+			unset(data);
+		else
+			other_command(data);		
+		
+
+
+
+
+
+
+void	master(char *command, t_data *data)
+{
+	int		i;
+	int		pipefd[2];
+	t_data	*cpy_data;
+
+	cpy_data = data;
+	insert_data(data, command);
+
+	pipe(pipefd);
+	data->copy_fd = dup(STDOUT_FILENO);
+	while (data->btree)
+	{
+		//////////////////////////////////////////////////////////////////////////
+
+		i = 0;
+		if (ft_strlen(data->btree->content[i]) == 0)
+			i++;
+		
+		//////////////////////////////////////////////////////////////////////////
+
+		if (data->is_pipe && data->btree->right)
+		{
+			data->write_on_the_pipe = -1;
+			data->read_in_the_pipe = pipefd[0];
+			dup2(data->write_on_the_pipe, STDOUT_FILENO);
+		}
+		else if (data->is_pipe && !data->btree->right)
+		{
+			data->write_on_the_pipe = pipefd[1];
+			data->read_in_the_pipe = -1;
+			dup2(data->copy_fd, STDOUT_FILENO);
+		}
+		
+		//////////////////////////////////////////////////////////////////////////
+
+		ft_printf("[%s]\n", data->btree->content[i]);
+
+		//////////////////////////////////////////////////////////////////////////
+
+		if (!ft_strncmp(data->btree->content[i], "exit", ft_strlen(data->btree->content[i])))
+			exit_(data);
+		else if (!ft_strncmp(data->btree->content[i], "pwd", ft_strlen(data->btree->content[i])))
+			pwd(data);
+		else if (!ft_strncmp(data->btree->content[i], "cd", ft_strlen(data->btree->content[i])))
+			cd(data);
+		else if (!ft_strncmp(data->btree->content[i], "echo", ft_strlen(data->btree->content[i])))
+			echo(data);
+		else if (!ft_strncmp(data->btree->content[i], "env", ft_strlen(data->btree->content[i])))
+			env(data);
+		else if (!ft_strncmp(data->btree->content[i], "export", ft_strlen(data->btree->content[i])))
+			export(data);
+		else if (!ft_strncmp(data->btree->content[i], "unset", ft_strlen(data->btree->content[i])))
+			unset(data);
+		else
+			other_command(data);
+		
+		/////////////////////////////////////////////////////////////////////////
+		
+		data->btree = data->btree->right;
+	}
+
+	free_all_data(cpy_data);
+}

@@ -70,7 +70,7 @@ void	cd(t_data *data)
 	i = len_matrix(data->btree->content);
 	if (i > 2)
 	{
-		ft_printf("cd: too many arguments\n");
+		write(2, "cd: too many arguments\n", 23);
 		change_environment_variables_question_mark(1, data);
 		return ;
 	}
@@ -93,7 +93,9 @@ void	cd(t_data *data)
 	else
 	{
 		change_environment_variables_question_mark(1, data);
-		ft_printf("cd: %s: No such file or directory\n", dir);
+		write(2, "cd: ", 4);
+		ft_putstr_fd(dir, 2);
+		write(2, ": No such file or directory\n", 28);
 		return ;
 	}
 	update_pwd(data);

@@ -117,5 +117,6 @@ void	change_environment_variables_question_mark(int value, t_data *data)
 		new_env = ft_strjoin_free(new_env, value_str);
 		free(data->envp[i - 1]);
 		data->envp[i - 1] = new_env;
+		free(value_str);
 	}
 }

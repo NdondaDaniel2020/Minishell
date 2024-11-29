@@ -69,8 +69,9 @@ static void	check_character(int i1, bool *add_var, t_btree *aux)
 	{
 		if (aux->content[i1][i2] == '=' && ft_strlen(aux->content[i1]) == 1)
 		{
-			ft_printf("export: `=': not a valid identifier\n");
+			write(2, "export: `=': not a valid identifier\n", 36);
 			*add_var = false;
+			write(2, "\n", 1);
 			break ;
 		}
 		if (!ft_isalnum(aux->content[i1][i2])
@@ -80,7 +81,9 @@ static void	check_character(int i1, bool *add_var, t_btree *aux)
 			&& aux->content[i1][i2] != ' ' && aux->content[i1][i2] != '.'
 			&& aux->content[i1][i2] != '/' && aux->content[i1][i2] != ':')
 		{
-			ft_printf("export: not an identifier: %s\n", aux->content[i1]);
+			write(2, "export: not an identifier: ", 27);
+			ft_putstr_fd(aux->content[i1], 2);
+			write(2, "\n", 1);
 			*add_var = false;
 			break ;
 		}
@@ -95,7 +98,9 @@ bool	check_error(int i1, t_btree *aux)
 	add_var = true;
 	if (!ft_isalpha(aux->content[i1][0]) && aux->content[i1][0] != '_')
 	{
-		ft_printf("export: `%s': not a valid identifier\n", aux->content[i1]);
+		write(2, "export: `", 9);
+		ft_putstr_fd(aux->content[i1], 2);
+		write(2, "': not a valid identifier\n", 26);
 		add_var = false;
 	}
 	else

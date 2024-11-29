@@ -20,7 +20,7 @@ void	pwd(t_data *data)
 	i = len_matrix(data->btree->content);
 	if (i > 1)
 	{
-		ft_printf("pwd: too many arguments\n");
+		write(2, "pwd: too many arguments\n", 24);
 		change_environment_variables_question_mark(1, data);
 		return ;
 	}

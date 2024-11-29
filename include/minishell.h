@@ -20,6 +20,10 @@ typedef struct		s_btree
 
 typedef struct s_data
 {
+	int		write_on_the_pipe;
+	int		read_in_the_pipe;
+	int		copy_fd;
+	bool	is_pipe;
 	bool	space;
 	bool	automatic_input;
 	char	*command;
@@ -99,5 +103,5 @@ void	add_environment_variable(char *env_var, t_data *data);
 
 char	*get_env(char *env, t_data *data);
 void	change_environment_variables_question_mark(int value, t_data *data);
-int	len_matrix(char **matrix);
+int		len_matrix(char **matrix);
 #endif

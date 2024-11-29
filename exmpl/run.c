@@ -1,5 +1,4 @@
 
-#include "../libft/libft.h"
 #include <term.h>
 #include <errno.h>
 #include <stdio.h>
@@ -10,16 +9,30 @@
 #include <unistd.h>
 #include <string.h>
 #include <curses.h>
-#include <termios.h> 	
+#include <termios.h>
+#include <stdbool.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/resource.h>
+#include "../libft/libft.h"
+#include <readline/history.h>
+#include <readline/readline.h>
 
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
+typedef struct s_data
+{
+	bool	space;
+	bool	automatic_input;
+	char	*command;
+	char	*output;
+	char	*put_amb;
+	char	**path;
+	char	**envp;
+	// t_btree	*btree;
+	int		write_on_the_pipe;
+	int		read_in_the_pipe;
+}			t_data;
 
 int mai()
 {
@@ -53,7 +66,7 @@ int main()
 {
     int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)
     pid_t pid;
-    char buffer[1000]; // Buffer para armazenar a mensagem recebida
+    char buffer[2000]; // Buffer para armazenar a mensagem recebida
 
    	int new_fd;
 
