@@ -31,36 +31,40 @@ void	insert_data(t_data *data, char *command)
 void	master(char *command, t_data *data)
 {
 	int		i;
-	t_btree	*aux;
+	t_data	*cpy_data;
 
 	insert_data(data, command);
-	aux = data->btree;
-	while (aux)
+	cpy_data = data;
+
+	while (data->btree)
 	{
 		i = 0;
-		if (ft_strlen(aux->content[i]) == 0)
+		if (ft_strlen(data->btree->content[i]) == 0)
 			i++;
 		
-		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
+
+		if (!ft_strncmp(data->btree->content[i], "exit", ft_strlen(data->btree->content[i])))
 			exit_(data);
-		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "pwd", ft_strlen(data->btree->content[i])))
 			pwd(data);
-		else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "cd", ft_strlen(data->btree->content[i])))
 			cd(data);
-		else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "echo", ft_strlen(data->btree->content[i])))
 			echo(data);
-		else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "env", ft_strlen(data->btree->content[i])))
 			env(data);
-		else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "export", ft_strlen(data->btree->content[i])))
 			export(data);
-		else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "unset", ft_strlen(data->btree->content[i])))
 			unset(data);
 		else
-			other_command(data);		
+			other_command(data);
 		
-		aux = aux->right;
+
+		data->btree = data->btree->right;
 	}
-	free_all_data(data);
+	
+	free_all_data(cpy_data);
 }
 
 int	main(void)
