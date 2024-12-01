@@ -1,20 +1,15 @@
-
-		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
-			exit_(data);
-		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
-			pwd(data);
-		else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
-			cd(data);
-		else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
-			echo(data);
-		else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
-			env(data);
-		else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
-			export(data);
-		else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
-			unset(data);
-		else
-			other_command(data);		
+/*
+if (data->btree->right)
+{
+	dup2(data->write_on_the_pipe, STDOUT_FILENO);
+	close(data->write_on_the_pipe);
+}
+if (!data->btree->right)
+{
+	dup2(data->read_in_the_pipe, STDIN_FILENO);
+	close(data->read_in_the_pipe);
+}
+*/	
 		
 
 

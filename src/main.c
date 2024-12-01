@@ -58,56 +58,6 @@ static char	*get_valid_path(t_data *data)
 }
 
 
-void	other_command(t_data *data)
-{
-	int		i;
-	int		pid;
-	char	*path;
-
-	//////////////////////////////////////////////////////////////////////////////////
-	
-	i = 0;
-	if (ft_strlen(data->btree->content[i]) == 0)
-		i++;
-	
-	//////////////////////////////////////////////////////////////////////////////////
-	
-	if (ft_strnstr(data->btree->content[i], "/", ft_strlen(data->btree->content[i])))
-		path = ft_strdup(data->btree->content[i]);
-	else
-		path = get_valid_path(data);
-	
-	//////////////////////////////////////////////////////////////////////////////////
-	
-	ft_printf("%s\n", path);
-
-	if (path)
-	{
-		pid = fork();
-		if (pid == 0)
-		{
-			execve(path, data->btree->content, data->envp);
-		}
-		else
-		{
-			wait(NULL);
-		}
-		free(path);
-	}
-	else
-	{
-		change_environment_variables_question_mark(127, data);
-		write(2, "command not found: ", 18);
-		ft_putstr_fd(data->btree->content[i], 2);
-		return ;
-	}
-	change_environment_variables_question_mark(0, data);
-
-	//////////////////////////////////////////////////////////////////////////////////
-}
-
-
-
 
 
 void	insert_data(t_data *data, char *command)
@@ -126,64 +76,115 @@ void	insert_data(t_data *data, char *command)
 	free(spliting);
 }
 
+int	list_builtins(char *command)
+{
+	if (ft_strncmp(command, "echo", 4) == 0 && ft_strlen(command) == 4)
+		return (1);
+	else if (ft_strncmp(command, "cd", 2) == 0 && ft_strlen(command) == 2)
+		return (1);
+	else if (ft_strncmp(command, "pwd", 3) == 0 && ft_strlen(command) == 3)
+		return (1);
+	else if (ft_strncmp(command, "export", 6) == 0 && ft_strlen(command) == 6)
+		return (1);
+	else if (ft_strncmp(command, "unset", 5) == 0 && ft_strlen(command) == 5)
+		return (1);
+	else if (ft_strncmp(command, "env", 3) == 0 && ft_strlen(command) == 3)
+		return (1);
+	else if (ft_strncmp(command, "exit", 4) == 0 && ft_strlen(command) == 4)
+		return (1);
+	return (0);
+}
+
+
 void	master(char *command, t_data *data)
 {
 	int		i;
 	int		pid;
-	t_data	*cpy_data;
+	char	*path;
+	t_btree	*aux;
 
 	insert_data(data, command);
-	cpy_data = data;
-
-	while (data->btree)
+	aux = data->btree;
+	path = NULL;
+	while (aux)
 	{
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		i = 0;
-		if (ft_strlen(data->btree->content[i]) == 0)
+		if (ft_strlen(aux->content[i]) == 0)
 			i++;
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])) ||
+			list_builtins(aux->content[i]))
+			path = ft_strdup(aux->content[i]);
+		else
+			path = get_valid_path(data);
 
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		pid = fork();
-		if (id == 0)
+		if (pid == 0)
 		{
-			/*
-			if (data->btree->left)
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			if (path == NULL)
 			{
-				dup2(data->write_on_the_pipe, STDOUT_FILENO);
-				close(data->write_on_the_pipe);
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				change_environment_variables_question_mark(127, data);
+				write(2, "command not found: \n", 20);
+				ft_putstr_fd(aux->content[i], 2);
+
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				if (data->path)
+					free_matrix(data->path);
+				if (data->envp)
+					free_matrix(data->envp);
+				free_all_data(data);
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
+				exit(127);
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			}
-			if (data->btree->right)
+			else if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
 			{
-				dup2(data->read_in_the_pipe, STDIN_FILENO);
-				close(data->read_in_the_pipe);
-			}
-			*/
-			if (!ft_strncmp(data->btree->content[i], "exit", ft_strlen(data->btree->content[i])))
+				free(path);
 				exit_(data);
-			else if (!ft_strncmp(data->btree->content[i], "pwd", ft_strlen(data->btree->content[i])))
+			}
+			else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
 				pwd(data);
-			else if (!ft_strncmp(data->btree->content[i], "cd", ft_strlen(data->btree->content[i])))
+			else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
 				cd(data);
-			else if (!ft_strncmp(data->btree->content[i], "echo", ft_strlen(data->btree->content[i])))
+			else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
 				echo(data);
-			else if (!ft_strncmp(data->btree->content[i], "env", ft_strlen(data->btree->content[i])))
+			else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
 				env(data);
-			else if (!ft_strncmp(data->btree->content[i], "export", ft_strlen(data->btree->content[i])))
+			else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
 				export(data);
-			else if (!ft_strncmp(data->btree->content[i], "unset", ft_strlen(data->btree->content[i])))
+			else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
 				unset(data);
 			else
-				other_command(data);
+				execve(path, aux->content, data->envp);
 
-			exit();
+			change_environment_variables_question_mark(0, data);
+			free(path);
+			exit(0);
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 		else
 		{
 			wait(NULL);
-			data->btree = data->btree->right;
+			free(path);
+			aux = aux->right;
 		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
-	
-	free_all_data(cpy_data);
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (data->path)
+		free_matrix(data->path);
+	if (data->envp)
+		free_matrix(data->envp);
+	free_all_data(data);
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 int	main(void)
@@ -194,11 +195,14 @@ int	main(void)
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
-	master("pwd argumento", &data);
-	master("cd /caminho1 /caminho2", &data);
-	master("echo -z 'texto'", &data);
-	master("export 123VALOR=teste", &data);
-	master("unset -z VAR", &data);
+	// master("pwd argumento", &data);
+	// master("argumento", &data);
+	// master("cd /caminho1 /caminho2", &data);
+	// master("echo -z 'texto'", &data);
+	// master("export 123VALOR=teste", &data);
+	// master("unset -z VAR", &data);
+	// master("ls", &data);
+	// master("/bin/ls", &data);
 	master("exit", &data);
 	// while (1)
 	// {
