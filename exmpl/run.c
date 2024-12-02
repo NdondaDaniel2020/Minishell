@@ -62,7 +62,7 @@ int mai()
     return 1;
 }
 
-int maina()
+int main()
 {
     int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)
     pid_t pid;
@@ -106,4 +106,3 @@ int maina()
 
     return 0;
 }
-

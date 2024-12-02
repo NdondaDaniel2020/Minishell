@@ -1,22 +1,27 @@
-/*
-if (data->btree->right)
-{
-	dup2(data->write_on_the_pipe, STDOUT_FILENO);
-	close(data->write_on_the_pipe);
-}
-if (!data->btree->right)
-{
-	dup2(data->read_in_the_pipe, STDIN_FILENO);
-	close(data->read_in_the_pipe);
-}
-*/	
+
+		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
+			exit_(data);
+		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
+			pwd(data);
+		else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
+			cd(data);
+		else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
+			echo(data);
+		else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
+			env(data);
+		else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
+			export(data);
+		else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
+			unset(data);
+		else
+			other_command(data);		
 		
 
 
 
 
 
-/*  v1 */
+
 void	master(char *command, t_data *data)
 {
 	int		i;
@@ -81,122 +86,3 @@ void	master(char *command, t_data *data)
 
 	free_all_data(cpy_data);
 }
-
-
-
-
-
-/* v2 */
-
-void	master(char *command, t_data *data)
-{
-	int		i;
-	int		pid;
-	char	*path;
-	t_btree	*aux;
-
-	insert_data(data, command);
-	aux = data->btree;
-	path = NULL;
-	while (aux)
-	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		i = 0;
-		if (ft_strlen(aux->content[i]) == 0)
-			i++;
-		
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])) ||
-			list_builtins(aux->content[i]))
-			path = ft_strdup(aux->content[i]);
-		else
-			path = get_valid_path(data);
-
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		pid = fork();
-		if (pid == 0)
-		{
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (path == NULL)
-			{
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				change_environment_variables_question_mark(127, data);
-				write(2, "command not found: \n", 20);
-				ft_putstr_fd(aux->content[i], 2);
-
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				if (data->path)
-					free_matrix(data->path);
-				if (data->envp)
-					free_matrix(data->envp);
-				free_all_data(data);
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				
-				exit(127);
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			}
-			else if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
-			{
-				free(path);
-				exit_(data);
-			}
-			else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
-				pwd(data);
-			else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
-				cd(data);
-			else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
-				echo(data);
-			else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
-				env(data);
-			else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
-				export(data);
-			else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
-				unset(data);
-			else
-				execve(path, aux->content, data->envp);
-
-			change_environment_variables_question_mark(0, data);
-			
-			if (data->path)
-				free_matrix(data->path);
-			if (data->envp)
-				free_matrix(data->envp);
-			
-			free_all_data(data);
-			
-			free(path);
-			
-			exit(0);
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		}
-		else
-		{
-			wait(NULL);
-			free(path);
-			aux = aux->right;
-		}
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	}
-	// ft_printf("|\n\n\n\n\n\n\n\n\n\n\n|");
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
-	// {
-	// 	if (data->path)
-	// 	{
-	// 		free_matrix(data->path);
-	// 		data->path = NULL;
-	// 	}
-	// 	if (data->envp)
-	// 	{
-	// 		free_matrix(data->envp);
-	// 		data->envp = NULL;
-	// 	}
-	// }
-	// free_all_data(data);
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
-
-
-
