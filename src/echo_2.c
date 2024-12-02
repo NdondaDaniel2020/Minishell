@@ -27,10 +27,9 @@ static bool	condition_traverse_the_array(int i, int i1, int i2, t_data *data)
 			data->btree->content[i1][i2] != '\'')
 			return (true);
 	if (i == 2)
-		if ((data->btree->content[i1][i2] == '\"'
-			&& data->btree->content[i1][i2 + 1] == '$') ||
-			(data->btree->content[i1][i2] == '$' && i2 > 0 &&
-			data->btree->content[i1][i2 - 1] == '\"'))
+		if ((data->btree->content[i1][i2] == '\"' &&
+		 data->btree->content[i1][i2 + 1] == '$' &&
+		 ft_memchr(data->btree->content[i1], '\'', i2)))
 			return (true);
 	if (i == 3)
 		if (data->btree->content[i1][i2] == '$' ||
