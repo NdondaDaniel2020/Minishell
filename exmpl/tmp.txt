@@ -200,3 +200,4 @@ void	master(char *command, t_data *data)
 
 
 
+echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 

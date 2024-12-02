@@ -32,10 +32,8 @@ static bool	echo_is_empty(int i, t_data *data)
 {
 	if (i == 1)
 	{
-		(void)i;
-		(void)data;
 		ft_putchar_fd('\n', 1);
-		// valor u=outputclear
+		change_environment_variables_question_mark(0, data);
 		return (1);
 	}
 	return (0);
@@ -76,5 +74,5 @@ void	echo(t_data *data)
 		i1++;
 	}
 	add_bar_n(i1, data);
-	// valor u=output
+	change_environment_variables_question_mark(0, data);
 }

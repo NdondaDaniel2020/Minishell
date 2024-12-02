@@ -106,4 +106,3 @@ int maina()
 
     return 0;
 }
-

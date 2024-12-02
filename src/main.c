@@ -134,9 +134,9 @@ void	master(char *command, t_data *data)
 			{
 				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				change_environment_variables_question_mark(127, data);
-				write(2, "command not found: \n", 20);
+				write(2, "command not found: ", 19);
 				ft_putstr_fd(aux->content[i], 2);
-
+				write(2, "\n", 1);
 				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if (data->path)
 					free_matrix(data->path);
@@ -169,16 +169,14 @@ void	master(char *command, t_data *data)
 				execve(path, aux->content, data->envp);
 
 			change_environment_variables_question_mark(0, data);
-			
+
 			if (data->path)
 				free_matrix(data->path);
 			if (data->envp)
 				free_matrix(data->envp);
-			
 			free_all_data(data);
-			
-			free(path);
-			
+
+			free(path);			
 			exit(0);
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
@@ -203,6 +201,8 @@ void	master(char *command, t_data *data)
 			free_matrix(data->envp);
 			data->envp = NULL;
 		}
+		free_all_data(data);
+		exit(0);
 	}
 	free_all_data(data);
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,28 +221,8 @@ int	main(void)
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
 
-	// master("cd src", &data);
-	// master("pwd ", &data);
-	// master("echo 'texto'", &data);
-	// master("export VALOR=teste", &data);
-	// master("unset USER", &data);
-	// master("ls", &data);
-	// master("/bin/ls", &data);
-
-
-	// master("pwd argumento", &data);
-	// master("argumento", &data);
-	// master("cd /caminho1 /caminho2", &data);
-	// master("echo -z 'texto'", &data);
-	// master("export 123VALOR=teste", &data);
-	// master("unset -z VAR", &data);
-	// master("ls", &data);
-	// master("/bin/ls", &data);
-
-	// master("exit", &data);
-
 	while (1)
-	{.
+	{
 		input = readline("TeamWork> ");
 		if (input[0] != '\0')
 		{
