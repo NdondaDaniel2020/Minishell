@@ -91,6 +91,17 @@ int	list_builtins(char *command)
 	return (0);
 }
 
+
+
+
+
+
+
+
+
+
+
+
 void	other_command(t_data *data)
 {
 	int		pid;
@@ -118,6 +129,30 @@ void	other_command(t_data *data)
 	}
 	else
 	{
-		ft_printf("%s: command not found\n", data->btree->content[0]); /* meter o verdadeiro erro */
+		// criar expancao
+		if (ft_strchr(data->btree->content[0], '$'))
+		{
+			int i;
+
+			i = 0;
+			ft_printf("//////////////////////////////////////////////////////\n");
+			while (data->envp[i])
+			{
+				if (!ft_strncmp((data->btree->content[0] + 1), data->envp[i], ft_strlen(data->btree->content[0] + 1)))
+				{
+					if (is_directory_valid(data->envp[i] + ft_strlen(data->btree->content[0])))
+						ft_printf("%s: Is a directory\n", data->envp[i] + ft_strlen(data->btree->content[0]));
+					else
+					{
+						ft_printf("[%s] -> (%i)\n", data->envp[i] + ft_strlen(data->btree->content[0]), len_btree(data->btree));
+						data->btree = insert_into_btree(data->btree, len_btree(data->btree), ft_strdup(data->envp[i] + ft_strlen(data->btree->content[0])));
+					}
+					break ;
+				}
+				i++;
+			}
+		}
+		else
+			ft_printf("%s: command not found\n", data->btree->content[0]);
 	}
 }

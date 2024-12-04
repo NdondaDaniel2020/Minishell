@@ -108,5 +108,6 @@ int		len_matrix(char **matrix);
 char	*get_valid_path(t_data *data);
 void	insert_data(t_data *data, char *command);
 int		list_builtins(char *command);
+int		is_directory_valid(const char *path);
 
 #endif

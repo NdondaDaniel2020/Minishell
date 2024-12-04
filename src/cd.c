@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int	is_directory_valid(const char *path)
+int	is_directory_valid(const char *path)
 {
 	struct stat	path_stat;
 
