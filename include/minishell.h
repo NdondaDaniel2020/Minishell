@@ -104,4 +104,9 @@ void	add_environment_variable(char *env_var, t_data *data);
 char	*get_env(char *env, t_data *data);
 void	change_environment_variables_question_mark(int value, t_data *data);
 int		len_matrix(char **matrix);
+
+char	*get_valid_path(t_data *data);
+void	insert_data(t_data *data, char *command);
+int		list_builtins(char *command);
+
 #endif

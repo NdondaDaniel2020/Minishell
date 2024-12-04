@@ -20,7 +20,7 @@ void	traverse_n(int *i, t_data *data)
 }
 
 // analize as condition tem falhas
-static bool	condition_traverse_the_array(int i, int i1, int i2, t_data *data)  /
+static bool	condition_traverse_the_array(int i, int i1, int i2, t_data *data)
 {
 	if (i == 1)
 		if (data->btree->content[i1][i2] != '$' &&
