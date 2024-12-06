@@ -79,7 +79,8 @@ static void	check_character(int i1, bool *add_var, t_new_list *aux)
 			&& aux->content[i1][i2] != '\'' && aux->content[i1][i2] != '\"'
 			&& aux->content[i1][i2] != '$' && aux->content[i1][i2] != '\\'
 			&& aux->content[i1][i2] != ' ' && aux->content[i1][i2] != '.'
-			&& aux->content[i1][i2] != '/' && aux->content[i1][i2] != ':')
+			&& aux->content[i1][i2] != '/' && aux->content[i1][i2] != ':'
+			&& aux->content[i1][i2] != '-' && aux->content[i1][i2] != '+')
 		{
 			write(2, "export: not an identifier: ", 27);
 			ft_putstr_fd(aux->content[i1], 2);
