@@ -94,7 +94,7 @@ void	env(t_data *data);
 
 void	unset(t_data *data);
 void	export(t_data *data);
-void	other_command(t_data *data);
+void	other_command(t_btree *aux, t_data *data);
 
 bool	check_error(int i1, t_btree *aux);
 bool	print_export(t_data *data);

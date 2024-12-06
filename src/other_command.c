@@ -102,14 +102,14 @@ int	list_builtins(char *command)
 
 
 
-void	other_command(t_data *data)
+void	other_command(t_btree *aux, t_data *data)
 {
 	int		pid;
 	char	*path;
 
-	if (ft_strnstr(data->btree->content[0], "/",
-			ft_strlen(data->btree->content[0])))
-		path = ft_strdup(data->btree->content[0]);
+	if (ft_strnstr(aux->content[0], "/",
+			ft_strlen(aux->content[0])))
+		path = ft_strdup(aux->content[0]);
 	else
 		path = get_valid_path(data);
 	if (path)
@@ -117,35 +117,34 @@ void	other_command(t_data *data)
 		pid = fork();
 		if (pid == 0)
 		{
-			// ft_printf("%s -> %s\n", path, data->btree->content[0]);
-			execve(path, data->btree->content, data->envp);
+			execve(path, aux->content, data->envp);
 		}
 		else
 		{
 			wait(NULL);
-			// ft_printf("[pai %i] -> %s\n", pid, path);
 		}
 		free(path);
 	}
 	else
 	{
 		// criar expancao
-		if (ft_strchr(data->btree->content[0], '$'))
+		if (ft_strchr(aux->content[0], '$'))
 		{
-			int i;
+			int		i;
+			char	*str;
 
 			i = 0;
-			ft_printf("//////////////////////////////////////////////////////\n");
 			while (data->envp[i])
 			{
-				if (!ft_strncmp((data->btree->content[0] + 1), data->envp[i], ft_strlen(data->btree->content[0] + 1)))
+				if (!ft_strncmp((aux->content[0] + 1), data->envp[i], ft_strlen(aux->content[0] + 1)))
 				{
-					if (is_directory_valid(data->envp[i] + ft_strlen(data->btree->content[0])))
-						ft_printf("%s: Is a directory\n", data->envp[i] + ft_strlen(data->btree->content[0]));
+					if (is_directory_valid(data->envp[i] + ft_strlen(aux->content[0])))
+						ft_printf("%s: Is a directory\n", data->envp[i] + ft_strlen(aux->content[0]));
 					else
 					{
-						ft_printf("[%s] -> (%i)\n", data->envp[i] + ft_strlen(data->btree->content[0]), len_btree(data->btree));
-						data->btree = insert_into_btree(data->btree, len_btree(data->btree), ft_strdup(data->envp[i] + ft_strlen(data->btree->content[0])));
+						str = ft_strdup(data->envp[i] + ft_strlen(aux->content[0]));
+						data->btree = insert_into_btree(data->btree, len_btree(data->btree), str);
+						data->btree = data->btree->right;
 					}
 					break ;
 				}

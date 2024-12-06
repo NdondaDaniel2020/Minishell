@@ -62,7 +62,7 @@ void    master(char *command, t_data *data)
         else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
             unset(data);
         else
-            other_command(data);
+            other_command(aux, data);
         
         aux = aux->right;
     }
@@ -72,20 +72,24 @@ void    master(char *command, t_data *data)
 int	main(void)
 {
 	t_data	data;
-	char	*input;
+	// char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
-	while (1)
-	{
-		input = readline("TeamWork> ");
-		if (input[0] != '\0')
-		{
-			add_history(input);
-			master(input, &data);
-			free(input);
-		}
-	}
+	master("export A=ls", &data);
+	master("$A", &data);
+	master("exit", &data);
+
+	// while (1)
+	// {
+	// 	input = readline("TeamWork> ");
+	// 	if (input[0] != '\0')
+	// 	{
+	// 		add_history(input);
+	// 		master(input, &data);
+	// 		free(input);
+	// 	}
+	// }
 	return (0);
 }
