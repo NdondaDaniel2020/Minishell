@@ -126,9 +126,14 @@ void	other_command(t_new_list *aux, t_data *data) ////////////// por mexer
 					else
 					{
 						str = ft_strdup(data->envp[i] + ft_strlen(aux->content[0]));
+
+						// str = ft_strtrim(str, "\""); // nao esquece free()
+						// str = ft_strjoin_free(str, "'"); ft_strtrim();
+
 						ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(str, ' ')));
 						ft_lstnew_delfront(&data->list);
-						ft_show_lstnew(data->list);
+						// ft_show_lstnew(data->list);
+						free(str);
 					}
 					break ;
 				}

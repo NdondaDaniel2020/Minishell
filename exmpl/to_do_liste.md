@@ -1,2 +1,5 @@
-1 - quando uma variavel e e eliminada com o unset as outras funcoes devem se comportar bem sem este valor
-2 - erros no unset.
+1 - export 1 - validar apenas o tipo de variavel , 2 depois do igual pode receber qualquer valor
+2 - expancao de variaveil deve ser capaz de executar 
+	v/ - A=ls
+	X - A='ls -l'
+	X - A="ls -l"
