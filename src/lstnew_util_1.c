@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_1.c                                         :+:      :+:    :+:   */
+/*   lstnew_util_1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,23 +12,58 @@
 
 #include "minishell.h"
 
-void	export(t_data *data)
+void    ft_lstnew_addback(t_new_list **lst, t_new_list *new)
 {
-	int			i1;
-	bool		add_var;
 	t_new_list	*aux;
 
-	i1 = 1;
-	aux = data->list;
-	if (print_export(data))
-		return ;
-	while (aux->content[i1])
+	if (lst)
 	{
-		add_var = check_error(i1, aux);
-		if (add_var)
-			add_environment_variable(aux->content[i1], data);
-		else
-			change_environment_variables_question_mark(1, data);
-		i1++;
+		if (new)
+		{
+			if (*lst == NULL)
+				*lst = new;
+			else
+			{
+				aux = *lst;
+				while (aux->next)
+					aux = aux->next;
+				aux->next = new;
+			}
+		}
 	}
+}
+
+void    ft_lstnew_addfront(t_new_list **lst, t_new_list *new)
+{
+	if (lst)
+	{
+		if (*lst)
+			new->next = *lst;
+		*lst = new;
+	}
+}
+
+t_new_list  *ft_lstnew_new(char **content)
+{
+	t_new_list	*new;
+
+	new = (t_new_list *)malloc(sizeof(t_new_list));
+	if (!new)
+		return (NULL);
+	new->content = content;
+	new->next = NULL;
+	return (new);
+}
+
+int     ft_lstnew_size(t_new_list *lst)
+{
+	int	i;
+
+	i = 0;
+	while (lst)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
 }

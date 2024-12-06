@@ -17,20 +17,20 @@ static bool	check_error_exit(int i, int *ex, t_data *data)
 	int i2;
 	
 	i2 = 0;
-	while (data->btree->content[i][i2])
+	while (data->list->content[i][i2])
 	{
 		if
-		((ft_strlen(data->btree->content[i]) == 1 &&
-			!ft_isdigit(data->btree->content[i][i2])) ||
-			(ft_strlen(data->btree->content[i]) > 1 && i2 > 0 &&
-			!ft_isdigit(data->btree->content[i][i2])) ||
-			(ft_strlen(data->btree->content[i]) > 1 && i2 == 0 &&
-			(!ft_isdigit(data->btree->content[i][i2]) && 
-			data->btree->content[i][i2] != '-')))
+		((ft_strlen(data->list->content[i]) == 1 &&
+			!ft_isdigit(data->list->content[i][i2])) ||
+			(ft_strlen(data->list->content[i]) > 1 && i2 > 0 &&
+			!ft_isdigit(data->list->content[i][i2])) ||
+			(ft_strlen(data->list->content[i]) > 1 && i2 == 0 &&
+			(!ft_isdigit(data->list->content[i][i2]) && 
+			data->list->content[i][i2] != '-')))
 		{
 			*ex = 2;
 			write(2, "exit: ", 6);
-			ft_putstr_fd(data->btree->content[i], 2);
+			ft_putstr_fd(data->list->content[i], 2);
 			write(2, ": numeric argument required\n", 28);
 			return (true);
 		}
@@ -56,18 +56,18 @@ void	exit_(t_data *data)
 	i = 1;
 	ex = 0;
 	ft_printf("exit\n");
-	while (data->btree->content[i])
+	while (data->list->content[i])
 	{
 		if (i == 1)
 		{
 			if (check_error_exit(i, &ex, data))
 				break ;
-			if (ex == 0 && ft_strlen(data->btree->content[i]))
-				ex = (unsigned char)ft_atoi(data->btree->content[i]);
+			if (ex == 0 && ft_strlen(data->list->content[i]))
+				ex = (unsigned char)ft_atoi(data->list->content[i]);
 		}	
 		i++;
 	}
-	if (len_matrix(data->btree->content) > 2)
+	if (len_matrix(data->list->content) > 2)
 	{
 		write(2, "exit: too many arguments\n", 25);
 		change_environment_variables_question_mark(1, data);

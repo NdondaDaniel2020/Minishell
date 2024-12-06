@@ -43,11 +43,11 @@ static void	print_env_order(t_data *data)
 
 bool	print_export(t_data *data)
 {
-	int		i1;
-	t_btree	*aux;
+	int			i1;
+	t_new_list	*aux;
 
 	i1 = 0;
-	aux = data->btree;
+	aux = data->list;
 	while (aux->content[i1])
 		i1++;
 	if (!ft_strncmp(aux->content[i1 - 1], "export",
@@ -60,7 +60,7 @@ bool	print_export(t_data *data)
 	return (false);
 }
 
-static void	check_character(int i1, bool *add_var, t_btree *aux)
+static void	check_character(int i1, bool *add_var, t_new_list *aux)
 {
 	int	i2;
 
@@ -91,7 +91,7 @@ static void	check_character(int i1, bool *add_var, t_btree *aux)
 	}
 }
 
-bool	check_error(int i1, t_btree *aux)
+bool	check_error(int i1, t_new_list *aux)
 {
 	bool	add_var;
 

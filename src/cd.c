@@ -67,7 +67,7 @@ void	cd(t_data *data)
 	char	*dir;
 	char	*home;
 
-	i = len_matrix(data->btree->content);
+	i = len_matrix(data->list->content);
 	if (i > 2)
 	{
 		write(2, "cd: too many arguments\n", 23);
@@ -75,7 +75,7 @@ void	cd(t_data *data)
 		return ;
 	}
 	update_oldwpd(data);
-	dir = data->btree->content[1];
+	dir = data->list->content[1];
 	if (is_directory_valid(dir))
 		chdir(dir);
 	else if (condition_home(dir))

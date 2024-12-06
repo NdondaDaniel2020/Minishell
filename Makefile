@@ -33,7 +33,9 @@ FILES = btree_util_1.c \
 		split_2.c \
 		unset.c \
 		util_1.c \
-		util_2.c
+		util_2.c \
+		lstnew_util_1.c \
+		lstnew_util_2.c
 
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))

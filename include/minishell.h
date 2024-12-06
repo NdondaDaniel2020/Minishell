@@ -10,6 +10,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+/////////////////////////// STRUCTURES /////////////////////////////
 typedef struct		s_btree
 {
 	struct s_btree	*left;
@@ -17,21 +18,31 @@ typedef struct		s_btree
 	char			**content;
 	int				item;
 }					t_btree;
+/////////////////////////// STRUCTURES /////////////////////////////
+
+typedef struct s_new_list
+{
+	int					item;
+	char				**content;
+	struct s_new_list	*next;
+}						t_new_list;
 
 typedef struct s_data
 {
-	int		write_on_the_pipe;
-	int		read_in_the_pipe;
-	int		copy_fd;
-	bool	is_pipe;
-	bool	space;
-	bool	automatic_input;
-	char	*command;
-	char	*output;
-	char	*put_amb;
-	char	**path;
-	char	**envp;
-	t_btree	*btree;
+	int			write_on_the_pipe;
+	int			read_in_the_pipe;
+	int			copy_fd;
+	bool		is_pipe;
+	bool		space;
+	bool		automatic_input;
+	char		*command;
+	char		*output;
+	char		*put_amb;
+	char		**path;
+	char		**envp;
+	t_new_list	*list;
+	
+	t_btree		*btree;
 }			t_data;
 
 typedef struct s_valid
@@ -77,6 +88,7 @@ int		search_btree(t_btree *root, int item);
 int		len_btree(t_btree *root);
 void	show_btree(t_btree *root);
 
+
 /* functions */
 char	**split_2(char *str, char chr);
 
@@ -88,15 +100,14 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data);
 int	traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
 int	trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
-
 char	**get_all_environment(void);
 void	env(t_data *data);
 
 void	unset(t_data *data);
 void	export(t_data *data);
-void	other_command(t_btree *aux, t_data *data);
+void	other_command(t_new_list *aux, t_data *data);
 
-bool	check_error(int i1, t_btree *aux);
+bool	check_error(int i1, t_new_list *aux);
 bool	print_export(t_data *data);
 int		ft_strnchrcmp(const char *s1, const char *s2, size_t n, char chr);
 void	add_environment_variable(char *env_var, t_data *data);
@@ -109,5 +120,15 @@ char	*get_valid_path(t_data *data);
 void	insert_data(t_data *data, char *command);
 int		list_builtins(char *command);
 int		is_directory_valid(const char *path);
+
+/* list */
+t_new_list  *ft_lstnew_new(char **content);
+void    	ft_lstnew_addback(t_new_list **lst, t_new_list *new);
+void    	ft_lstnew_addfront(t_new_list **lst, t_new_list *new);
+void		ft_lstnew_free(char **matrix, t_new_list *removed);
+void		ft_lstnew_delfront(t_new_list **list);
+void		ft_lstnew_delback(t_new_list **list);
+void		ft_show_lstnew(t_new_list *list);
+int     	ft_lstnew_size(t_new_list *lst);
 
 #endif

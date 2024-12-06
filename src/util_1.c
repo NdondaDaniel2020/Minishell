@@ -66,7 +66,7 @@ char	*ft_charjoin_free(char *s1, char c)
 void	init_data(t_data *data)
 {
 	data->path = NULL;
-	data->btree = NULL;
+	data->list = NULL;
 	data->space = false;
 	data->output = NULL;
 	data->command = NULL;
@@ -108,9 +108,10 @@ void	free_all_data(t_data *data)
 		}
 	}
 	*/
-	if (data->btree)
+	if (data->list)
 	{
-		remove_all_tree(data->btree);
-		data->btree = NULL;
+		while (data->list)
+			ft_lstnew_delback(&data->list);
+		data->list = NULL;
 	}
 }

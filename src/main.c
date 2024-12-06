@@ -28,10 +28,26 @@ int	count_chr(char  *command, char chr)
 	return (len);
 }
 
+void	insert_data(t_data *data, char *command)
+{
+	int		i;
+	char	**spliting;
+
+	i = 0;
+	data->command = command;
+	spliting = split_2(command, '|');
+	while (spliting[i])
+	{
+		ft_lstnew_addfront(&data->list, ft_lstnew_new(split_2(spliting[i], ' ')));
+		i++;
+	}
+	free(spliting);
+}
+
 void    master(char *command, t_data *data)
 {
-    int     i;
-    t_btree *aux;
+    int     	i;
+    t_new_list	*aux;
 
 	if (count_chr(command, '\'')  % 2 != 0 || count_chr(command, '"') % 2 != 0)
 	{
@@ -40,7 +56,7 @@ void    master(char *command, t_data *data)
 	}
 
     insert_data(data, command);
-    aux = data->btree;
+    aux = data->list;
     while (aux)
     {
         i = 0;
@@ -63,8 +79,8 @@ void    master(char *command, t_data *data)
             unset(data);
         else
             other_command(aux, data);
-        
-        aux = aux->right;
+
+        aux = aux->next;
     }
     free_all_data(data);
 }

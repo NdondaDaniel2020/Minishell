@@ -20,9 +20,9 @@ static char	*read_all_path(int i, t_data *data, DIR *open_dir)
 	entry = readdir(open_dir);
 	while (entry != NULL)
 	{
-		if (!ft_strncmp(entry->d_name, data->btree->content[0],
+		if (!ft_strncmp(entry->d_name, data->list->content[0],
 				ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
-			== ft_strlen(data->btree->content[0]))
+			== ft_strlen(data->list->content[0]))
 		{
 			dir_path = ft_charjoin(data->path[i], '/');
 			dir_path = ft_strjoin_free(dir_path, entry->d_name);
@@ -56,22 +56,6 @@ char	*get_valid_path(t_data *data)
 	return (NULL);
 }
 
-void	insert_data(t_data *data, char *command)
-{
-	int		i;
-	char	**spliting;
-
-	i = 0;
-	data->command = command;
-	spliting = split_2(command, '|');
-	while (spliting[i])
-	{
-		data->btree = insert_into_btree(data->btree, i, spliting[i]);
-		i++;
-	}
-	free(spliting);
-}
-
 int	list_builtins(char *command)
 {
 	if (ft_strncmp(command, "echo", 4) == 0 && ft_strlen(command) == 4)
@@ -102,7 +86,7 @@ int	list_builtins(char *command)
 
 
 
-void	other_command(t_btree *aux, t_data *data)
+void	other_command(t_new_list *aux, t_data *data) ////////////// por mexer
 {
 	int		pid;
 	char	*path;
@@ -127,7 +111,6 @@ void	other_command(t_btree *aux, t_data *data)
 	}
 	else
 	{
-		// criar expancao
 		if (ft_strchr(aux->content[0], '$'))
 		{
 			int		i;
@@ -143,8 +126,9 @@ void	other_command(t_btree *aux, t_data *data)
 					else
 					{
 						str = ft_strdup(data->envp[i] + ft_strlen(aux->content[0]));
-						data->btree = insert_into_btree(data->btree, len_btree(data->btree), str);
-						data->btree = data->btree->right;
+						
+						show
+						// ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(str, ' ')));
 					}
 					break ;
 				}
@@ -152,6 +136,6 @@ void	other_command(t_btree *aux, t_data *data)
 			}
 		}
 		else
-			ft_printf("%s: command not found\n", data->btree->content[0]);
+			ft_printf("%s: command not found\n", data->list->content[0]);
 	}
 }

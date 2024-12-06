@@ -18,9 +18,9 @@ void	pwd(t_data *data)
 	char	*cwd;
 
 	i = 0;
-	while (data->btree->content[i])
+	while (data->list->content[i])
 	{
-		if (i > 0 && ft_strlen(data->btree->content[i]) > 0)
+		if (i > 0 && ft_strlen(data->list->content[i]) > 0)
 		{
 			write(2, "pwd: too many arguments\n", 24);
 			change_environment_variables_question_mark(1, data);

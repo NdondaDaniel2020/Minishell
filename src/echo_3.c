@@ -20,17 +20,17 @@ static char	*allocate_memory_to_env(int i1, int i2, t_data *data)
 
 	i = 0;
 	c = 0;
-	while (data->btree->content[i1][i2 + c] &&
-		!ft_isalpha(data->btree->content[i1][i2 + c]))
+	while (data->list->content[i1][i2 + c] &&
+		!ft_isalpha(data->list->content[i1][i2 + c]))
 	{
-		if (data->btree->content[i1][i2 + c] == '\'' ||
-			 data->btree->content[i1][i2 + c] == '?')
+		if (data->list->content[i1][i2 + c] == '\'' ||
+			 data->list->content[i1][i2 + c] == '?')
 			i++;
 		c++;
 	}
-	while (data->btree->content[i1][i2 + c] &&
-		(data->btree->content[i1][i2 + c] != ' ' &&
-		data->btree->content[i1][i2 + c] != '\"'))
+	while (data->list->content[i1][i2 + c] &&
+		(data->list->content[i1][i2 + c] != ' ' &&
+		data->list->content[i1][i2 + c] != '\"'))
 	{
 		i++;
 		c++;
@@ -41,13 +41,13 @@ static char	*allocate_memory_to_env(int i1, int i2, t_data *data)
 
 static int	put_single_quote(int i1, int i2, t_data *data)
 {
-	if (ft_strchr(data->btree->content[i1], '\''))
+	if (ft_strchr(data->list->content[i1], '\''))
 	{
-		while (i2 > 0 && data->btree->content[i1][i2])
+		while (i2 > 0 && data->list->content[i1][i2])
 		{
-			if (data->btree->content[i1][i2] == '\'')
+			if (data->list->content[i1][i2] == '\'')
 			{
-				ft_putchar_fd(data->btree->content[i1][i2], 1);
+				ft_putchar_fd(data->list->content[i1][i2], 1);
 				i2++;
 				break ;
 			}
@@ -64,7 +64,7 @@ static void	put_env(int i1, char *env_var, t_data *data)
 		ft_printf("%s", data->put_amb);
 		data->space = true;
 	}
-	else if (data->put_amb == NULL && data->btree->content[i1 + 1] == NULL)
+	else if (data->put_amb == NULL && data->list->content[i1 + 1] == NULL)
 	{
 		ft_printf("\n");
 		data->space = true;
@@ -84,13 +84,13 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data)
 	c = 0;
 	i = 0;
 	env_var = allocate_memory_to_env(i1, i2, data);
-	while (data->btree->content[i1][i2 + i] && 
-		(data->btree->content[i1][i2 + i] != ' ' &&
-		data->btree->content[i1][i2 + i] != '\"'))
+	while (data->list->content[i1][i2 + i] && 
+		(data->list->content[i1][i2 + i] != ' ' &&
+		data->list->content[i1][i2 + i] != '\"'))
 	{
-		if (ft_isalpha(data->btree->content[i1][i2 + i]) ||
-			data->btree->content[i1][i2 + i] == '?')
-			env_var[c++] = data->btree->content[i1][i2 + i];
+		if (ft_isalpha(data->list->content[i1][i2 + i]) ||
+			data->list->content[i1][i2 + i] == '?')
+			env_var[c++] = data->list->content[i1][i2 + i];
 		i++;
 	}
 	i2 = put_single_quote(i1, i2, data);

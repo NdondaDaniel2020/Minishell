@@ -95,11 +95,11 @@ void	unset(t_data *data)
 
 	i = 1;
 	i1 = 0;
-	while (data->btree->content[i])
+	while (data->list->content[i])
 	{
-		rev_var = check_error_unset(data->btree->content[i]);
+		rev_var = check_error_unset(data->list->content[i]);
 		if (rev_var)
-			remove_env(i1, data->btree->content[i], data);
+			remove_env(i1, data->list->content[i], data);
 		else
 			change_environment_variables_question_mark(1, data);
 		i++;
