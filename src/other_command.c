@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*read_all_path(int i, t_data *data, DIR *open_dir)
+static char	*read_all_path(int i, t_new_list *aux , t_data *data, DIR *open_dir)
 {
 	char			*dir_path;
 	struct dirent	*entry;
@@ -20,7 +20,7 @@ static char	*read_all_path(int i, t_data *data, DIR *open_dir)
 	entry = readdir(open_dir);
 	while (entry != NULL)
 	{
-		if (!ft_strncmp(entry->d_name, data->list->content[0],
+		if (!ft_strncmp(entry->d_name, aux->content[0],
 				ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
 			== ft_strlen(data->list->content[0]))
 		{
@@ -34,7 +34,7 @@ static char	*read_all_path(int i, t_data *data, DIR *open_dir)
 	return (NULL);
 }
 
-char	*get_valid_path(t_data *data)
+char	*get_valid_path(t_new_list *aux, t_data *data)
 {
 	int				i;
 	char			*dir_path;
@@ -46,7 +46,7 @@ char	*get_valid_path(t_data *data)
 		open_dir = opendir(data->path[i]);
 		if (open_dir)
 		{
-			dir_path = read_all_path(i, data, open_dir);
+			dir_path = read_all_path(i, aux, data, open_dir);
 			if (dir_path)
 				return (dir_path);
 		}
@@ -75,71 +75,49 @@ int	list_builtins(char *command)
 	return (0);
 }
 
+static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
+{
+	char	*value_env;
+	char	*aux_env;
 
+	value_env = get_env(aux->content[0] + 1, data);
+	if (value_env)
+	{
+		if (is_directory_valid(value_env))
+			ft_printf("%s: Is a directory\n", value_env);
+		else
+		{
+			value_env = ft_strtrim(value_env, "\"");
+			aux_env = ft_strtrim(value_env, "'");
+			free(value_env);
+			ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(aux_env, ' ')));
+			free(aux_env);
+		}
+	}
+}
 
-
-
-
-
-
-
-
-
-
-void	other_command(t_new_list *aux, t_data *data) ////////////// por mexer
+void	other_command(t_new_list *aux, t_data *data)
 {
 	int		pid;
 	char	*path;
 
-	if (ft_strnstr(aux->content[0], "/",
-			ft_strlen(aux->content[0])))
+	if (ft_strnstr(aux->content[0], "/", ft_strlen(aux->content[0])))
 		path = ft_strdup(aux->content[0]);
 	else
-		path = get_valid_path(data);
+		path = get_valid_path(aux, data);
 	if (path)
 	{
 		pid = fork();
 		if (pid == 0)
-		{
 			execve(path, aux->content, data->envp);
-		}
 		else
-		{
 			wait(NULL);
-		}
 		free(path);
 	}
 	else
 	{
 		if (ft_strchr(aux->content[0], '$'))
-		{
-			int		i;
-			char	*str;
-
-			i = 0;
-			while (data->envp[i])
-			{
-				if (!ft_strncmp((aux->content[0] + 1), data->envp[i], ft_strlen(aux->content[0] + 1)))
-				{
-					if (is_directory_valid(data->envp[i] + ft_strlen(aux->content[0])))
-						ft_printf("%s: Is a directory\n", data->envp[i] + ft_strlen(aux->content[0]));
-					else
-					{
-						str = ft_strdup(data->envp[i] + ft_strlen(aux->content[0]));
-
-						// str = ft_strtrim(str, "\""); // nao esquece free()
-						// str = ft_strjoin_free(str, "'"); ft_strtrim();
-
-						ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(str, ' ')));
-						ft_lstnew_delfront(&data->list);
-						// ft_show_lstnew(data->list);
-						free(str);
-					}
-					break ;
-				}
-				i++;
-			}
-		}
+			check_environment_variable_expansion(aux, data);
 		else
 			ft_printf("%s: command not found\n", data->list->content[0]);
 	}

@@ -201,3 +201,41 @@ void	master(char *command, t_data *data)
 
 
 echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+
+
+
+
+
+	else
+	{
+		if (ft_strchr(aux->content[0], '$'))
+		{
+			int		i;
+			char	*str1;
+			char	*str2;
+
+			i = 0;
+			while (data->envp[i])
+			{
+				if (!ft_strncmp((aux->content[0] + 1), data->envp[i], ft_strlen(aux->content[0] + 1)))
+				{
+					if (is_directory_valid(data->envp[i] + ft_strlen(aux->content[0])))
+						ft_printf("%s: Is a directory\n", data->envp[i] + ft_strlen(aux->content[0]));
+					else
+					{
+						str1 = ft_strdup(data->envp[i] + ft_strlen(aux->content[0]));
+						str2 = ft_strtrim(str1, "\"");
+						free(str1);
+						str1 = ft_strtrim(str2, "'");
+						free(str2);
+						ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(str1, ' ')));
+						free(str1);
+					}
+					break ;
+				}
+				i++;
+			}
+		}
+		else
+			ft_printf("%s: command not found\n", data->list->content[0]);
+	}

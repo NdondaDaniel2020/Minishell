@@ -61,13 +61,13 @@ static void	update_oldwpd(t_data *data)
 	free(cwd);
 }
 
-void	cd(t_data *data)
+void	cd(t_new_list *aux, t_data *data)
 {
 	int		i;
 	char	*dir;
 	char	*home;
 
-	i = len_matrix(data->list->content);
+	i = len_matrix(aux->content);
 	if (i > 2)
 	{
 		write(2, "cd: too many arguments\n", 23);
@@ -75,7 +75,7 @@ void	cd(t_data *data)
 		return ;
 	}
 	update_oldwpd(data);
-	dir = data->list->content[1];
+	dir = aux->content[1];
 	if (is_directory_valid(dir))
 		chdir(dir);
 	else if (condition_home(dir))

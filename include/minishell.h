@@ -62,7 +62,7 @@ typedef struct s_split
 } 			t_split;
 
 /*builtin*/
-void	cd(t_data *data);
+void	cd(t_new_list *aux, t_data *data);
 void	pwd(t_data *data);
 void	echo(t_data *data);
 void	exit_(t_data *data);
@@ -116,7 +116,7 @@ char	*get_env(char *env, t_data *data);
 void	change_environment_variables_question_mark(int value, t_data *data);
 int		len_matrix(char **matrix);
 
-char	*get_valid_path(t_data *data);
+char	*get_valid_path(t_new_list *aux, t_data *data);
 void	insert_data(t_data *data, char *command);
 int		list_builtins(char *command);
 int		is_directory_valid(const char *path);

@@ -39,6 +39,7 @@ void	insert_data(t_data *data, char *command)
 	while (spliting[i])
 	{
 		ft_lstnew_addfront(&data->list, ft_lstnew_new(split_2(spliting[i], ' ')));
+		free(spliting[i]);
 		i++;
 	}
 	free(spliting);
@@ -62,13 +63,12 @@ void    master(char *command, t_data *data)
         i = 0;
         if (ft_strlen(aux->content[i]) == 0)
             i++;
-
         if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
             exit_(data);
         else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
             pwd(data);
         else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
-            cd(data);
+            cd(aux, data);
         else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
             echo(data);
         else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
@@ -78,9 +78,8 @@ void    master(char *command, t_data *data)
         else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
             unset(data);
         else
-            other_command(aux, data);
-
-        aux = aux->next;
+			other_command(aux, data);
+		aux = aux->next;
     }
     free_all_data(data);
 }
@@ -89,12 +88,14 @@ int	main(void)
 {
 	t_data	data;
 	// char	*input;
- 	
+
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
-	master("export A=\"ls -l\"", &data);
-	master("$A", &data);
+	
+	master("export HO='ls -l'", &data);
+	master("cd $HO", &data);
+	master("cd $HOME", &data);
 	master("exit", &data);
 
 	// while (1)
