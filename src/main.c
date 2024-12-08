@@ -71,8 +71,8 @@ void    master(char *command, t_data *data)
             cd(aux, data);
         else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
             echo(data);
-        else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
-            env(data);
+        else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i]))) // test just $ andd espaco antes do comado
+            env(aux, data);
         else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
             export(data);
         else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))

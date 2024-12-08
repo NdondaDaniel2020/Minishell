@@ -61,6 +61,8 @@ static void	update_oldwpd(t_data *data)
 	free(cwd);
 }
 
+
+
 static void add_in_list(char *value_env, t_new_list *aux, t_data *data)
 {
 	int		i;
@@ -82,25 +84,26 @@ static void add_in_list(char *value_env, t_new_list *aux, t_data *data)
 	free(value_env);
 }
 
-
-
-
 static bool	add_expanded_variable(t_new_list *aux, t_data *data)
 {
 	char	*value_env;
 	char	**new_content;
 
-	value_env = get_env(aux->content[1] + 1, data);
-	if (value_env)
-		add_in_list(value_env, aux, data);
-	else
+	if (ft_strlen(aux->content[1]) > 1)
 	{
-		new_content = ft_calloc(3, sizeof(char *));
-		new_content[0] = ft_strdup("cd");
-		new_content[1] = ft_strdup(get_env("HOME", data));
-		ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+		value_env = get_env(aux->content[1] + 1, data);
+		if (value_env)
+			add_in_list(value_env, aux, data);
+		else
+		{
+			new_content = ft_calloc(3, sizeof(char *));
+			new_content[0] = ft_strdup("cd");
+			new_content[1] = ft_strdup(get_env("HOME", data));
+			ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+		}
+		return (true);
 	}
-	return (true);
+	return (false);
 }
 
 static bool	check_many_arguments(t_new_list *aux, t_data *data)

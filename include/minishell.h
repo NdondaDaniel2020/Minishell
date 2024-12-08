@@ -101,7 +101,7 @@ int	traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
 int	trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
 char	**get_all_environment(void);
-void	env(t_data *data);
+void	env(t_new_list *aux, t_data *data);
 
 void	unset(t_data *data);
 void	export(t_data *data);

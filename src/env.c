@@ -149,11 +149,13 @@ char	*get_env(char *env, t_data *data)
 	return (NULL);
 }
 
-void	env(t_data *data)
+void	env(t_new_list *aux, t_data *data)
 {
 	int	i;
 
 	i = 0;
+	// ft_printf("%i\n", len_matrix(aux->content));
+
 	while (data->envp[i])
 	{
 		if (ft_strchr(data->envp[i], '=') && !ft_strchr(data->envp[i], '?'))
