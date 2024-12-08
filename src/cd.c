@@ -125,10 +125,12 @@ static void error_file_or_directory(char *dir, t_data *data)
 	write(2, ": No such file or directory\n", 28);
 }
 
-static void	change_dir(char *dir, char *home)
+static void	change_dir(char *dir, t_data *data)
 {
-	home = getenv("HOME");
-	dir = ft_strjoin(home, &dir[1]);
+	char	*home;
+
+	home = get_env("HOME", data);
+	dir = ft_strjoin(home, dir + 1);
 	chdir(dir);
 	free(dir);
 }
@@ -148,11 +150,11 @@ void	cd(t_new_list *aux, t_data *data)
 		chdir(dir);
 	else if (condition_home(dir))
 	{
-		home = getenv("HOME");
+		home = get_env("HOME", data);
 		chdir(home);
 	}
 	else if (ft_strnstr(dir, "~/", ft_strlen(dir)))
-		change_dir(dir, home);
+		change_dir(dir, data);
 	else
 	{
 		error_file_or_directory(dir, data);

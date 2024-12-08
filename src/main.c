@@ -87,45 +87,20 @@ void    master(char *command, t_data *data)
 int	main(void)
 {
 	t_data	data;
-	// char	*input;
+	char	*input;
 
 	init_data(&data);
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
-	
-	master("env", &data);
-
-	master("cd $HOMES", &data);
-	master("pwd", &data);
-	ft_printf("///////////////////////////////////////\n");
-
-	master("cd $HOME", &data);
-	master("pwd", &data);
-	ft_printf("///////////////////////////////////////\n");
-
-	master("export HO='ls -l'", &data);
-	master("cd $HO", &data);
-	ft_printf("///////////////////////////////////////\n");
-
-	master("cd $OLDPWD", &data);
-	master("pwd", &data);
-	ft_printf("///////////////////////////////////////\n");
-	
-	master("cd $USER", &data);
-	master("pwd", &data);
-	ft_printf("///////////////////////////////////////\n");
-
-	master("exit", &data);
-
-	// while (1)
-	// {
-	// 	input = readline("TeamWork> ");
-	// 	if (input[0] != '\0')
-	// 	{
-	// 		add_history(input);
-	// 		master(input, &data);
-	// 		free(input);
-	// 	}
-	// }
+	while (1)
+	{
+		input = readline("TeamWork> ");
+		if (input[0] != '\0')
+		{
+			add_history(input);
+			master(input, &data);
+			free(input);
+		}
+	}
 	return (0);
 }
