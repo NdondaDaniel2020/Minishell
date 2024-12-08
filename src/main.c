@@ -95,6 +95,10 @@ int	main(void)
 	
 	master("env", &data);
 
+	master("cd $HOMES", &data);
+	master("pwd", &data);
+	ft_printf("///////////////////////////////////////\n");
+
 	master("cd $HOME", &data);
 	master("pwd", &data);
 	ft_printf("///////////////////////////////////////\n");
@@ -108,14 +112,6 @@ int	main(void)
 	ft_printf("///////////////////////////////////////\n");
 	
 	master("cd $USER", &data);
-	master("pwd", &data);
-	ft_printf("///////////////////////////////////////\n");
-
-	master("cd $LOGNAME", &data);
-	master("pwd", &data);
-	ft_printf("///////////////////////////////////////\n");
-
-	master("cd $LOGNAME", &data);
 	master("pwd", &data);
 	ft_printf("///////////////////////////////////////\n");
 
