@@ -93,9 +93,32 @@ int	main(void)
 	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
 	
+	master("env", &data);
+
+	master("cd $HOME", &data);
+	master("pwd", &data);
+	ft_printf("///////////////////////////////////////\n");
+
 	master("export HO='ls -l'", &data);
 	master("cd $HO", &data);
-	master("cd $HOME", &data);
+	ft_printf("///////////////////////////////////////\n");
+
+	master("cd $OLDPWD", &data);
+	master("pwd", &data);
+	ft_printf("///////////////////////////////////////\n");
+	
+	master("cd $USER", &data);
+	master("pwd", &data);
+	ft_printf("///////////////////////////////////////\n");
+
+	master("cd $LOGNAME", &data);
+	master("pwd", &data);
+	ft_printf("///////////////////////////////////////\n");
+
+	master("cd $LOGNAME", &data);
+	master("pwd", &data);
+	ft_printf("///////////////////////////////////////\n");
+
 	master("exit", &data);
 
 	// while (1)

@@ -78,20 +78,20 @@ int	list_builtins(char *command)
 static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 {
 	char	*value_env;
-	char	*aux_env;
 
 	value_env = get_env(aux->content[0] + 1, data);
 	if (value_env)
 	{
 		if (is_directory_valid(value_env))
-			ft_printf("%s: Is a directory\n", value_env);
+		{
+			ft_putstr_fd(value_env, 2);
+			ft_putstr_fd(": Is a directory\n", 2);
+		}
 		else
 		{
-			value_env = ft_strtrim(value_env, "\"");
-			aux_env = ft_strtrim(value_env, "'");
+			value_env = ft_strtrim(value_env, "\"'");
+			ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
 			free(value_env);
-			ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(aux_env, ' ')));
-			free(aux_env);
 		}
 	}
 }
@@ -119,6 +119,9 @@ void	other_command(t_new_list *aux, t_data *data)
 		if (ft_strchr(aux->content[0], '$'))
 			check_environment_variable_expansion(aux, data);
 		else
-			ft_printf("%s: command not found\n", data->list->content[0]);
+		{
+			ft_putstr_fd(data->list->content[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
+		}
 	}
 }

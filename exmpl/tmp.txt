@@ -203,39 +203,43 @@ void	master(char *command, t_data *data)
 echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
 
 
+static bool	add_expanded_variable(t_new_list *aux, t_data *data)
 
+static bool	add_expanded_variable(t_new_list *aux, t_data *data)
+{
+	int		i;
+	char	*value_env;
+	char	*aux_env;
+	char	**split_cmd;
+	char	**new_content;
 
-
+	i = 0;
+	value_env = get_env(aux->content[1] + 1, data);
+	if (value_env)
+	{
+		value_env = ft_strtrim(value_env, "\"");
+		aux_env = ft_strtrim(value_env, "'");
+		free(value_env);
+		value_env = ft_strdup(aux->content[0]);
+		split_cmd = split_2(aux_env, ' ');
+		new_content = ft_calloc(len_matrix(split_cmd) + 2, sizeof(char *));
+		new_content[i] = value_env;
+		while (split_cmd[i])
+		{
+			new_content[i + 1] = split_cmd[i];
+			i++;
+		}
+		new_content[i + 1] = NULL;
+		ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+		free(split_cmd);
+		free(aux_env);
+	}
 	else
 	{
-		if (ft_strchr(aux->content[0], '$'))
-		{
-			int		i;
-			char	*str1;
-			char	*str2;
-
-			i = 0;
-			while (data->envp[i])
-			{
-				if (!ft_strncmp((aux->content[0] + 1), data->envp[i], ft_strlen(aux->content[0] + 1)))
-				{
-					if (is_directory_valid(data->envp[i] + ft_strlen(aux->content[0])))
-						ft_printf("%s: Is a directory\n", data->envp[i] + ft_strlen(aux->content[0]));
-					else
-					{
-						str1 = ft_strdup(data->envp[i] + ft_strlen(aux->content[0]));
-						str2 = ft_strtrim(str1, "\"");
-						free(str1);
-						str1 = ft_strtrim(str2, "'");
-						free(str2);
-						ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(str1, ' ')));
-						free(str1);
-					}
-					break ;
-				}
-				i++;
-			}
-		}
-		else
-			ft_printf("%s: command not found\n", data->list->content[0]);
+		new_content = ft_calloc(3, sizeof(char *));
+		new_content[0] = ft_strdup("cd");
+		new_content[1] = ft_strdup(get_env("HOME", data));
+		ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
 	}
+	return (true);
+}
