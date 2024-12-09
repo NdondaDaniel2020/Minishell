@@ -21,7 +21,8 @@ FILES = cd_1.c \
 		echo_1.c \
 		echo_2.c \
 		echo_3.c \
-		env.c \
+		env_1.c \
+		env_2.c \
 		exit.c \
 		export_1.c \
 		export_2.c \

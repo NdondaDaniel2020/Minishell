@@ -69,6 +69,7 @@ void	update_oldwpd(t_data *data);
 bool	add_expanded_variable(t_new_list *aux, t_data *data);
 bool	check_many_arguments(t_new_list *aux, t_data *data);
 void	add_in_list(char *value_env, t_new_list *aux, t_data *data);
+bool	check_error_exit(int i, int *ex, t_new_list *aux);
 
 /* functions */
 char	**split_2(char *str, char chr);
