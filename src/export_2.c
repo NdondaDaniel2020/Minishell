@@ -84,7 +84,8 @@ void	add_environment_variable(char *env_var, t_data *data)
 	env_var = analize_env(env_var);
 	if (unique && !is_equal)
 	{
-		data->envp = ft_realloc((void *)data->envp, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
+		data->envp = ft_realloc((void *)data->envp,
+				sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
 		data->envp[i] = env_var;
 		data->envp[i + 1] = NULL;
 	}

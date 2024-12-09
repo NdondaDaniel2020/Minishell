@@ -28,9 +28,9 @@ static bool	condition_traverse_the_array(int i, int i1, int i2, t_data *data)
 			data->list->content[i1][i2] != '\'')
 			return (true);
 	if (i == 2)
-		if ((data->list->content[i1][i2] == '\"' &&
-		 data->list->content[i1][i2 + 1] == '$' &&
-		 ft_memchr(data->list->content[i1], '\'', i2)))
+		if ((data->list->content[i1][i2] == '\"'
+			&& data->list->content[i1][i2 + 1] == '$'
+			&& ft_memchr(data->list->content[i1], '\'', i2)))
 			return (true);
 	if (i == 3)
 		if (data->list->content[i1][i2] == '$' ||

@@ -10,16 +10,6 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-/////////////////////////// STRUCTURES /////////////////////////////
-typedef struct		s_btree
-{
-	struct s_btree	*left;
-	struct s_btree	*right;
-	char			**content;
-	int				item;
-}					t_btree;
-/////////////////////////// STRUCTURES /////////////////////////////
-
 typedef struct s_new_list
 {
 	int					item;
@@ -65,7 +55,7 @@ typedef struct s_split
 void	cd(t_new_list *aux, t_data *data);
 void	pwd(t_data *data);
 void	echo(t_data *data);
-void	exit_(t_data *data);
+void	exit_(t_new_list *aux, t_data *data);
 
 
 /*init and free*/
@@ -76,17 +66,6 @@ char	*ft_charjoin(char *s1, char c);
 char	*ft_charjoin_free(char *s1, char c);
 void	*ft_realloc(void* ptr, size_t original_size, size_t new_size);
 
-/*btree*/
-t_btree	*insert_into_btree(t_btree *root, int item, char *content);
-
-t_btree	*remove_tree_trunk(t_btree *root, int item);
-t_btree	*remove_tree_leaf(t_btree *root);
-t_btree	*remove_tree(t_btree *root, int item);
-t_btree	*remove_all_tree(t_btree *root);
-
-int		search_btree(t_btree *root, int item);
-int		len_btree(t_btree *root);
-void	show_btree(t_btree *root);
 
 
 /* functions */

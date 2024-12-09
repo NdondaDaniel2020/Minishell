@@ -24,7 +24,7 @@ static char	*allocate_memory_to_env(int i1, int i2, t_data *data)
 		!ft_isalpha(data->list->content[i1][i2 + c]))
 	{
 		if (data->list->content[i1][i2 + c] == '\'' ||
-			 data->list->content[i1][i2 + c] == '?')
+			data->list->content[i1][i2 + c] == '?')
 			i++;
 		c++;
 	}
@@ -84,7 +84,7 @@ int	put_environment(int i1, int i2, t_valid	*valid, t_data *data)
 	c = 0;
 	i = 0;
 	env_var = allocate_memory_to_env(i1, i2, data);
-	while (data->list->content[i1][i2 + i] && 
+	while (data->list->content[i1][i2 + i] &&
 		(data->list->content[i1][i2 + i] != ' ' &&
 		data->list->content[i1][i2 + i] != '\"'))
 	{

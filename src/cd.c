@@ -61,9 +61,7 @@ static void	update_oldwpd(t_data *data)
 	free(cwd);
 }
 
-
-
-static void add_in_list(char *value_env, t_new_list *aux, t_data *data)
+static void	add_in_list(char *value_env, t_new_list *aux, t_data *data)
 {
 	int		i;
 	char	**new_content;
@@ -120,7 +118,7 @@ static bool	check_many_arguments(t_new_list *aux, t_data *data)
 	return (false);
 }
 
-static void error_file_or_directory(char *dir, t_data *data)
+static void	error_file_or_directory(char *dir, t_data *data)
 {
 	change_environment_variables_question_mark(1, data);
 	write(2, "cd: ", 4);

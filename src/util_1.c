@@ -98,16 +98,6 @@ void	free_all_data(t_data *data)
 {
 	if (!data)
 		return ;
-    /*
-	if (data->output)
-	{
-		if (!ft_strnstr(data->command, data->output, ft_strlen(data->command)))
-		{
-			free(data->output);
-			data->output = NULL;
-		}
-	}
-	*/
 	if (data->list)
 	{
 		while (data->list)

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void    ft_lstnew_addback(t_new_list **lst, t_new_list *new)
+void	ft_lstnew_addback(t_new_list **lst, t_new_list *new)
 {
 	t_new_list	*aux;
 
@@ -33,7 +33,7 @@ void    ft_lstnew_addback(t_new_list **lst, t_new_list *new)
 	}
 }
 
-void    ft_lstnew_addfront(t_new_list **lst, t_new_list *new)
+void	ft_lstnew_addfront(t_new_list **lst, t_new_list *new)
 {
 	if (lst)
 	{
@@ -43,7 +43,7 @@ void    ft_lstnew_addfront(t_new_list **lst, t_new_list *new)
 	}
 }
 
-t_new_list  *ft_lstnew_new(char **content)
+t_new_list	*ft_lstnew_new(char **content)
 {
 	t_new_list	*new;
 
@@ -55,7 +55,7 @@ t_new_list  *ft_lstnew_new(char **content)
 	return (new);
 }
 
-int     ft_lstnew_size(t_new_list *lst)
+int	ft_lstnew_size(t_new_list *lst)
 {
 	int	i;
 
