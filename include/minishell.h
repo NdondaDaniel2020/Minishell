@@ -52,7 +52,7 @@ typedef struct s_split
 /*builtin*/
 void	cd(t_new_list *aux, t_data *data);
 void	pwd(t_data *data);
-void	echo(t_data *data);
+void	echo(t_new_list *aux, t_data *data);
 void	exit_(t_new_list *aux, t_data *data);
 
 
@@ -102,6 +102,8 @@ char	*get_valid_path(t_new_list *aux, t_data *data);
 void	insert_data(t_data *data, char *command);
 int		list_builtins(char *command);
 int		is_directory_valid(const char *path);
+char	*analize_env(char *env);
+int		is_valid_char(char c);
 
 /* list */
 t_new_list  *ft_lstnew_new(char **content);

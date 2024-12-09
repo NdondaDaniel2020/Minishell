@@ -28,8 +28,11 @@ void	init_valid(t_valid	*valid)
 	valid->is_transition = false;
 }
 
-static bool	echo_is_empty(int i, t_data *data)
+static bool	echo_is_empty(t_data *data)
 {
+	int		i;
+
+	i = count_word(data->list->content);
 	if (i == 1)
 	{
 		ft_putchar_fd('\n', 1);
@@ -46,30 +49,28 @@ static void	add_bar_n(int i, t_data *data)
 		ft_putchar_fd('\n', 1);
 }
 
-void	echo(t_data *data)
+void	echo(t_new_list *aux, t_data *data)
 {
 	int		i1;
 	int		i2;
 	t_valid	valid;
 
 	init_valid(&valid);
-	i1 = count_word(data->list->content);
-	if (echo_is_empty(i1, data))
+	if (echo_is_empty(data))
 		return ;
 	i1 = 0;
-	while (!ft_strncmp(data->list->content[i1], "echo",
-			ft_strlen(data->list->content[i1])))
+	while (!ft_strncmp(aux->content[i1], "echo", ft_strlen(aux->content[i1])))
 		i1++;
 	traverse_n(&i1, data);
-	while (data->list->content[i1])
+	while (aux->content[i1])
 	{
 		i2 = 0;
-		while (data->list->content[i1][i2])
+		while (aux->content[i1][i2])
 		{
 			i2 = traverse_the_array(i1, i2, &valid, data);
 			i2 = trasition_master_master(i1, i2, &valid, data);
 		}
-		if (data->list->content[i1 + 1] && data->space)
+		if (aux->content[i1 + 1] && data->space)
 			ft_putchar_fd(' ', 1);
 		i1++;
 	}

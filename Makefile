@@ -23,10 +23,12 @@ FILES = cd_1.c \
 		echo_3.c \
 		env_1.c \
 		env_2.c \
-		exit.c \
+		exit_1.c \
+		exit_2.c \
 		export_1.c \
 		export_2.c \
 		export_3.c \
+		export_4.c \
 		lstnew_util_1.c \
 		lstnew_util_2.c \
 		main.c \
