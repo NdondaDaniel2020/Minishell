@@ -31,8 +31,6 @@ typedef struct s_data
 	char		**path;
 	char		**envp;
 	t_new_list	*list;
-	
-	t_btree		*btree;
 }			t_data;
 
 typedef struct s_valid
@@ -66,7 +64,11 @@ char	*ft_charjoin(char *s1, char c);
 char	*ft_charjoin_free(char *s1, char c);
 void	*ft_realloc(void* ptr, size_t original_size, size_t new_size);
 
-
+void	update_pwd(t_data *data);
+void	update_oldwpd(t_data *data);
+bool	add_expanded_variable(t_new_list *aux, t_data *data);
+bool	check_many_arguments(t_new_list *aux, t_data *data);
+void	add_in_list(char *value_env, t_new_list *aux, t_data *data);
 
 /* functions */
 char	**split_2(char *str, char chr);
