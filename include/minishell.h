@@ -90,7 +90,7 @@ char	**get_all_environment(void);
 
 
 /*builtin export*/
-void	export(t_data *data);
+void	export(t_new_list *aux, t_data *data);
 void	add_environment_variable(char *env_var, t_data *data);
 void	change_environment_variables_question_mark(int value, t_data *data);
 

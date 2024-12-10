@@ -54,27 +54,39 @@ static bool	expanded_env_error(t_new_list *aux, t_data *data)
 	return (false);
 }
 
-void	env(t_new_list *aux, t_data *data)
+static bool	check_erro_env(t_new_list *aux, t_data *data)
 {
-	int		i;
 	int		len;
 
-	i = 0;
 	if (len_matrix(aux->content) > 1)
 	{
-		len = ft_strlen(aux->content[1]);
-		if (len > 0 && aux->content[1] && !ft_strchr(aux->content[1], '$'))
+		len = ft_strlen(aux->content[get_last_position(aux)]);
+		if (len > 0 && aux->content[get_last_position(aux)]
+				&& !ft_strchr(aux->content[get_last_position(aux)], '$')
+			&& ft_strncmp(aux->content[get_last_position(aux)], "env", 4))
 		{
-			put_error_env("env: ‘", aux->content[1],
+			put_error_env("env: ‘", aux->content[get_last_position(aux)],
 				"’: No such file or directory\n");
-			return ;
+			return (true);
 		}
-		else if (len > 0 && aux->content[1] && ft_strchr(aux->content[1], '$'))
+		else if (len > 0 && aux->content[get_last_position(aux)]
+			&& ft_strchr(aux->content[get_last_position(aux)], '$')
+			&& ft_strncmp(aux->content[get_last_position(aux)], "env", 4))
 		{
 			if (expanded_env_error(aux, data))
-				return ;
+				return (true);
 		}
 	}
+	return (false);
+}
+
+void	env(t_new_list *aux, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	if (check_erro_env(aux, data))
+		return ;
 	while (data->envp[i])
 	{
 		if (ft_strchr(data->envp[i], '=') && !ft_strchr(data->envp[i], '?'))

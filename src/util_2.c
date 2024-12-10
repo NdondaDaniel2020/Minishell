@@ -82,5 +82,7 @@ int	get_last_position(t_new_list *aux)
 		}
 		i++;
 	}
-	return (i);
+	if (ft_strlen(aux->content[i - 1]) == 0)
+		return (i - 2);
+	return (i - 1);
 }

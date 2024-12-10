@@ -46,6 +46,7 @@ void	insert_data(t_data *data, char *command)
 	free(spliting);
 }
 
+ /* reslver o problema do peth*/ /* terminar a execucao por expancao '$HOME' e outros */
 void	master(char *command, t_data *data)
 {
 	int			i;
@@ -74,7 +75,7 @@ void	master(char *command, t_data *data)
 		else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
 			env(aux, data);
 		else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
-			export(data);
+			export(aux, data);
 		else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
 			unset(data);
 		else
@@ -90,8 +91,8 @@ int	main(void)
 	char	*input;
 
 	init_data(&data);
-	data.path = ft_split(getenv("PATH"), ':');
 	data.envp = get_all_environment();
+	data.path = ft_split(get_env("PATH", &data), ':');
 	while (1)
 	{
 		input = readline("TeamWork> ");

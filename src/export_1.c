@@ -37,14 +37,12 @@ void	change_environment_variables_question_mark(int value, t_data *data)
 	}
 }
 
-void	export(t_data *data)
+void	export(t_new_list *aux, t_data *data)
 {
 	int			i1;
 	bool		add_var;
-	t_new_list	*aux;
-
+	
 	i1 = 1;
-	aux = data->list;
 	if (print_export(data))
 		return ;
 	while (aux->content[i1])

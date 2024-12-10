@@ -71,7 +71,7 @@ void	cd(t_new_list *aux, t_data *data)
 	if (check_many_arguments(aux, data))
 		return ;
 	update_oldwpd(data);
-	dir = aux->content[get_last_position(aux) - 1];
+	dir = aux->content[get_last_position(aux)];
 	if (is_directory_valid(dir))
 		chdir(dir);
 	else if (condition_home(dir))
