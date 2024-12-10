@@ -247,32 +247,3 @@ static bool	add_expanded_variable(t_new_list *aux, t_data *data)
 
 
 
-
-static void	print_env_order(t_data *data)
-{
-	int		i;
-	int		j;
-	char	alpha;
-
-	i = 0;
-	alpha = 'a';
-	while (i < 26)
-	{
-		j = 0;
-		while (data->envp[j])
-		{
-			if (data->envp[j][0] == alpha || data->envp[j][0] == alpha - 32)
-				ft_printf("declare -x %s\n", data->envp[j]);
-			j++;
-		}
-		alpha++;
-		i++;
-	}
-	j = 0;
-	while (data->envp[j])
-	{
-		if (ft_isalpha(data->envp[j][0]) == 0 && !ft_strchr(data->envp[j], '?'))
-			ft_printf("declare -x %s\n", data->envp[j]);
-		j++;
-	}
-}

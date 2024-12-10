@@ -51,8 +51,7 @@ void	master(char *command, t_data *data)
 	int			i;
 	t_new_list	*aux;
 
-	if (count_chr(command, '\'') % 2 != 0
-		|| count_chr(command, '"') % 2 != 0)
+	if (count_chr(command, '\'') % 2 != 0 || count_chr(command, '"') % 2 != 0)
 	{
 		ft_putstr("unclosed quotes\n", 2);
 		return ;
@@ -67,7 +66,7 @@ void	master(char *command, t_data *data)
 		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
 			exit_(aux, data);
 		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
-			pwd(data);
+			pwd(aux, data);
 		else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
 			cd(aux, data);
 		else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))

@@ -76,9 +76,21 @@ bool	add_expanded_variable(t_new_list *aux, t_data *data)
 bool	check_many_arguments(t_new_list *aux, t_data *data)
 {
 	int		i;
+	int		len;
 
-	i = len_matrix(aux->content);
-	if (i > 2)
+	i = 0;
+	len = 0;
+	while (aux->content[i])
+	{
+		if (ft_strlen(aux->content[i]) == 0)
+		{
+			i++;
+			continue ;
+		}
+		i++;
+		len++;
+	}
+	if (len > 2)
 	{
 		ft_putstr_fd("cd: too many arguments\n", 2);
 		change_environment_variables_question_mark(1, data);

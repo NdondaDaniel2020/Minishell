@@ -56,23 +56,10 @@ char	*get_valid_path(t_new_list *aux, t_data *data)
 	return (NULL);
 }
 
-int	list_builtins(char *command)
+static void	error_command_not_found(t_new_list *aux)
 {
-	if (ft_strncmp(command, "echo", 4) == 0 && ft_strlen(command) == 4)
-		return (1);
-	else if (ft_strncmp(command, "cd", 2) == 0 && ft_strlen(command) == 2)
-		return (1);
-	else if (ft_strncmp(command, "pwd", 3) == 0 && ft_strlen(command) == 3)
-		return (1);
-	else if (ft_strncmp(command, "export", 6) == 0 && ft_strlen(command) == 6)
-		return (1);
-	else if (ft_strncmp(command, "unset", 5) == 0 && ft_strlen(command) == 5)
-		return (1);
-	else if (ft_strncmp(command, "env", 3) == 0 && ft_strlen(command) == 3)
-		return (1);
-	else if (ft_strncmp(command, "exit", 4) == 0 && ft_strlen(command) == 4)
-		return (1);
-	return (0);
+	ft_putstr_fd(aux->content[0], 2);
+	ft_putstr_fd(": command not found\n", 2);
 }
 
 static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
@@ -120,9 +107,6 @@ void	other_command(t_new_list *aux, t_data *data)
 		if (ft_strchr(aux->content[0], '$'))
 			check_environment_variable_expansion(aux, data);
 		else
-		{
-			ft_putstr_fd(data->list->content[0], 2);
-			ft_putstr_fd(": command not found\n", 2);
-		}
+			error_command_not_found(aux);
 	}
 }

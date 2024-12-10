@@ -34,16 +34,6 @@ char	*get_env(char *env, t_data *data)
 	return (NULL);
 }
 
-int	len_matrix(char **matrix)
-{
-	int	i;
-
-	i = 0;
-	while (matrix[i])
-		i++;
-	return (i);
-}
-
 static void	put_error_env(char *str1, char *str2, char *str3)
 {
 	ft_putstr_fd(str1, 2);
