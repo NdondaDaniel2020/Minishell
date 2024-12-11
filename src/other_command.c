@@ -65,16 +65,17 @@ static void	error_command_not_found(t_new_list *aux)
 static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 {
 	int		i;
-	// char	*value_env;
+	char	*value_env;
+	char	*aux_env;
+	char	*mark;
+	char	*cpy_env;
 
 	i = 0;
-	(void)data;
 	while (aux->content[0][i] && aux->content[0][i] != '$')
 		i++;
 	
-	ft_printf("%s\n", aux->content[0]);
 	ft_printf("%s\n", aux->content[0] + i);
-	ft_printf("[ ' - %i] %i] [ \" - %i] %i] \n", 
+	ft_printf("[ ' - %i] %i] [ \" - %i] %i] \n\n\n", 
 	count_chr('\'', aux->content[0] + i), first_str('\'', aux->content[0] + i),
 	count_chr('"', aux->content[0] + i), first_str('"', aux->content[0] + i));
 
@@ -84,23 +85,62 @@ static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 		|| (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0] + i) % 2 == 0) && (count_chr('"', aux->content[0] + i) > 0)))
 	{
 		// name
-		ft_printf("name\n");
+		aux_env = ft_strtrim(aux->content[0] + i, "\"'");
+		value_env = get_env(aux_env + 1, data);
+		if (value_env)
+		{
+			if (is_directory_valid(value_env))
+			{
+				ft_putstr_fd(value_env, 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+			}
+			else
+			{
+				value_env = ft_strtrim(value_env, "\"'");
+				ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
+				free(value_env);
+			}
+		}
+		free(aux_env);
 	}
 	else if ((count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0] + i) % 2 != 0))
 		|| (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0] + i) % 2 == 0) && (count_chr('\'', aux->content[0] + i) > 0)))
 	{
 		// $USER
-		ft_printf("$USER\n");
+		ft_putstr_fd(aux->content[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 	}
 	else if (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0] + i) % 2 != 0) && (count_chr('\'', aux->content[0] + i) > 0))
 	{
 		// '''name'''
-		ft_printf("'''name'''\n");
+		aux_env = ft_strtrim(aux->content[0] + i, "\"'");
+		value_env = get_env(aux_env + 1, data);
+		if (value_env)
+		{
+			cpy_env = ft_strdup(value_env);
+			mark = ft_strtrim(aux->content[0] + ( i + ft_strlen(aux_env)), "\"");
+			value_env = ft_strjoin(mark, value_env);
+			value_env = ft_strjoin_free(value_env, mark);
+			if (is_directory_valid(cpy_env))
+			{
+				ft_putstr_fd(value_env, 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+			}
+			else
+				ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
+		}
+		free(value_env);
+		free(aux_env);
+		free(cpy_env);
+		free(mark);
 	}
 	else if (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0] + i) % 2 != 0) && (count_chr('"', aux->content[0] + i) > 0))
 	{
-		// """name"""
-		ft_printf("\"\"\"$USER\"\"\"\n");
+		// """$USER"""
+		value_env = ft_strtrim(aux->content[0], "'");
+		ft_putstr_fd(value_env, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		free(value_env);
 	}
 }
 

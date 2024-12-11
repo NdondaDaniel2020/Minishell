@@ -50,7 +50,7 @@ void	master(char *command, t_data *data)
 			i++;
 		if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
 			exit_(aux, data);
-		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
+		else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen (aux->content[i])))
 			pwd(aux, data);
 		else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
 			cd(aux, data);
