@@ -64,46 +64,35 @@ static void	error_command_not_found(t_new_list *aux)
 
 static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 {
+	int		i;
 	// char	*value_env;
+
+	i = 0;
 	(void)data;
-	ft_printf("%s : ['-%i][\"-%i]'\n", aux->content[0], count_chr('\'', aux->content[0]), count_chr('"', aux->content[0]));
-	if (count_chr('"', aux->content[0]) == 0 && count_chr('\'', aux->content[0]) == 0)
+	while (aux->content[0][i] && aux->content[0][i] != '$')
+		i++;
+	if ((count_chr('"', aux->content[0] + i) == 0 && count_chr('\'', aux->content[0] + i) == 0)
+		|| (count_chr('\'', aux->content[0] + i) == 0 && (count_chr('"', aux->content[0] + i) > 0))
+		|| (count_chr('"', aux->content[0] + i) == 0 && (count_chr('\'', aux->content[0] + i) % 2 == 0))
+		|| (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0] + i) % 2 == 0) && (count_chr('"', aux->content[0] + i) > 0)))
 	{
 		// name
-		ft_printf("1 - name\n");
+		ft_printf("name\n");
 	}
-	else if ((count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0]) % 2 == 0)))
-	{
-		// name
-		ft_printf("2 - name\n");
-	}
-	else if (count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0]) % 2 != 0))
+	else if ((count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0] + i) % 2 != 0))
+		|| (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0] + i) % 2 == 0) && (count_chr('\'', aux->content[0] + i) > 0)))
 	{
 		// $USER
-		ft_printf("1 - $USER [%i]\n", count_chr('\'', aux->content[0]));
+		ft_printf("$USER\n");
 	}
-	else if (count_chr('\'', aux->content[0]) == 0 && (count_chr('"', aux->content[0]) > 0))
-	{
-		// name
-		ft_printf("3 - name\n");
-	}
-	else if (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0]) % 2 == 0) && (count_chr('\'', aux->content[0]) > 0))
-	{
-		ft_printf("2 - $USER\n");
-	}
-	else if (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0]) % 2 != 0) && (count_chr('\'', aux->content[0]) > 0))
+	else if (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0] + i) % 2 != 0) && (count_chr('\'', aux->content[0] + i) > 0))
 	{
 		// '''name'''
 		ft_printf("'''name'''\n");
 	}
-	else if (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0]) % 2 == 0) && (count_chr('"', aux->content[0]) > 0))
+	else if (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0] + i) % 2 != 0) && (count_chr('"', aux->content[0] + i) > 0))
 	{
-		// name
-		ft_printf("4 - name\n");
-	}
-	else if (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0]) % 2 != 0) && (count_chr('"', aux->content[0]) > 0))
-	{
-		// """$USER"""
+		// """name"""
 		ft_printf("\"\"\"$USER\"\"\"\n");
 	}
 }
