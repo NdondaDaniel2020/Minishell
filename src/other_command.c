@@ -71,6 +71,13 @@ static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 	(void)data;
 	while (aux->content[0][i] && aux->content[0][i] != '$')
 		i++;
+	
+	ft_printf("%s\n", aux->content[0]);
+	ft_printf("%s\n", aux->content[0] + i);
+	ft_printf("[ ' - %i] %i] [ \" - %i] %i] \n", 
+	count_chr('\'', aux->content[0] + i), first_str('\'', aux->content[0] + i),
+	count_chr('"', aux->content[0] + i), first_str('"', aux->content[0] + i));
+
 	if ((count_chr('"', aux->content[0] + i) == 0 && count_chr('\'', aux->content[0] + i) == 0)
 		|| (count_chr('\'', aux->content[0] + i) == 0 && (count_chr('"', aux->content[0] + i) > 0))
 		|| (count_chr('"', aux->content[0] + i) == 0 && (count_chr('\'', aux->content[0] + i) % 2 == 0))
