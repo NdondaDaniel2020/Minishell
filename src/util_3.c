@@ -19,7 +19,7 @@ bool	first_str(char chr, char *str)
 	return (false);
 }
 
-bool	count_chr(char chr, char *str)
+int	count_chr(char chr, char *str)
 {
 	int	i;
 	int	count;

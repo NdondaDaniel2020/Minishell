@@ -130,7 +130,7 @@ int		len_matrix(char **matrix);
 int		get_last_position(t_new_list *aux);
 
 bool	first_str(char chr, char *str);
-bool	count_chr(char chr, char *str);
+int		count_chr(char chr, char *str);
 
 /* list */
 t_new_list  *ft_lstnew_new(char **content);

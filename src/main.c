@@ -12,22 +12,6 @@
 
 #include "minishell.h"
 
-int	count_chr(char *command, char chr)
-{
-	int	i;
-	int	len;
-
-	i = 0;
-	len = 0;
-	while (command[i])
-	{
-		if (command[i] == chr)
-			len++;
-		i++;
-	}
-	return (len);
-}
-
 void	insert_data(t_data *data, char *command)
 {
 	int		i;
@@ -52,7 +36,7 @@ void	master(char *command, t_data *data)
 	int			i;
 	t_new_list	*aux;
 
-	if (count_chr(command, '\'') % 2 != 0 || count_chr(command, '"') % 2 != 0)
+	if (count_chr('\'', command) % 2 != 0 || count_chr('"', command) % 2 != 0)
 	{
 		ft_putstr("unclosed quotes\n", 2);
 		return ;

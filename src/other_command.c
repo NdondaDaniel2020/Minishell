@@ -64,22 +64,47 @@ static void	error_command_not_found(t_new_list *aux)
 
 static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 {
-	char	*value_env;
-
-	value_env = get_env(aux->content[0] + 1, data);
-	if (value_env)
+	// char	*value_env;
+	(void)data;
+	ft_printf("%s : ['-%i][\"-%i]'\n", aux->content[0], count_chr('\'', aux->content[0]), count_chr('"', aux->content[0]));
+	if (count_chr('"', aux->content[0]) == 0 && count_chr('\'', aux->content[0]) == 0)
 	{
-		if (is_directory_valid(value_env))
-		{
-			ft_putstr_fd(value_env, 2);
-			ft_putstr_fd(": Is a directory\n", 2);
-		}
-		else
-		{
-			value_env = ft_strtrim(value_env, "\"'");
-			ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
-			free(value_env);
-		}
+		// name
+		ft_printf("1 - name\n");
+	}
+	else if ((count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0]) % 2 == 0)))
+	{
+		// name
+		ft_printf("2 - name\n");
+	}
+	else if (count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0]) % 2 != 0))
+	{
+		// $USER
+		ft_printf("1 - $USER [%i]\n", count_chr('\'', aux->content[0]));
+	}
+	else if (count_chr('\'', aux->content[0]) == 0 && (count_chr('"', aux->content[0]) > 0))
+	{
+		// name
+		ft_printf("3 - name\n");
+	}
+	else if (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0]) % 2 == 0) && (count_chr('\'', aux->content[0]) > 0))
+	{
+		ft_printf("2 - $USER\n");
+	}
+	else if (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0]) % 2 != 0) && (count_chr('\'', aux->content[0]) > 0))
+	{
+		// '''name'''
+		ft_printf("'''name'''\n");
+	}
+	else if (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0]) % 2 == 0) && (count_chr('"', aux->content[0]) > 0))
+	{
+		// name
+		ft_printf("4 - name\n");
+	}
+	else if (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0]) % 2 != 0) && (count_chr('"', aux->content[0]) > 0))
+	{
+		// """$USER"""
+		ft_printf("\"\"\"$USER\"\"\"\n");
 	}
 }
 
