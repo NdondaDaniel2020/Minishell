@@ -18,6 +18,8 @@ SRC = ./src/
 INCLUDE = ./include
 FILES = cd_1.c \
 		cd_2.c \
+		check_expansion_1.c \
+		check_expansion_2.c \
 		echo_1.c \
 		echo_2.c \
 		echo_3.c \
@@ -39,6 +41,28 @@ FILES = cd_1.c \
 		util_1.c \
 		util_2.c \
 		util_3.c
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
