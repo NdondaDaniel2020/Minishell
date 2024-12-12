@@ -91,8 +91,8 @@ static char	**list_environment(void)
 char	**get_all_environment(void)
 {
 	int		i;
-	char	*path;
 	char	*env;
+	char	*path;
 	char	**new_env;
 	char	**list_env;
 

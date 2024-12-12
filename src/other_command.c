@@ -41,6 +41,8 @@ char	*get_valid_path(t_new_list *aux, t_data *data)
 	DIR				*open_dir;
 
 	i = 0;
+	if (data->path == NULL)
+		return (NULL);
 	while (data->path[i])
 	{
 		open_dir = opendir(data->path[i]);

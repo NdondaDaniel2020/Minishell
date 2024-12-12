@@ -54,4 +54,6 @@ void	export(t_new_list *aux, t_data *data)
 			change_environment_variables_question_mark(1, data);
 		i1++;
 	}
+	if (get_env("PATH", data) && data->path == NULL)
+		data->path = ft_split(get_env("PATH", data), ':');
 }

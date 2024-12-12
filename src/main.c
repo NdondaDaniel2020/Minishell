@@ -30,7 +30,6 @@ void	insert_data(t_data *data, char *command)
 	free(spliting);
 }
 
- /* reslver o problema do peth*/ /* terminar a execucao por expancao '$HOME' e outros */
 void	master(char *command, t_data *data)
 {
 	int			i;

@@ -104,4 +104,9 @@ void	unset(t_data *data)
 			change_environment_variables_question_mark(1, data);
 		i++;
 	}
+	if (get_env("PATH", data) == NULL)
+	{
+		free_matrix(data->path);
+		data->path = NULL;
+	}
 }
