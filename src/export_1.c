@@ -41,7 +41,7 @@ void	export(t_new_list *aux, t_data *data)
 {
 	int			i1;
 	bool		add_var;
-	
+
 	i1 = 1;
 	if (print_export(data))
 		return ;

@@ -15,8 +15,16 @@
 bool	condition_extract_value_env_quotes(int i, t_new_list *aux)
 {
 	return (first_str('"', aux->content[0])
-			&& (count_chr('"', aux->content[0] + i) % 2 == 0)
-			&& (count_chr('\'', aux->content[0] + i) > 0));
+		&& (count_chr('"', aux->content[0] + i) % 2 == 0)
+		&& (count_chr('\'', aux->content[0] + i) > 0));
+}
+
+static void	free_ext(char *value_env, char *aux_env, char *cpy_env, char *mark)
+{
+	free(value_env);
+	free(aux_env);
+	free(cpy_env);
+	free(mark);
 }
 
 void	extract_value_env_quotes(int i, t_new_list *aux, t_data *data)
@@ -31,7 +39,7 @@ void	extract_value_env_quotes(int i, t_new_list *aux, t_data *data)
 	if (value_env)
 	{
 		cpy_env = ft_strdup(value_env);
-		mark = ft_strtrim(aux->content[0] + ( i + ft_strlen(aux_env)), "\"");
+		mark = ft_strtrim(aux->content[0] + (i + ft_strlen(aux_env)), "\"");
 		value_env = ft_strjoin(mark, value_env);
 		value_env = ft_strjoin_free(value_env, mark);
 		if (is_directory_valid(cpy_env))
@@ -40,10 +48,8 @@ void	extract_value_env_quotes(int i, t_new_list *aux, t_data *data)
 			ft_putstr_fd(": Is a directory\n", 2);
 		}
 		else
-			ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
+			ft_lstnew_addback(&data->list,
+				ft_lstnew_new(split_2(value_env, ' ')));
 	}
-	free(value_env);
-	free(aux_env);
-	free(cpy_env);
-	free(mark);
+	free_ext(value_env, aux_env, cpy_env, mark);
 }

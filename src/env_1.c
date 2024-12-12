@@ -62,7 +62,7 @@ static bool	check_erro_env(t_new_list *aux, t_data *data)
 	{
 		len = ft_strlen(aux->content[get_last_position(aux)]);
 		if (len > 0 && aux->content[get_last_position(aux)]
-				&& !ft_strchr(aux->content[get_last_position(aux)], '$')
+			&& !ft_strchr(aux->content[get_last_position(aux)], '$')
 			&& ft_strncmp(aux->content[get_last_position(aux)], "env", 4))
 		{
 			put_error_env("env: ‘", aux->content[get_last_position(aux)],
