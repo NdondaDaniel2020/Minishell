@@ -1,0 +1,383 @@
+/*
+if (data->btree->right)
+{
+	dup2(data->write_on_the_pipe, STDOUT_FILENO);
+	close(data->write_on_the_pipe);
+}
+if (!data->btree->right)
+{
+	dup2(data->read_in_the_pipe, STDIN_FILENO);
+	close(data->read_in_the_pipe);
+}
+*/	
+		
+
+
+
+
+
+/*  v1 */
+void	master(char *command, t_data *data)
+{
+	int		i;
+	int		pipefd[2];
+	t_data	*cpy_data;
+
+	cpy_data = data;
+	insert_data(data, command);
+
+	pipe(pipefd);
+	data->copy_fd = dup(STDOUT_FILENO);
+	while (data->btree)
+	{
+		//////////////////////////////////////////////////////////////////////////
+
+		i = 0;
+		if (ft_strlen(data->btree->content[i]) == 0)
+			i++;
+		
+		//////////////////////////////////////////////////////////////////////////
+
+		if (data->is_pipe && data->btree->right)
+		{
+			data->write_on_the_pipe = -1;
+			data->read_in_the_pipe = pipefd[0];
+			dup2(data->write_on_the_pipe, STDOUT_FILENO);
+		}
+		else if (data->is_pipe && !data->btree->right)
+		{
+			data->write_on_the_pipe = pipefd[1];
+			data->read_in_the_pipe = -1;
+			dup2(data->copy_fd, STDOUT_FILENO);
+		}
+		
+		//////////////////////////////////////////////////////////////////////////
+
+		ft_printf("[%s]\n", data->btree->content[i]);
+
+		//////////////////////////////////////////////////////////////////////////
+
+		if (!ft_strncmp(data->btree->content[i], "exit", ft_strlen(data->btree->content[i])))
+			exit_(data);
+		else if (!ft_strncmp(data->btree->content[i], "pwd", ft_strlen(data->btree->content[i])))
+			pwd(data);
+		else if (!ft_strncmp(data->btree->content[i], "cd", ft_strlen(data->btree->content[i])))
+			cd(data);
+		else if (!ft_strncmp(data->btree->content[i], "echo", ft_strlen(data->btree->content[i])))
+			echo(data);
+		else if (!ft_strncmp(data->btree->content[i], "env", ft_strlen(data->btree->content[i])))
+			env(data);
+		else if (!ft_strncmp(data->btree->content[i], "export", ft_strlen(data->btree->content[i])))
+			export(data);
+		else if (!ft_strncmp(data->btree->content[i], "unset", ft_strlen(data->btree->content[i])))
+			unset(data);
+		else
+			other_command(data);
+		
+		/////////////////////////////////////////////////////////////////////////
+		
+		data->btree = data->btree->right;
+	}
+
+	free_all_data(cpy_data);
+}
+
+
+
+
+
+/* v2 */
+
+void	master(char *command, t_data *data)
+{
+	int		i;
+	int		pid;
+	char	*path;
+	t_btree	*aux;
+
+	insert_data(data, command);
+	aux = data->btree;
+	path = NULL;
+	while (aux)
+	{
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		i = 0;
+		if (ft_strlen(aux->content[i]) == 0)
+			i++;
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])) ||
+			list_builtins(aux->content[i]))
+			path = ft_strdup(aux->content[i]);
+		else
+			path = get_valid_path(data);
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		pid = fork();
+		if (pid == 0)
+		{
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			if (path == NULL)
+			{
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				change_environment_variables_question_mark(127, data);
+				write(2, "command not found: \n", 20);
+				ft_putstr_fd(aux->content[i], 2);
+
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				if (data->path)
+					free_matrix(data->path);
+				if (data->envp)
+					free_matrix(data->envp);
+				free_all_data(data);
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
+				exit(127);
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			}
+			else if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
+			{
+				free(path);
+				exit_(data);
+			}
+			else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
+				pwd(data);
+			else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
+				cd(data);
+			else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
+				echo(data);
+			else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
+				env(data);
+			else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
+				export(data);
+			else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
+				unset(data);
+			else
+				execve(path, aux->content, data->envp);
+
+			change_environment_variables_question_mark(0, data);
+			
+			if (data->path)
+				free_matrix(data->path);
+			if (data->envp)
+				free_matrix(data->envp);
+			
+			free_all_data(data);
+			
+			free(path);
+			
+			exit(0);
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
+		else
+		{
+			wait(NULL);
+			free(path);
+			aux = aux->right;
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
+	// ft_printf("|\n\n\n\n\n\n\n\n\n\n\n|");
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
+	// {
+	// 	if (data->path)
+	// 	{
+	// 		free_matrix(data->path);
+	// 		data->path = NULL;
+	// 	}
+	// 	if (data->envp)
+	// 	{
+	// 		free_matrix(data->envp);
+	// 		data->envp = NULL;
+	// 	}
+	// }
+	// free_all_data(data);
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}
+
+
+
+echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+
+
+static bool	add_expanded_variable(t_new_list *aux, t_data *data)
+
+static bool	add_expanded_variable(t_new_list *aux, t_data *data)
+{
+	int		i;
+	char	*value_env;
+	char	*aux_env;
+	char	**split_cmd;
+	char	**new_content;
+
+	i = 0;
+	value_env = get_env(aux->content[1] + 1, data);
+	if (value_env)
+	{
+		value_env = ft_strtrim(value_env, "\"");
+		aux_env = ft_strtrim(value_env, "'");
+		free(value_env);
+		value_env = ft_strdup(aux->content[0]);
+		split_cmd = split_2(aux_env, ' ');
+		new_content = ft_calloc(len_matrix(split_cmd) + 2, sizeof(char *));
+		new_content[i] = value_env;
+		while (split_cmd[i])
+		{
+			new_content[i + 1] = split_cmd[i];
+			i++;
+		}
+		new_content[i + 1] = NULL;
+		ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+		free(split_cmd);
+		free(aux_env);
+	}
+	else
+	{
+		new_content = ft_calloc(3, sizeof(char *));
+		new_content[0] = ft_strdup("cd");
+		new_content[1] = ft_strdup(get_env("HOME", data));
+		ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+	}
+	return (true);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// int		i;
+	char	*value_env;
+	char	*extrat_env;
+
+	ft_printf("[[%s]]\n", aux->content[0]);
+	if ((count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0]) % 2 != 0)) || (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0]) % 2 == 0) && (count_chr('\'', aux->content[0]) > 0)))
+	{
+		ft_putstr_fd(aux->content[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+	}
+	else if ((count_chr('"', aux->content[0]) == 0 && (count_chr('\'', aux->content[0]) % 2 == 0)) || (count_chr('\'', aux->content[0]) == 0 && (count_chr('"', aux->content[0]) > 0)) || (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0]) % 2 != 0) && (count_chr('"', aux->content[0]) > 0)))
+	{
+		value_env = get_env(aux->content[0] + 1, data);
+		if (value_env)
+		{
+			if (is_directory_valid(value_env))
+			{
+				ft_putstr_fd(value_env, 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+			}
+			else
+			{
+				value_env = ft_strtrim(value_env, "\"'");
+				ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
+				free(value_env);
+			}
+		}
+	}
+	else if (first_str('"', aux->content[0]) && (count_chr('"', aux->content[0]) % 2 != 0) && (count_chr('\'', aux->content[0]) > 0))
+	{
+		// '''name'''
+		
+		extrat_env = ft_strtrim(aux->content[0], "\"'");
+		ft_printf("{{%s}}\n", extrat_env);
+		// value_env = get_env(aux->content[0] + 1, data);
+		// if (value_env)
+		// {
+		// 	if (is_directory_valid(value_env))
+		// 	{
+		// 		ft_putstr_fd(value_env, 2);
+		// 		ft_putstr_fd(": Is a directory\n", 2);
+		// 	}
+		// 	else
+		// 	{
+		// 		value_env = ft_strtrim(value_env, "\"'");
+		// 		ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
+		// 		free(value_env);
+		// 	}
+		// }
+	}
+	else if (first_str('\'', aux->content[0]) && (count_chr('\'', aux->content[0]) % 2 != 0) && (count_chr('"', aux->content[0]) > 0))
+	{
+		value_env = ft_strtrim(aux->content[0], "'");
+		ft_putstr_fd(value_env, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		free(value_env);
+	}
+
+
+
+
+
+
+
+
+
+static void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
+{
+	int		i;
+	char	*value_env;
+
+	i = 0;
+	(void)data;
+	while (aux->content[0][i] && aux->content[0][i] != '$')
+		i++;
+	if ((count_chr('"', aux->content[0] + i) == 0 && count_chr('\'', aux->content[0] + i) == 0)
+		|| (count_chr('\'', aux->content[0] + i) == 0 && (count_chr('"', aux->content[0] + i) > 0))
+		|| (count_chr('"', aux->content[0] + i) == 0 && (count_chr('\'', aux->content[0] + i) % 2 == 0))
+		|| (first_str('\'', aux->content[0] + i) && (count_chr('\'', aux->content[0] + i) % 2 == 0) && (count_chr('"', aux->content[0] + i) > 0)))
+	{
+		// name
+		/*
+		ft_printf("name\n");
+		value_env = get_env(aux->content[0] + 1, data);
+		if (value_env)
+		{
+			if (is_directory_valid(value_env))
+			{
+				ft_putstr_fd(value_env, 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+			}
+			else
+			{
+				value_env = ft_strtrim(value_env, "\"'");
+				ft_lstnew_addback(&data->list, ft_lstnew_new(split_2(value_env, ' ')));
+				free(value_env);
+			}
+		}
+		*/
+	}
+	else if ((count_chr('"', aux->content[0] + i) == 0 && (count_chr('\'', aux->content[0] + i) % 2 != 0))
+		|| (first_str('"', aux->content[0] + i) && (count_chr('"', aux->content[0] + i) % 2 == 0) && (count_chr('\'', aux->content[0] + i) > 0)))
+	{
+		/*
+		// $USER
+		ft_printf("$USER\n");
+		ft_putstr_fd(aux->content[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+		*/
+	}
+	else if (first_str('"', aux->content[0] + i) && (count_chr('"', aux->content[0] + i) % 2 != 0) && (count_chr('\'', aux->content[0] + i) > 0))
+	{
+		// '''name'''
+		ft_printf("'''name'''\n");
+	}
+	else if (first_str('\'', aux->content[0] + i) && (count_chr('\'', aux->content[0] + i) % 2 != 0) && (count_chr('"', aux->content[0] + i) > 0))
+	{
+		// """$USER"""
+		value_env = ft_strtrim(aux->content[0], "'");
+		ft_putstr_fd(value_env, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		free(value_env);
+	}
+}

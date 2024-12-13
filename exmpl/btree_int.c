@@ -14,9 +14,8 @@ t_btree	*remove_tree(t_btree *root, int item);
 
 t_btree	*insert_into_btree(t_btree *root, int item);
 int	search_btree(t_btree *root, int item);
-int	len_btree(t_btree *root);
-
 void	show_btree(t_btree *root);
+int	len_btree(t_btree *root);
 
 
 // binary tree

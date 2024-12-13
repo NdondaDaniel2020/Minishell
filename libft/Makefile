@@ -70,7 +70,7 @@ BFILES = ft_lstmap.c \
 
 OBJS = $(FILES:.c=.o)
 BOBJS = $(BFILES:.c=.o)
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 
 all:	$(NAME)
 

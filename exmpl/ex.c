@@ -16,111 +16,6 @@
 #include <sys/resource.h>
 
 /*
-int main() 
-{
-    char *argv[] = {"/bin/ls", "-l", "/home", NULL}; // Argumentos para o novo programa
-    char *envp[] = {NULL}; // Ambiente para o novo programa
-
-    printf("Executando ls -l /home usando execve\n");
-
-    // Executa o novo programa
-    if (execve("/bin/ls", argv, envp) == -1) {
-        perror("Erro ao executar execve");
-        exit(EXIT_FAILURE);
-    }
-
-    // Este código não será executado se execve for bem-sucedido
-    printf("Este código não será executado.\n");
-
-    return 0;
-}
-*/
-/*
-// ex 1
-int main()
-{
-    pid_t pid;
-
-	pid = fork(); // Cria um novo processo
-    if (pid < 0) 
-	{
-        // Erro ao criar o processo filho
-        perror("Falha no fork");
-        return 1;
-    } else if (pid == 0)
-	{
-        // Este bloco é executado pelo processo filho
-        printf("Processo filho: PID = %d, PPID = %d\n", getpid(), getppid());
-    } else
-	{
-        // Este bloco é executado pelo processo pai
-        printf("Processo pai: PID = %d, PID do filho = %d\n", getpid(), pid);
-    }
-    return 0;
-}
-*/
-/*
-// ex 2
-int main() {
-    pid_t pid = fork();
-
-    if (pid < 0) {
-        perror("Falha no fork");
-        return 1;
-    } else if (pid == 0) {
-        // Processo filho: imprime números pares
-        for (int i = 0; i <= 10; i += 2) {
-            printf("Filho: %d\n", i);
-            sleep(1); // Pausa para simular processamento
-        }
-    } else {
-        // Processo pai: imprime números ímpares
-        for (int i = 1; i <= 10; i += 2) {
-            printf("Pai: %d\n", i);
-            sleep(1); // Pausa para simular processamento
-        }
-    }
-
-    return 0;
-}
-*/
-/*
-//exe: 3
-int main() {
-    pid_t pid = fork(); // Criação do processo filho
-
-    if (pid < 0) {
-        // Verificação de erro no fork
-        perror("Erro ao criar o processo filho");
-        return 1;
-    } else if (pid == 0) {
-        // Código do processo filho
-        printf("Processo filho iniciado. PID = %d\n", getpid());
-        sleep(1); // Simula algum processamento no processo filho
-        printf("Processo filho terminando.\n");
-        return 42; // Código de saída do processo filho
-    } else {
-        // Código do processo pai
-        int status;
-        printf("Processo pai aguardando o término do processo filho.\n");
-        
-        // wait() faz o pai aguardar o término do processo filho
-        wait(&status);
-
-        // Verifica se o processo filho terminou com sucesso
-        if (WIFEXITED(status)) {
-            printf("Processo filho terminou com código de saída %d\n", WEXITSTATUS(status));
-        } else {
-            printf("Processo filho terminou de forma anormal.\n");
-        }
-
-        printf("Processo pai continuando sua execução.\n");
-    }
-
-    return 0;
-}
-*/
-/*
 int main()
 {
     int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)
@@ -173,6 +68,286 @@ int main()
 }
 */
 /*
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <string.h>
+
+int main() {
+    int pipe_fd[2]; // Descritores do pipe
+    char mensagem[] = "Esta mensagem será filtrada pelo grep\n";
+    char *grep_args[] = {"/usr/bin/grep", "mensagem", NULL}; // Comando e argumentos
+
+    // Criando o pipe
+    if (pipe(pipe_fd) == -1) {
+        perror("Erro ao criar o pipe");
+        return 1;
+    }
+
+    pid_t pid = fork(); // Criando o processo filho
+
+    if (pid == -1) {
+        perror("Erro ao criar o processo filho");
+        return 1;
+    }
+
+    if (pid == 0) {
+        // Processo filho
+        close(pipe_fd[1]); // Fecha o lado de escrita do pipe
+
+        // Redireciona a entrada padrão para o lado de leitura do pipe
+        dup2(pipe_fd[0], STDIN_FILENO);
+        close(pipe_fd[0]); // Fecha o lado de leitura após redirecionamento
+
+        // Executa o comando grep usando execve
+        execve("/usr/bin/grep", grep_args, NULL);
+
+        // Se execve falhar
+        perror("Erro ao executar execve");
+        return 1;
+    } else {
+        // Processo pai
+        close(pipe_fd[0]); // Fecha o lado de leitura do pipe
+
+        // Escreve uma mensagem no pipe
+        write(pipe_fd[1], mensagem, strlen(mensagem));
+        close(pipe_fd[1]); // Fecha o lado de escrita
+
+        // Aguarda o processo filho concluir
+        wait(NULL);
+        printf("Processo filho terminou.\n");
+    }
+
+    return 0;
+}
+*/
+/*
+// exemplo de uso de pipe
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <string.h>
+
+int main() {
+    int fd[2];
+    pipe(fd);
+
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Processo filho: redireciona stdout para o pipe e executa "ls"
+        close(fd[0]); // Fecha o lado de leitura
+        dup2(fd[1], STDOUT_FILENO); // Redireciona stdout para o pipe
+        close(fd[1]); // Fecha o lado de escrita
+
+        char *args[] = {"/bin/ls", NULL};
+        execve("/bin/ls", args, NULL);
+    } else {
+        // Processo pai: lê do pipe e espera o filho terminar
+        close(fd[1]); // Fecha o lado de escrita
+        char buffer[1024];
+        read(fd[0], buffer, sizeof(buffer));
+        close(fd[0]); // Fecha o lado de leitura
+
+        printf("Saída do comando 'ls':\n%s\n", buffer);
+        wait(NULL); // Espera o processo filho terminar
+    }
+
+    return 0;
+}
+*/
+/*
+// exemplo de uso de pipe
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+int main() {
+    int fd[2];
+    char buffer[128];
+
+    if (pipe(fd) == -1) {
+        perror("Erro ao criar o pipe");
+        return 1;
+    }
+
+    if (fork() == 0) {
+        // Processo filho: escreve no pipe
+        close(fd[0]); // Fecha o lado de leitura
+        char mensagem[] = "Olá do processo filho!";
+        write(fd[1], mensagem, strlen(mensagem) + 1);
+        close(fd[1]); // Fecha o lado de escrita
+    } else {
+        // Processo pai: lê do pipe
+        close(fd[1]); // Fecha o lado de escrita
+        read(fd[0], buffer, sizeof(buffer));
+        printf("Mensagem recebida: %s\n", buffer);
+        close(fd[0]); // Fecha o lado de leitura
+    }
+
+    return 0;
+}
+*/
+/*
+// exemplo de uso de dup2
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int main() {
+    int fd = open("saida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0) {
+        perror("Erro ao abrir o arquivo");
+        return 1;
+    }
+
+    dup2(fd, STDOUT_FILENO); // Redireciona stdout para o arquivo
+    printf("Esta mensagem será escrita no arquivo!\n");
+
+    close(fd);
+    return 0;
+}
+*/
+/*
+// Exemplo de uso de dup
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int main() {
+    int fd = open("saida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0) {
+        perror("Erro ao abrir o arquivo");
+        return 1;
+    }
+
+    int new_fd = dup(fd); // Duplica o descritor
+    write(new_fd, "Escrevendo com dup\n", 20);
+
+    close(fd);
+    close(new_fd);
+    return 0;
+}
+*/
+/*
+// ex exemplo de uso de execve
+int main() 
+{
+    char *argv[] = {"/bin/ls", "-l", "/home", NULL}; // Argumentos para o novo programa
+    char *envp[] = {NULL}; // Ambiente para o novo programa
+
+    printf("Executando ls -l /home usando execve\n");
+
+    // Executa o novo programa
+    if (execve("/bin/ls", argv, envp) == -1) {
+        perror("Erro ao executar execve");
+        exit(EXIT_FAILURE);
+    }
+
+    // Este código não será executado se execve for bem-sucedido
+    printf("Este código não será executado.\n");
+
+    return 0;
+}
+*/
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+/*
+// ex 1
+int main()
+{
+    pid_t pid;
+
+	pid = fork(); // Cria um novo processo
+    if (pid < 0) 
+	{
+        // Erro ao criar o processo filho
+        perror("Falha no fork");
+        return 1;
+    } else if (pid == 0)
+	{
+        // Este bloco é executado pelo processo filho
+        printf("Processo filho: PID = %d, PPID = %d\n", getpid(), getppid());
+    } else
+	{
+        // Este bloco é executado pelo processo pai
+        printf("Processo pai: PID = %d, PID do filho = %d\n", getpid(), pid);
+    }
+    return 0;
+}
+*/
+/*
+// ex 2
+int main()
+{
+    pid_t pid = fork();
+
+    if (pid < 0) {
+        perror("Falha no fork");
+        return 1;
+    } else if (pid == 0) {
+        // Processo filho: imprime números pares
+        for (int i = 0; i <= 10; i += 2) {
+            printf("Filho: %d\n", i);
+            sleep(1); // Pausa para simular processamento
+        }
+    } else {
+        // Processo pai: imprime números ímpares
+        for (int i = 1; i <= 10; i += 2) {
+            printf("Pai: %d\n", i);
+            sleep(1); // Pausa para simular processamento
+        }
+    }
+    return 0;
+}
+*/
+/*
+//exe: 3
+int main() {
+    pid_t pid = fork(); // Criação do processo filho
+
+    if (pid < 0) {
+        // Verificação de erro no fork
+        perror("Erro ao criar o processo filho");
+        return 1;
+    } else if (pid == 0) {
+        // Código do processo filho
+        printf("Processo filho iniciado. PID = %d\n", getpid());
+        sleep(1); // Simula algum processamento no processo filho
+        printf("Processo filho terminando.\n");
+        return 42; // Código de saída do processo filho
+    } else {
+        // Código do processo pai
+        int status;
+        printf("Processo pai aguardando o término do processo filho.\n");
+        
+        // wait() faz o pai aguardar o término do processo filho
+        wait(&status);
+
+        // Verifica se o processo filho terminou com sucesso
+        if (WIFEXITED(status)) {
+            printf("Processo filho terminou com código de saída %d\n", WEXITSTATUS(status));
+        } else {
+            printf("Processo filho terminou de forma anormal.\n");
+        }
+
+        printf("Processo pai continuando sua execução.\n");
+    }
+
+    return 0;
+}
+*/
+/*
 // Manipulador de sinal para SIGINT
 void handle_sigint(int sig) {
     // Substitui a linha atual por uma mensagem padrão
@@ -204,7 +379,6 @@ int main() {
         // Libera a memória alocada
         free(input);
     }
-
     return 0;
 }
 */
@@ -247,7 +421,6 @@ int main()
             printf("Processo filho foi parado por um sinal %d.\n", WSTOPSIG(status));
         }
     }
-
     return 0;
 }
 */
