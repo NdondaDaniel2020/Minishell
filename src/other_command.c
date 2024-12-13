@@ -64,13 +64,13 @@ static void	error_command_not_found(t_new_list *aux)
 	ft_putstr_fd(": command not found\n", 2);
 }
 
-void	other_command(t_new_list *aux, t_data *data)
+void	other_command(int i, t_new_list *aux, t_data *data)
 {
 	int		pid;
 	char	*path;
 
-	if (ft_strnstr(aux->content[0], "/", ft_strlen(aux->content[0])))
-		path = ft_strdup(aux->content[0]);
+	if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])))
+		path = ft_strdup(aux->content[i]);
 	else
 		path = get_valid_path(aux, data);
 	if (path)
@@ -84,7 +84,7 @@ void	other_command(t_new_list *aux, t_data *data)
 	}
 	else
 	{
-		if (ft_strchr(aux->content[0], '$'))
+		if (ft_strchr(aux->content[i], '$'))
 			check_environment_variable_expansion(aux, data);
 		else
 			error_command_not_found(aux);

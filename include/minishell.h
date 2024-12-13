@@ -134,7 +134,7 @@ char	*ft_charjoin_free(char *s1, char c);
 char	**split_2(char *str, char chr);
 char	*get_valid_path(t_new_list *aux, t_data *data);
 
-void	other_command(t_new_list *aux, t_data *data);
+void	other_command(int i, t_new_list *aux, t_data *data);
 void	insert_data(t_data *data, char *command);
 
 int		list_builtins(char *command);

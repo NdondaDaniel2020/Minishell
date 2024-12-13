@@ -13,8 +13,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <string.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+
+typedef struct s_data
+{
+	int			write_on_the_pipe;
+	int			read_in_the_pipe;
+	int			copy_fd;
+	bool		is_pipe;
+	bool		space;
+	bool		automatic_input;
+	char		*command;
+	char		*output;
+	char		*put_amb;
+	char		**path;
+	char		**envp;
+	// t_new_list	*list;
+}			t_data;
+
+//////////////// ft_strdup ////////////////
+char	*ft_strdup(const char *s)
+{
+	int		len;
+	int		i;
+	char	*d;
+
+	if (!s)
+		return (NULL);
+	i = 0;
+	len = strlen(s);
+	d = malloc((len + 1) * sizeof(char));
+	if (!d)
+		return (NULL);
+	while (s[i])
+	{
+		d[i] = s[i];
+		i++;
+	}
+	d[i] = '\0';
+	return (d);
+}
 
 /* Abre o arquivo com o modo e permissões necessarias*/
 
@@ -46,11 +87,11 @@ void	setup_redir(int fd, int fd_target)
 
 /* Executa o comando fornecido */
 
-void	exe_command(char *command, int fd, int fd_target)
+void	exe_command(t_data *data, int fd, int fd_target)
 {
 	setup_redir(fd, fd_target);
-	
-	char *args[] = {"/bin/sh", "-c", command, NULL};
+
+	char *args[] = {"/bin/sh", "-c", data->command, NULL};
 	if (execve("/bin/sh", args, NULL) == -1)
 	{
 		perror("Erro ao executar o commando");
@@ -60,9 +101,9 @@ void	exe_command(char *command, int fd, int fd_target)
 
 /* Cria o processo filho, configura o redir e executa o comando*/
 
-void	exec_redir(char *command, int fd, int fd_target)
+void	exec_redir(t_data *data, int fd, int fd_target)
 {
-	int	status;
+	int		status;
 	pid_t	pid;
 
 	pid = fork();
@@ -74,62 +115,80 @@ void	exec_redir(char *command, int fd, int fd_target)
 	}
 	if (pid == 0)
 	{
-		exe_command(command, fd, fd_target);
+		exe_command(data, fd, fd_target);
 	}
 	else
 	{
 		close(fd);
 		wait(&status);
 		if (status != 0)
-			printf("O comando '%s' falhou com status %d\n", command, status);
+			printf("O comando '%s' falhou com status %d\n", data->command, status);
 	}
 }
 
 /* main */
 
-void	handle_redir(char *command, char *file, int mode, int fd_target)
+void	handle_redir(t_data *data, char *file, int mode, int fd_target)
 {
 	int	fd;
 
 	fd = open_file(file, mode);
-	exec_redir(command, fd, fd_target);
+	exec_redir(data, fd, fd_target);
 }
 
 /* redirections */
 
-void	output(char *command, char *filename)
+void	output(t_data *data, char *filename)
 {
-	handle_redir(command, filename, O_WRONLY | O_CREAT | O_TRUNC, STDOUT_FILENO);
+	handle_redir(data, filename, O_WRONLY | O_CREAT | O_TRUNC, STDOUT_FILENO);
 }
 
-void	input(char *command, char *infile)
+void	input(t_data *data, char *infile)
 {
-	handle_redir(command, infile, O_RDONLY, STDIN_FILENO);
+	handle_redir(data, infile, O_RDONLY, STDIN_FILENO);
 }
 
-void	output_append(char *command, char *outfile)
+void	output_append(t_data *data, char *outfile)
 {
-	handle_redir(command, outfile, O_WRONLY | O_CREAT | O_APPEND, STDOUT_FILENO);
+	handle_redir(data, outfile, O_WRONLY | O_CREAT | O_APPEND, STDOUT_FILENO);
 }
+
 
 /* main just for tests */
-other_command(aux, data);
-int main() {
+int main()
+{
+	int i = 0;
+	t_data	data;
+
+	data.command = NULL;
+	data.command = ft_strdup("echo Hello, World! 1234567890");
+
     // Redirecionar saída para arquivo >
-    output("echo Hello, World!", "outpu.txt");
+    output(&data, "output_1.txt");
 
     // Redirecionar entrada a partir de um arquivo <
-    input("cat", "output.txt");
+	if (data.command)
+	{
+		free(data.command);
+		data.command = NULL;
+	}
+	data.command = ft_strdup("cat");
+	input(&data, "output_1.txt");
 
     // Teste com modo de append
-    int i = 0;
     while (i <= 10)
     {
 		// >>
-    	output_append("echo Append Test", "output.txt");
+		if (data.command)
+		{
+			free(data.command);
+			data.command = NULL;
+		}
+		data.command = ft_strdup("echo Hello, World! 1234567890");
+    	output_append(&data, "output_1.txt");
 		i++;
-	}    
-
+	}
+	printf("TESTE COM APPEND\n");
     return 0;
 }
 
