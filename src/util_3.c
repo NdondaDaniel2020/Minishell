@@ -34,3 +34,68 @@ int	count_chr(char chr, char *str)
 	}
 	return (count);
 }
+
+int	get_position_chr(char chr, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == chr)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+static bool	check_valid_redirection(int pos, char *str)
+{
+	bool	i1;
+	bool	i2;
+
+	i1 = true;
+	i2 = true;
+	while (str[pos])
+	{
+		if (str[pos] == '\'' || str[pos] == '"')
+			i1 = false;
+		pos++;
+	}
+	pos--;
+	while (str[pos])
+	{
+		if (str[pos] == '\'' || str[pos] == '"')
+			i2 = false;
+		pos--;
+	}
+	if (!i1 && !i2)
+		return (false);
+	return (true);
+}
+
+bool	is_redirection(char *str)
+{
+	int	gt_count;
+	int	lt_count;
+
+	gt_count = count_chr('>', str);
+	lt_count = count_chr('<', str);
+	if ((gt_count > 0 && gt_count < 3 && lt_count == 0)
+		|| (lt_count > 0 && lt_count < 3 && gt_count == 0))
+	{
+		if (gt_count == 1 && check_valid_redirection(get_position_chr('>', str)
+				, str))
+			return (true);
+		else if (lt_count == 1 && check_valid_redirection(get_position_chr('<',
+					str), str))
+			return (true);
+		else if (gt_count == 2 && str[get_position_chr('>', str) + 1] == '>'
+			&& check_valid_redirection(get_position_chr('>', str), str))
+			return (true);
+		else if (lt_count == 2 && str[get_position_chr('<', str) + 1] == '<'
+			&& check_valid_redirection(get_position_chr('<', str), str))
+			return (true);
+	}
+	return (false);
+}

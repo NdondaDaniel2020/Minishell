@@ -148,6 +148,9 @@ void	check_environment_variable_expansion(t_new_list *aux, t_data *data);
 bool	condition_extract_value_env_quotes(int i, t_new_list *aux);
 void	extract_value_env_quotes(int i, t_new_list *aux, t_data *data);
 
+bool	is_redirection(char *str);
+int		get_position_chr(char chr, char *str);
+
 /* list */
 t_new_list  *ft_lstnew_new(char **content);
 

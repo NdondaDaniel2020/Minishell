@@ -30,6 +30,26 @@ void	insert_data(t_data *data, char *command)
 	free(spliting);
 }
 
+void	redirection(int i, t_data *data)
+{
+	int		iter;
+	int		len_m;
+	char	*new_content;
+
+	iter = 0;
+	len_m = len_matrix(data->list->content);
+	while (data->list->content[i + iter])
+	{
+		if (ft_strncmp(data->list->content[i + iter], ">", 1) == 0)
+		
+		iter++;
+	}
+
+	// ft_strchr(data->list->content[i], '<');
+	// ft_strchr(data->list->content[i], '>>');
+	// ft_strchr(data->list->content[i], '<<');
+}
+
 void	execute_command(int i, t_new_list *aux, t_data *data)
 {
 	if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
@@ -67,7 +87,10 @@ void	master(char *command, t_data *data)
 		i = 0;
 		if (ft_strlen(aux->content[i]) == 0)
 			i++;
-		execute_command(i, aux, data);
+		if (is_redirection(data->command))
+			redirection(i, data);
+		else
+			execute_command(i, aux, data);
 		aux = aux->next;
 	}
 	free_all_data(data);

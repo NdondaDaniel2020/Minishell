@@ -3,3 +3,27 @@ bugar a mente  de outras pessoa ': pense no exemplo que jansy deu
 bugar a mente pense no exeplo de dup2
 
 estes conseitos sao os que estao a plicar contra te.
+
+
+
+cria uma funcao que receba uma string como input e retorna de uma matrix como outiput
+input: char *str
+1 - echo TEST de alguma > file
+2 - echo TEST de alguma >file
+3 - echo TEST de alguma> file
+4 - echo TEST de alguma>file
+5 - echo "TEST de alguma" > file
+5 - echo "TEST de alguma" >file
+6 - echo "TEST de alguma"> file
+7 - echo "TEST de alguma">file
+
+output: char **matrix
+1 - [echo] [TEST] [de] [alguma] [>] [file]
+2 - [echo] [TEST] [de] [alguma] [>] [file]
+3 - [echo] [TEST] [de] [alguma] [>] [file]
+4 - [echo] [TEST] [de] [alguma] [>] [file]
+5 - [echo] ["TEST de alguma"] [>] [file]
+5 - [echo] ["TEST de alguma"] [>] [file]
+6 - [echo] ["TEST de alguma"] [>] [file]
+7 - [echo] ["TEST de alguma"] [>] [file]
+
