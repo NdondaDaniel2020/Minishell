@@ -48,8 +48,8 @@ void	extract_value_env_quotes(int i, t_new_list *aux, t_data *data)
 			ft_putstr_fd(": Is a directory\n", 2);
 		}
 		else
-			ft_lstnew_addback(&data->list,
-				ft_lstnew_new(split_2(value_env, ' ')));
+			ft_lstnew_addafter_pos(&data->list,
+				data->list, ft_lstnew_new(split_2(value_env, ' ')));
 	}
 	free_ext(value_env, aux_env, cpy_env, mark);
 }

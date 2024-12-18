@@ -38,7 +38,7 @@ void	add_in_list(char *value_env, t_new_list *aux, t_data *data)
 		new_content[i + 1] = split_cmd[i];
 		i++;
 	}
-	ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+	ft_lstnew_addafter_pos(&data->list, data->list, ft_lstnew_new(new_content));
 	free(split_cmd);
 	free(value_env);
 }

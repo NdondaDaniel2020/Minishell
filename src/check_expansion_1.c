@@ -58,8 +58,8 @@ static void	extract_value_env(int i, t_new_list *aux, t_data *data)
 		else
 		{
 			value_env = ft_strtrim(value_env, "\"'");
-			ft_lstnew_addback(&data->list,
-				ft_lstnew_new(split_2(value_env, ' ')));
+			ft_lstnew_addafter_pos(&data->list,
+				data->list, ft_lstnew_new(split_2(value_env, ' ')));
 			free(value_env);
 		}
 	}
