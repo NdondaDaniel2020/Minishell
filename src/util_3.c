@@ -49,7 +49,7 @@ int	get_position_chr(char chr, char *str)
 	return (-1);
 }
 
-static bool	check_valid_redirection(int pos, char *str)
+bool	check_valid_redirection(int pos, char *str)
 {
 	bool	i1;
 	bool	i2;

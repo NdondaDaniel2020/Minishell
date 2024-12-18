@@ -43,6 +43,26 @@ void	ft_lstnew_addfront(t_new_list **lst, t_new_list *new)
 	}
 }
 
+void	ft_lstnew_addafter_pos(
+	t_new_list **lst, t_new_list *ref, t_new_list *new)
+{
+	t_new_list	*aux;
+
+	if (new)
+	{
+		if (*lst == NULL)
+			ft_lstnew_addfront(lst, new);
+		else
+		{
+			aux = *lst;
+			while (aux && aux != ref)
+				aux = aux->next;
+			new->next = aux->next;
+			aux->next = new;
+		}
+	}
+}
+
 t_new_list	*ft_lstnew_new(char **content)
 {
 	t_new_list	*new;

@@ -30,26 +30,6 @@ void	insert_data(t_data *data, char *command)
 	free(spliting);
 }
 
-void	redirection(int i, t_data *data)
-{
-	int		iter;
-	int		len_m;
-	char	*new_content;
-
-	iter = 0;
-	len_m = len_matrix(data->list->content);
-	while (data->list->content[i + iter])
-	{
-		if (ft_strncmp(data->list->content[i + iter], ">", 1) == 0)
-		
-		iter++;
-	}
-
-	// ft_strchr(data->list->content[i], '<');
-	// ft_strchr(data->list->content[i], '>>');
-	// ft_strchr(data->list->content[i], '<<');
-}
-
 void	execute_command(int i, t_new_list *aux, t_data *data)
 {
 	if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
@@ -70,6 +50,30 @@ void	execute_command(int i, t_new_list *aux, t_data *data)
 		other_command(i, aux, data);
 }
 
+void	redirection(int i, t_new_list *aux, t_data *data)
+{
+	int		it;
+	char	**new_content;
+
+	it = 0;
+	(void)i;
+	new_content = reset_the_array_for_redirection(aux->content);
+	if (new_content)
+	{
+		ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+		return ;
+	}
+	while (aux->content[it])
+	{
+		ft_printf("[%s]", aux->content[it]);
+		it++;
+	}
+	ft_printf("\n");
+	// se new_content for null, libera e add o new_content no aux->content.
+	// ou da um break e add no fim da lista.
+	// E depois verifique se a sintaxe do redirecionamento e valida
+}
+
 void	master(char *command, t_data *data)
 {
 	int			i;
@@ -88,7 +92,7 @@ void	master(char *command, t_data *data)
 		if (ft_strlen(aux->content[i]) == 0)
 			i++;
 		if (is_redirection(data->command))
-			redirection(i, data);
+			redirection(i, aux, data);
 		else
 			execute_command(i, aux, data);
 		aux = aux->next;

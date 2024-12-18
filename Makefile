@@ -36,6 +36,8 @@ FILES = cd_1.c \
 		main.c \
 		other_command.c \
 		pwd.c \
+		redirection_util_1.c \
+		redirection_util_2.c \
 		split_2.c \
 		unset.c \
 		util_1.c \

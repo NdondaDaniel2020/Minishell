@@ -3,3 +3,6 @@
 	v/ - A=ls
 	v/ - A='ls -l'
 	v/ - A="ls -l"
+
+
+algem fora do pico da montanha nao consegue ver a imensidao da paizagem do onhecimento.

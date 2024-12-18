@@ -151,16 +151,26 @@ void	extract_value_env_quotes(int i, t_new_list *aux, t_data *data);
 bool	is_redirection(char *str);
 int		get_position_chr(char chr, char *str);
 
+bool	valid_string_condition_for_redirection(char *str);
+char	**ajust_position(char ***matrix);
+char	**reset_the_array_for_redirection(char **matrix);
+
+bool	first_str(char chr, char *str);
+int		count_chr(char chr, char *str);
+int		get_position_chr(char chr, char *str);
+bool	check_valid_redirection(int pos, char *str);
+
+
 /* list */
 t_new_list  *ft_lstnew_new(char **content);
 
-void    	ft_lstnew_addback(t_new_list **lst, t_new_list *new);
-void    	ft_lstnew_addfront(t_new_list **lst, t_new_list *new);
-void		ft_lstnew_free(char **matrix, t_new_list *removed);
-void		ft_lstnew_delfront(t_new_list **list);
-void		ft_lstnew_delback(t_new_list **list);
-void		ft_show_lstnew(t_new_list *list);
-
-int     	ft_lstnew_size(t_new_list *lst);
+void	ft_lstnew_addafter_pos(t_new_list **lst, t_new_list *ref, t_new_list *new);
+void    ft_lstnew_addback(t_new_list **lst, t_new_list *new);
+void    ft_lstnew_addfront(t_new_list **lst, t_new_list *new);
+void	ft_lstnew_free(char **matrix, t_new_list *removed);
+void	ft_lstnew_delfront(t_new_list **list);
+void	ft_lstnew_delback(t_new_list **list);
+void	ft_show_lstnew(t_new_list *list);
+int     ft_lstnew_size(t_new_list *lst);
 
 #endif
