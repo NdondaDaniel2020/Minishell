@@ -12,50 +12,115 @@
 
 #include "minishell.h"
 
-bool	valid_string_condition_for_redirection(char *str)
+static char	**split_redirection(char *str, const char *chr)
 {
-	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
-		 || (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
-}
+	int		len_n;
+	char	**new_content;
+	char	**aux_content;
 
-static void	change_position(int pos, int len, char ***matrix)
-{
-	char	**auxm;
-
-	auxm = (char **)ft_calloc(3 , sizeof(char *));
-	auxm[0] = (*matrix)[pos];
-	auxm[1] = (*matrix)[pos + 1];
-	while (pos < len - 2)
+	aux_content = ft_split(str, chr[0]);
+	len_n = len_matrix(aux_content);
+	new_content = (char **)ft_calloc(len_n + 2, sizeof(char *));
+	if (len_n == 1 && str[0] == chr[0])
 	{
-		(*matrix)[pos] = (*matrix)[pos + 2];
-		pos++;
+		new_content[0] = ft_strdup(chr);
+		new_content[1] = ft_strdup(aux_content[0]);
 	}
-	(*matrix)[len - 2] = auxm[0];
-	(*matrix)[len - 1] = auxm[1];
-	free(auxm);
+	else if (len_n == 1)
+	{
+		new_content[0] = ft_strdup(aux_content[0]);
+		new_content[1] = ft_strdup(chr);
+	}
+	if (len_n == 2)
+	{
+		new_content[0] = ft_strdup(aux_content[0]);
+		new_content[1] = ft_strdup(chr);
+		new_content[2] = ft_strdup(aux_content[1]);
+	}
+	free_matrix(aux_content);
+	return (new_content);
 }
 
-char	**ajust_position(char ***matrix)
+static bool	invalid_string_condition_for_redirection(char *str)
 {
-	int		i;
-	int		len;
-	int		pos;
+	return (((count_chr('>', str) == 1) && (ft_strchr(str, '>') 
+			&& check_valid_redirection(get_position_chr('>', str), str)))
+		 || ((count_chr('<', str) == 1) && (ft_strchr(str, '<')
+		 	&& check_valid_redirection(get_position_chr('<', str), str)))
+		 || ((count_chr('<', str) == 2
+		 	&& check_valid_redirection(get_position_chr('<', str), str)))
+		 || ((count_chr('>', str) == 2
+		 	&& check_valid_redirection(get_position_chr('>', str), str))));
+}
 
-	i = 0;
-	pos = -1;
-	len = len_matrix((*matrix));
-	while ((*matrix)[i])
+static char	**join_comands(int len_m, int pos, char **matrix, char **split_cont)
+{
+	int		i1 = 0;
+	int		i2 = 0;
+	int		iter = 0;
+	char	**new_content;
+
+	new_content = (char **)ft_calloc(len_m + len_matrix(split_cont), sizeof(char *));
+	while (matrix[i1] && iter < (len_m + len_matrix(split_cont)))
 	{
-		if (valid_string_condition_for_redirection((*matrix)[i]))
+		if (iter == pos)
 		{
-			pos = i;
-			break ;
+			while (split_cont[i2])
+				new_content[iter++] = split_cont[i2++];
+			i1++;
 		}
-		i++;
+		else
+			new_content[iter++] = ft_strdup(matrix[i1++]);
 	}
-    if (pos != -1 && pos < len - 1)
-		change_position(pos, len, matrix);
-	return ((*matrix));
+	free(split_cont);
+	return (new_content);
+}
+
+static bool	condition_redirection(bool *valid, char *str, char ***split_cont)
+{
+	if (valid_string_condition_for_redirection(str))
+	{
+		(*valid) = true;
+		return (true);
+	}
+	if (invalid_string_condition_for_redirection(str))
+	{
+		if (ft_strchr(str, '>') && count_chr('>', str) == 2)
+			(*split_cont) = split_redirection(str, ">>");
+		else if (ft_strchr(str, '<') && count_chr('<', str) == 2)
+			(*split_cont) = split_redirection(str, "<<");
+		else if (ft_strchr(str, '>') && count_chr('>', str) == 1)
+			(*split_cont) = split_redirection(str, ">");
+		else if (ft_strchr(str, '<') && count_chr('<', str) == 1)
+			(*split_cont) = split_redirection(str, "<");
+		return (true);
+	}
+	return (false);
+}
+
+char	**reset_the_array_for_redirection(char **matrix)
+{
+    int		pos;
+    int		iter;
+    int		len_m;
+    bool	valid;
+    char	**split_cont;
+
+    pos = -1;
+    iter = 0;
+    valid = false;
+    split_cont = NULL;
+    len_m = len_matrix(matrix);
+    while (matrix[iter])
+    {
+        if (condition_redirection(&valid, matrix[iter], &split_cont))
+        {
+            pos = iter;
+            break ;
+        }
+        iter++;
+    }
+    if (valid == false && split_cont)
+		return (join_comands(len_m, pos, matrix, split_cont));
+	return (NULL);
 }

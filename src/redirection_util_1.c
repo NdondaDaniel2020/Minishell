@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirection_util_1.c                               :+:      :+:    :+:   */
+/*   redirection_util_3.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,115 +12,92 @@
 
 #include "minishell.h"
 
-static char	**split_redirection(char *str, const char *chr)
+bool	first_str(char chr, char *str)
 {
-	int		len_n;
-	char	**new_content;
-	char	**aux_content;
-
-	aux_content = ft_split(str, chr[0]);
-	len_n = len_matrix(aux_content);
-	new_content = (char **)ft_calloc(len_n + 2, sizeof(char *));
-	if (len_n == 1 && str[0] == chr[0])
-	{
-		new_content[0] = ft_strdup(chr);
-		new_content[1] = ft_strdup(aux_content[0]);
-	}
-	else if (len_n == 1)
-	{
-		new_content[0] = ft_strdup(aux_content[0]);
-		new_content[1] = ft_strdup(chr);
-	}
-	if (len_n == 2)
-	{
-		new_content[0] = ft_strdup(aux_content[0]);
-		new_content[1] = ft_strdup(chr);
-		new_content[2] = ft_strdup(aux_content[1]);
-	}
-	free_matrix(aux_content);
-	return (new_content);
-}
-
-static bool	invalid_string_condition_for_redirection(char *str)
-{
-	return (((count_chr('>', str) == 1) && (ft_strchr(str, '>') 
-			&& check_valid_redirection(get_position_chr('>', str), str)))
-		 || ((count_chr('<', str) == 1) && (ft_strchr(str, '<')
-		 	&& check_valid_redirection(get_position_chr('<', str), str)))
-		 || ((count_chr('<', str) == 2
-		 	&& check_valid_redirection(get_position_chr('<', str), str)))
-		 || ((count_chr('>', str) == 2
-		 	&& check_valid_redirection(get_position_chr('>', str), str))));
-}
-
-static char	**join_comands(int len_m, int pos, char **matrix, char **split_cont)
-{
-	int		i1 = 0;
-	int		i2 = 0;
-	int		iter = 0;
-	char	**new_content;
-
-	new_content = (char **)ft_calloc(len_m + len_matrix(split_cont), sizeof(char *));
-	while (matrix[i1] && iter < (len_m + len_matrix(split_cont)))
-	{
-		if (iter == pos)
-		{
-			while (split_cont[i2])
-				new_content[iter++] = split_cont[i2++];
-			i1++;
-		}
-		else
-			new_content[iter++] = ft_strdup(matrix[i1++]);
-	}
-	free(split_cont);
-	return (new_content);
-}
-
-static bool	condition_redirection(bool *valid, char *str, char ***split_cont)
-{
-	if (valid_string_condition_for_redirection(str))
-	{
-		(*valid) = true;
+	if (str[0] == chr)
 		return (true);
-	}
-	if (invalid_string_condition_for_redirection(str))
-	{
-		if (ft_strchr(str, '>') && count_chr('>', str) == 2)
-			(*split_cont) = split_redirection(str, ">>");
-		else if (ft_strchr(str, '<') && count_chr('<', str) == 2)
-			(*split_cont) = split_redirection(str, "<<");
-		else if (ft_strchr(str, '>') && count_chr('>', str) == 1)
-			(*split_cont) = split_redirection(str, ">");
-		else if (ft_strchr(str, '<') && count_chr('<', str) == 1)
-			(*split_cont) = split_redirection(str, "<");
-		return (true);
-	}
 	return (false);
 }
 
-char	**reset_the_array_for_redirection(char **matrix)
+int	count_chr(char chr, char *str)
 {
-    int		pos;
-    int		iter;
-    int		len_m;
-    bool	valid;
-    char	**split_cont;
+	int	i;
+	int	count;
 
-    pos = -1;
-    iter = 0;
-    valid = false;
-    split_cont = NULL;
-    len_m = len_matrix(matrix);
-    while (matrix[iter])
-    {
-        if (condition_redirection(&valid, matrix[iter], &split_cont))
-        {
-            pos = iter;
-            break ;
-        }
-        iter++;
-    }
-    if (valid == false && split_cont)
-		return (join_comands(len_m, pos, matrix, split_cont));
-	return (NULL);
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		if (str[i] == chr)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int	get_position_chr(char chr, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == chr)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+bool	check_valid_redirection(int pos, char *str)
+{
+	bool	i1;
+	bool	i2;
+	int		aux_value;
+
+	i1 = true;
+	i2 = true;
+	aux_value = pos;
+	while (str[pos])
+	{
+		if (str[pos] == '\'' || str[pos] == '"')
+			i1 = false;
+		pos++;
+	}
+	pos = aux_value;
+	while (str[pos])
+	{
+		if (str[pos] == '\'' || str[pos] == '"')
+			i2 = false;
+		pos--;
+	}
+	if (i1 == false && i2 == false)
+		return (false);
+	return (true);
+}
+
+bool	is_redirection(char *str)
+{
+	int	gt_count;
+	int	lt_count;
+
+	gt_count = count_chr('>', str);
+	lt_count = count_chr('<', str);
+	if ((gt_count > 0 && gt_count < 3 && lt_count == 0)
+		|| (lt_count > 0 && lt_count < 3 && gt_count == 0))
+	{
+		if (gt_count == 1 && check_valid_redirection(get_position_chr('>', str)
+				, str))
+			return (true);
+		else if (lt_count == 1 && check_valid_redirection(get_position_chr('<',
+					str), str))
+			return (true);
+		else if (gt_count == 2 && str[get_position_chr('>', str) + 1] == '>'
+			&& check_valid_redirection(get_position_chr('>', str), str))
+			return (true);
+		else if (lt_count == 2 && str[get_position_chr('<', str) + 1] == '<'
+			&& check_valid_redirection(get_position_chr('<', str), str))
+			return (true);
+	}
+	return (false);
 }
