@@ -79,8 +79,23 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 		return ;
 	}
 
+	
 	//////////////////////////////////////////////////////////////////////////////////////
 	
+	it = 0;
+	while (aux->content[it])
+	{	
+		if (valid_string_condition_for_redirection(aux->content[it]) && is_directory_valid(aux->content[it + 1]))
+		{
+			ft_putstr_fd(aux->content[it + 1], 2);
+			ft_putstr_fd(": Is a directory\n", 2);
+			return ;
+		}
+		it++;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+
 	if ((is_directory_valid(aux->content[len - 1]))
 		|| ((ft_strlen(aux->content[len - 1]) == 0) && is_directory_valid(aux->content[len - 2])))
 	{
@@ -99,8 +114,8 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 	ft_printf("\n");
 
 	//2 - E depois verifique se a sintaxe do redirecionamento e valida
-		/// verificar se alguma finformacao depois do redirecionamento e um diretorio, [echo "texto" > /HOME]
-		/// redirecionamento incompleto [echo "texto" >] [echo > file >]
+		// v/ verificar se alguma finformacao depois do redirecionamento e um diretorio, [echo "texto" > /HOME]
+		// v/ redirecionamento incompleto [echo "texto" >] [echo > file >]
 		/// nao aceitar diferente de >, <, >>, <<
 		/// nao aceitar um sinal ao lado do ourto /// nao aceitar 
 
