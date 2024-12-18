@@ -56,7 +56,6 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 	int		len;
 	char	**new_content;
 
-	it = 0;
 	(void)i;
 	new_content = reset_the_array_for_redirection(aux->content);
 	if (new_content)
@@ -64,9 +63,14 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 		ft_lstnew_addafter_pos(&data->list, data->list, ft_lstnew_new(new_content));
 		return ;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+	
 	len = len_matrix(aux->content);
 	if	(!valid_string_condition_for_redirection(aux->content[len - 2]))
 		ajust_position(&aux->content);
+	
+	//////////////////////////////////////////////////////////////////////////////////////
 
 	if ((valid_string_condition_for_redirection(aux->content[len - 1]))
 		|| ((ft_strlen(aux->content[len - 1]) == 0) && valid_string_condition_for_redirection(aux->content[len - 2])))
@@ -75,6 +79,17 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 		return ;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////
+	
+	if ((is_directory_valid(aux->content[len - 1]))
+		|| ((ft_strlen(aux->content[len - 1]) == 0) && is_directory_valid(aux->content[len - 2])))
+	{
+		ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
+		return ;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+	it = 0;
 	while (aux->content[it])  // 
 	{
 		ft_printf("[%s]", aux->content[it]);
@@ -82,7 +97,6 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 	}
 
 	ft_printf("\n");
-	//1 - Verificar se [len -2] in (>, <, >>, <<) 
 
 	//2 - E depois verifique se a sintaxe do redirecionamento e valida
 		/// verificar se alguma finformacao depois do redirecionamento e um diretorio, [echo "texto" > /HOME]
