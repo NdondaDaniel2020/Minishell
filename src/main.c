@@ -53,6 +53,7 @@ void	execute_command(int i, t_new_list *aux, t_data *data)
 void	redirection(int i, t_new_list *aux, t_data *data)
 {
 	int		it;
+	int		len;
 	char	**new_content;
 
 	it = 0;
@@ -60,18 +61,44 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 	new_content = reset_the_array_for_redirection(aux->content);
 	if (new_content)
 	{
-		ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+		ft_lstnew_addafter_pos(&data->list, data->list, ft_lstnew_new(new_content));
 		return ;
 	}
-	while (aux->content[it])
+	len = len_matrix(aux->content);
+	if	(!valid_string_condition_for_redirection(aux->content[len - 2]))
+		ajust_position(&aux->content);
+
+	if ((valid_string_condition_for_redirection(aux->content[len - 1]))
+		|| ((ft_strlen(aux->content[len - 1]) == 0) && valid_string_condition_for_redirection(aux->content[len - 2])))
+	{
+		ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
+		return ;
+	}
+
+	while (aux->content[it])  // 
 	{
 		ft_printf("[%s]", aux->content[it]);
 		it++;
 	}
+
 	ft_printf("\n");
-	// se new_content for null, libera e add o new_content no aux->content.
-	// ou da um break e add no fim da lista.
-	// E depois verifique se a sintaxe do redirecionamento e valida
+	//1 - Verificar se [len -2] in (>, <, >>, <<) 
+
+	//2 - E depois verifique se a sintaxe do redirecionamento e valida
+		/// verificar se alguma finformacao depois do redirecionamento e um diretorio, [echo "texto" > /HOME]
+		/// redirecionamento incompleto [echo "texto" >] [echo > file >]
+		/// nao aceitar diferente de >, <, >>, <<
+		/// nao aceitar um sinal ao lado do ourto /// nao aceitar 
+
+	//3 - Tratamento
+		/// se tiver espancoem algum llugar do nome do arquivo 
+		/// se tiver espancoem algum llugar do nome do arquivo
+		/// se tiver ""' file '"" -> file 
+		/// ->> retire apenas as chavetar que podem ser ' ou " e o resto vai no file
+		/// not / & ! $ ( ) > < >> <<
+
+	// ...DEPOIS DE CADA (>, <, >>, <<) REDIRECIONAMENTO FUNCIONAR SOZINHO 
+	// ESTUDAR OS REDIRECIONAMENTO COMHINADO 
 }
 
 void	master(char *command, t_data *data)
