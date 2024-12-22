@@ -58,3 +58,17 @@ t_extract	*extract_redirection_character(char chr, char *str)
 	free(str_strim);
 	return (ext);
 }
+
+void	free_extract_matrix(t_extract **matrix)
+{
+	int	i;
+
+	i = 0;
+	while (matrix[i])
+	{
+		free(matrix[i]->string);
+		free(matrix[i]);
+		i++;
+	}
+	free(matrix);
+}

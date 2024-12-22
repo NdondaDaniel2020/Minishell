@@ -78,7 +78,6 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 		ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
 		return ;
 	}
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////
 	
@@ -93,7 +92,7 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 		}
 		it++;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////
 
 	if ((is_directory_valid(aux->content[len - 1]))
@@ -113,19 +112,13 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 
 	ft_printf("\n");
 
-	//2 - E depois verifique se a sintaxe do redirecionamento e valida
-		// v/ verificar se alguma finformacao depois do redirecionamento e um diretorio, [echo "texto" > /HOME]
-		// v/ redirecionamento incompleto [echo "texto" >] [echo > file >]
-		/// v/ nao aceitar diferente de >, <, >>, <<
-		/// v/ nao aceitar um sinal ao lado do ourto /// nao aceitar 
-
 	//3 - Tratamento
-		/// se tiver espancoem algum llugar do nome do arquivo
+		/// se tiver espanco em algum lugar do nome do arquivo
 		/// se tiver ""' file '"" -> file 
 		/// ->> retire apenas as chavetar que podem ser ' ou " e o resto vai no file
-		/// not / & ! $ ( ) > < >> <<
+		/// not / & ! $ ( ) > < >> << error -> syntax error near unexpected token `caracter'
 
-	// ...DEPOIS DE CADA (>, <, >>, <<) REDIRECIONAMENTO FUNCIONAR SOZINHO 
+	// ...DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO 
 	// ESTUDAR OS REDIRECIONAMENTO COMHINADO 
 }
 

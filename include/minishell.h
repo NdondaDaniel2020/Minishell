@@ -190,6 +190,7 @@ char		**list_error(void);
 int			count_extract_redirection(char chr, char *str);
 t_extract	*extract_redirection_character(char chr, char *str);
 t_extract	**extract_all_redirection_characters(char *str);
+void		free_extract_matrix(t_extract **matrix);
 
 /* list */
 t_new_list  *ft_lstnew_new(char **content);

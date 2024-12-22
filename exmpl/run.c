@@ -365,11 +365,20 @@ static bool	check_redirection_error(int i1, int i2, t_var_red *red, char *str)
 	return (false);
 }
 
+static bool	redirection_is_string(int i1, t_var_red	*red, char *str)
+{
+	int	pos;
+
+	pos = ft_strnpos(str, red->extract_matrix[i1]->string, ft_strlen(str));
+	if (check_valid_redirection(pos, str) == false)
+		return (true);
+	return (false);
+}
+
 int	is_redirection(char *str)
 {
 	int			i1;
 	int			i2;
-	int			pos;
 	t_var_red	red;
 
 	if (str == NULL || (count_chr('<', str) == 0 && count_chr('>', str) == 0))
@@ -383,6 +392,8 @@ int	is_redirection(char *str)
 		i2 = 0;
 		while (red.list_error[i2])
 		{
+			if (redirection_is_string(i1, &red, str))
+				return (0);
 			if (check_redirection_error(i1, i2, &red, str))
 				return (2);
 			i2++;
@@ -394,10 +405,11 @@ int	is_redirection(char *str)
 }
 //////////
 
+// int	is_redirection(char *str)
 int main(void)
 {
-	char		str[] = "echo TEST >  > file.txt";
+	char		str[] = "echo TEST '><' file.txt";
 
-	is_redirection(str);
+	ft_printf("[[%i]]\n", is_redirection(str));
 	return 0;
 }
