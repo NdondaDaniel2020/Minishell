@@ -10,13 +10,13 @@ void	master(char *command, t_data *data)
 	insert_data(data, command);
 
 	pipe(pipefd);
-	data->copy_fd = dup(STDOUT_FILENO);
+	data->copy_fd = dup(STDOUT_FILENO_1);
 	while (data->btree)
 	{
 		//////////////////////////////////////////////////////////////////////////
 
 		i = 0;
-		if (ft_strlen(data->btree->content[i]) == 0)
+		if (ft_strlen_1(data->btree->content[i]) == 0)
 			i++;
 		
 		//////////////////////////////////////////////////////////////////////////
@@ -25,13 +25,13 @@ void	master(char *command, t_data *data)
 		{
 			data->write_on_the_pipe = -1;
 			data->read_in_the_pipe = pipefd[0];
-			dup2(data->write_on_the_pipe, STDOUT_FILENO);
+			dup2(data->write_on_the_pipe, STDOUT_FILENO_1);
 		}
 		else if (data->is_pipe && !data->btree->right)
 		{
 			data->write_on_the_pipe = pipefd[1];
 			data->read_in_the_pipe = -1;
-			dup2(data->copy_fd, STDOUT_FILENO);
+			dup2(data->copy_fd, STDOUT_FILENO_1);
 		}
 		
 		//////////////////////////////////////////////////////////////////////////
@@ -40,19 +40,19 @@ void	master(char *command, t_data *data)
 
 		//////////////////////////////////////////////////////////////////////////
 
-		if (!ft_strncmp(data->btree->content[i], "exit", ft_strlen(data->btree->content[i])))
+		if (!ft_strncmp(data->btree->content[i], "exit", ft_strlen_1(data->btree->content[i])))
 			exit_(data);
-		else if (!ft_strncmp(data->btree->content[i], "pwd", ft_strlen(data->btree->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "pwd", ft_strlen_1(data->btree->content[i])))
 			pwd(data);
-		else if (!ft_strncmp(data->btree->content[i], "cd", ft_strlen(data->btree->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "cd", ft_strlen_1(data->btree->content[i])))
 			cd(data);
-		else if (!ft_strncmp(data->btree->content[i], "echo", ft_strlen(data->btree->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "echo", ft_strlen_1(data->btree->content[i])))
 			echo(data);
-		else if (!ft_strncmp(data->btree->content[i], "env", ft_strlen(data->btree->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "env", ft_strlen_1(data->btree->content[i])))
 			env(data);
-		else if (!ft_strncmp(data->btree->content[i], "export", ft_strlen(data->btree->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "export", ft_strlen_1(data->btree->content[i])))
 			export(data);
-		else if (!ft_strncmp(data->btree->content[i], "unset", ft_strlen(data->btree->content[i])))
+		else if (!ft_strncmp(data->btree->content[i], "unset", ft_strlen_1(data->btree->content[i])))
 			unset(data);
 		else
 			other_command(data);
@@ -86,12 +86,12 @@ void	master(char *command, t_data *data)
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		i = 0;
-		if (ft_strlen(aux->content[i]) == 0)
+		if (ft_strlen_1(aux->content[i]) == 0)
 			i++;
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])) ||
+		if (ft_strnstr(aux->content[i], "/", ft_strlen_1(aux->content[i])) ||
 			list_builtins(aux->content[i]))
 			path = ft_strdup(aux->content[i]);
 		else
@@ -111,31 +111,31 @@ void	master(char *command, t_data *data)
 
 				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if (data->path)
-					free_matrix(data->path);
+					free_mtx(data->path);
 				if (data->envp)
-					free_matrix(data->envp);
+					free_mtx(data->envp);
 				free_all_data(data);
 				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				
 				exit(127);
 				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			}
-			else if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
+			else if (!ft_strncmp(aux->content[i], "exit", ft_strlen_1(aux->content[i])))
 			{
 				free(path);
 				exit_(data);
 			}
-			else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen(aux->content[i])))
+			else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen_1(aux->content[i])))
 				pwd(data);
-			else if (!ft_strncmp(aux->content[i], "cd", ft_strlen(aux->content[i])))
+			else if (!ft_strncmp(aux->content[i], "cd", ft_strlen_1(aux->content[i])))
 				cd(data);
-			else if (!ft_strncmp(aux->content[i], "echo", ft_strlen(aux->content[i])))
+			else if (!ft_strncmp(aux->content[i], "echo", ft_strlen_1(aux->content[i])))
 				echo(data);
-			else if (!ft_strncmp(aux->content[i], "env", ft_strlen(aux->content[i])))
+			else if (!ft_strncmp(aux->content[i], "env", ft_strlen_1(aux->content[i])))
 				env(data);
-			else if (!ft_strncmp(aux->content[i], "export", ft_strlen(aux->content[i])))
+			else if (!ft_strncmp(aux->content[i], "export", ft_strlen_1(aux->content[i])))
 				export(data);
-			else if (!ft_strncmp(aux->content[i], "unset", ft_strlen(aux->content[i])))
+			else if (!ft_strncmp(aux->content[i], "unset", ft_strlen_1(aux->content[i])))
 				unset(data);
 			else
 				execve(path, aux->content, data->envp);
@@ -143,9 +143,9 @@ void	master(char *command, t_data *data)
 			change_environment_variables_question_mark(0, data);
 			
 			if (data->path)
-				free_matrix(data->path);
+				free_mtx(data->path);
 			if (data->envp)
-				free_matrix(data->envp);
+				free_mtx(data->envp);
 			
 			free_all_data(data);
 			
@@ -164,16 +164,16 @@ void	master(char *command, t_data *data)
 	}
 	// ft_printf("|\n\n\n\n\n\n\n\n\n\n\n|");
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// if (!ft_strncmp(aux->content[i], "exit", ft_strlen(aux->content[i])))
+	// if (!ft_strncmp(aux->content[i], "exit", ft_strlen_1(aux->content[i])))
 	// {
 	// 	if (data->path)
 	// 	{
-	// 		free_matrix(data->path);
+	// 		free_mtx(data->path);
 	// 		data->path = NULL;
 	// 	}
 	// 	if (data->envp)
 	// 	{
-	// 		free_matrix(data->envp);
+	// 		free_mtx(data->envp);
 	// 		data->envp = NULL;
 	// 	}
 	// }
@@ -183,30 +183,79 @@ void	master(char *command, t_data *data)
 
 
 
-else if ((count_chr('<', matrix[iter]) == 2 && check_valid_redirection(get_position_chr('<', matrix[iter]), matrix[iter]))
-		|| (count_chr('>', matrix[iter]) == 2 && check_valid_redirection(get_position_chr('>', matrix[iter]), matrix[iter])))
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+t_extract	extract_redirection_character(char *str)
 {
-	if (ft_strchr(matrix[iter], '>'))
-		split_cont = split_redirection_len_2(matrix[iter], ">");
-	else
-		split_cont = split_redirection_len_2(matrix[iter], "<");
-	pos = iter;
-	break;
+	int			pos;
+	char		*str_strim;
+	t_extract	ext;
+
+	init_extract(&ext);
+	pos = get_position_chr('>', str);
+	while ((str[pos + ext.end] == ' ')
+		|| (str[pos + ext.end] == '>')
+		|| (str[pos + ext.end] == '<'))
+		ext.end++;
+	while (((pos - ext.start) >= 0)
+		&& ((str[pos + ext.start] == ' ')
+		|| (str[pos + ext.start] == '>')
+		|| (str[pos + ext.start] == '<')))
+		ext.start++;
+	ext.end++;
+	ext.start--;
+	str_strim = ft_substr(str, (pos - ext.start), ext.end);
+	ext.string = ft_strtrim(str_strim, " ");
+	free(str_strim);
+	return (ext);
 }
 
+// t_extract	**extract_all_redirection_characters(char *str)
+// {
+// 	t_extract	**mtx_extx;	
+// }
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-		if ((ft_strchr(matrix[iter], '>') && (count_chr('>', matrix[iter]) == 1) && check_valid_redirection(get_position_chr('>', matrix[iter]), matrix[iter]))
-		 || (ft_strchr(matrix[iter], '<') && (count_chr('<', matrix[iter]) == 1) && check_valid_redirection(get_position_chr('<', matrix[iter]), matrix[iter])))
+
+
+
+
+
+
+static void	extract_redirection(t_two_extract *ext, t_extract *mtx, int *end)
+{
+	if (ext.ext1 && ext1->returned > 0 && ext.ext2 == NULL)
+	{
+		mtx[i] = ext.ext1;
+		(*end) += ext1->returned;
+	}
+	else if (ext.ext2 && ext2->returned > 0 && ext.ext1 == NULL)
+	{	
+		mtx[i] = ext.ext2;
+		(*end) += ext2->returned;
+	}
+	else if (ext.ext1 && ext.ext2 && ext.ext1->returned > 0 && ext.ext2->returned > 0)
+	{
+		if (ext.ext1->start < ext.ext2->start)
 		{
-			ft_printf("(%i)\n", count_chr('>', matrix[iter]));
-			ft_printf("(%i)\n", count_chr('<', matrix[iter]));
-			if (ft_strchr(matrix[iter], '>'))
-				split_cont = split_redirection_len_1(matrix[iter], ">");
-			else
-				split_cont = split_redirection_len_1(matrix[iter], "<");
-			pos = iter;
-			break;
+			mtx[i] = ext.ext1;
+			(*end) += ext.ext1->returned;
+			free(ext.ext2->string);
+			free(ext.ext2);
 		}
-
-
+		else
+		{
+			mtx[i] = ext.ext2;
+			(*end) += ext.ext2->returned;
+			free(ext.ext1->string);
+			free(ext.ext1);
+		}
+	}
+}

@@ -116,11 +116,10 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 	//2 - E depois verifique se a sintaxe do redirecionamento e valida
 		// v/ verificar se alguma finformacao depois do redirecionamento e um diretorio, [echo "texto" > /HOME]
 		// v/ redirecionamento incompleto [echo "texto" >] [echo > file >]
-		/// nao aceitar diferente de >, <, >>, <<
-		/// nao aceitar um sinal ao lado do ourto /// nao aceitar 
+		/// v/ nao aceitar diferente de >, <, >>, <<
+		/// v/ nao aceitar um sinal ao lado do ourto /// nao aceitar 
 
 	//3 - Tratamento
-		/// se tiver espancoem algum llugar do nome do arquivo 
 		/// se tiver espancoem algum llugar do nome do arquivo
 		/// se tiver ""' file '"" -> file 
 		/// ->> retire apenas as chavetar que podem ser ' ou " e o resto vai no file
@@ -134,12 +133,14 @@ void	master(char *command, t_data *data)
 {
 	int			i;
 	t_new_list	*aux;
+	int			value_redirection;
 
 	if (count_chr('\'', command) % 2 != 0 || count_chr('"', command) % 2 != 0)
 	{
 		ft_putstr("unclosed quotes\n", 2);
 		return ;
 	}
+	value_redirection = is_redirection(command);
 	insert_data(data, command);
 	aux = data->list;
 	while (aux)
@@ -147,9 +148,9 @@ void	master(char *command, t_data *data)
 		i = 0;
 		if (ft_strlen(aux->content[i]) == 0)
 			i++;
-		if (is_redirection(data->command))
+		if (value_redirection == 1)
 			redirection(i, aux, data);
-		else
+		else if (value_redirection == 0)
 			execute_command(i, aux, data);
 		aux = aux->next;
 	}

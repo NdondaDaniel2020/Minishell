@@ -58,3 +58,35 @@ void	ajust_position(char ***matrix)
     if (pos != -1 && pos < len - 1)
 		change_position(pos, len, matrix);
 }
+
+char	**list_error(void)
+{
+	static char	*list[] = {"><", ">>>", "<<<", ">><", "<<>",
+							"<>>", "<><", ">> ", "<< ", "<> ",
+							"< ", "> ", NULL};
+
+	return (list);
+}
+
+int	count_extract_redirection(char chr, char *str)
+{
+	int			i;
+	int			end;
+	int			len;
+	t_extract	*ext;
+
+	i = 0;
+	end = 0;
+	len = ft_strlen(str);
+	while (end < len)
+	{
+		ext = extract_redirection_character(chr, str + end);
+		if (ext == NULL)
+			break;
+		end += ext->returned;
+		free(ext->string);
+		free(ext);
+		i++;
+	}
+	return (i);
+}

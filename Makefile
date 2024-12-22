@@ -38,11 +38,14 @@ FILES = cd_1.c \
 		pwd.c \
 		redirection_util_1.c \
 		redirection_util_2.c \
+		redirection_util_3.c \
+		redirection_util_4.c \
+		redirection_util_5.c \
+		redirection_util_6.c \
 		split_2.c \
 		unset.c \
 		util_1.c \
 		util_2.c \
-		util_3.c \
 		
 		
 		

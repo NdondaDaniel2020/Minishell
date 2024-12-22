@@ -219,7 +219,7 @@ static void	change_position(int pos, int len, char ***matrix)
 	free(auxm);
 }
 
-char	**ajust_position(char ***matrix)
+void	**ajust_position(char ***matrix)
 {
 	int		i;
 	int		len;
@@ -239,7 +239,6 @@ char	**ajust_position(char ***matrix)
 	}
     if (pos != -1 && pos < len - 1)
 		change_position(pos, len, matrix);
-	return ((*matrix));
 }
 
 char **reset_the_array_for_redirection(char **matrix)

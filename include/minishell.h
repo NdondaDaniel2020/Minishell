@@ -61,105 +61,135 @@ typedef struct s_split
 	char	*end;
 } 			t_split;
 
+typedef struct s_extract
+{
+	char	*string;
+	int		start;
+	int		end;
+	int		returned;
+}			t_extract;
+
+typedef struct s_var_red
+{
+	char		**list_error;
+	t_extract	**extract_matrix;
+}				t_var_red;
+
+typedef struct s_two_extract
+{
+	int			len_1;
+	int			len_2;
+	t_extract	*ext1;
+	t_extract	*ext2;
+}				t_two_extract;
+
 /* builtin cd*/
-void	cd(t_new_list *aux, t_data *data);
-void	update_pwd(t_data *data);
-void	update_oldwpd(t_data *data);
-void	add_in_list(char *value_env, t_new_list *aux, t_data *data);
+void		cd(t_new_list *aux, t_data *data);
+void		update_pwd(t_data *data);
+void		update_oldwpd(t_data *data);
+void		add_in_list(char *value_env, t_new_list *aux, t_data *data);
 
-int		is_directory_valid(const char *path);
+int			is_directory_valid(const char *path);
 
-bool	add_expanded_variable(t_new_list *aux, t_data *data);
-bool	check_many_arguments(t_new_list *aux, t_data *data);
+bool		add_expanded_variable(t_new_list *aux, t_data *data);
+bool		check_many_arguments(t_new_list *aux, t_data *data);
 
 
 /*builtin pwd*/
-void	pwd(t_new_list *aux, t_data *data);
+void		pwd(t_new_list *aux, t_data *data);
 
 
 /*builtin echo*/
-void	echo(t_new_list *aux, t_data *data);
-void	init_valid(t_valid	*valid);
-void	traverse_n(int *i, t_data *data);
+void		echo(t_new_list *aux, t_data *data);
+void		init_valid(t_valid	*valid);
+void		traverse_n(int *i, t_data *data);
 
-int		count_word(char **words);
-int		put_environment(int i1, int i2, t_valid	*valid, t_data *data);
-int		traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
-int		trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
+int			count_word(char **words);
+int			put_environment(int i1, int i2, t_valid	*valid, t_data *data);
+int			traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
+int			trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
 
 /*builtin exit*/
-void	exit_(t_new_list *aux, t_data *data);
+void		exit_(t_new_list *aux, t_data *data);
 
-bool	check_error_exit(int i, int *ex, t_new_list *aux);
+bool		check_error_exit(int i, int *ex, t_new_list *aux);
 
 
 /*builtin env*/
-void	env(t_new_list *aux, t_data *data);
+void		env(t_new_list *aux, t_data *data);
 
-char	*get_env(char *env, t_data *data);
-char	**get_all_environment(void);
+char		*get_env(char *env, t_data *data);
+char		**get_all_environment(void);
 
 
 /*builtin export*/
-void	export(t_new_list *aux, t_data *data);
-void	add_environment_variable(char *env_var, t_data *data);
-void	change_environment_variables_question_mark(int value, t_data *data);
+void		export(t_new_list *aux, t_data *data);
+void		add_environment_variable(char *env_var, t_data *data);
+void		change_environment_variables_question_mark(int value, t_data *data);
 
-int		is_valid_char(char c);
-int		ft_strnchrcmp(const char *s1, const char *s2, size_t n, char chr);
+int			is_valid_char(char c);
+int			ft_strnchrcmp(const char *s1, const char *s2, size_t n, char chr);
 
-bool	print_export(t_data *data);
-bool	check_error(int i1, t_new_list *aux);
+bool		print_export(t_data *data);
+bool		check_error(int i1, t_new_list *aux);
 
-char	*analize_env(char *env);
+char		*analize_env(char *env);
 
 
 /*builtin unset*/
-void	unset(t_data *data);
-void	remove_env(int i1, char *env, t_data *data);
+void		unset(t_data *data);
+void		remove_env(int i1, char *env, t_data *data);
 
 
 /*init and free*/
-void	init_data(t_data *data);
-void	free_matrix(char **matrix);
-void	free_all_data(t_data *data);
-void	*ft_realloc(void* ptr, size_t original_size, size_t new_size);
+void		init_data(t_data *data);
+void		free_matrix(char **matrix);
+void		free_all_data(t_data *data);
+void		*ft_realloc(void* ptr, size_t original_size, size_t new_size);
 
-char	*ft_charjoin(char *s1, char c);
-char	*ft_charjoin_free(char *s1, char c);
+char		*ft_charjoin(char *s1, char c);
+char		*ft_charjoin_free(char *s1, char c);
 
 
 /* functions */
-char	**split_2(char *str, char chr);
-char	*get_valid_path(t_new_list *aux, t_data *data);
+char		**split_2(char *str, char chr);
+char		*get_valid_path(t_new_list *aux, t_data *data);
 
-void	other_command(int i, t_new_list *aux, t_data *data);
-void	insert_data(t_data *data, char *command);
+void		other_command(int i, t_new_list *aux, t_data *data);
+void		insert_data(t_data *data, char *command);
 
-int		list_builtins(char *command);
-int		len_matrix(char **matrix);
-int		get_last_position(t_new_list *aux);
+int			list_builtins(char *command);
+int			len_matrix(char **matrix);
+int			get_last_position(t_new_list *aux);
 
-bool	first_str(char chr, char *str);
-int		count_chr(char chr, char *str);
+bool		first_str(char chr, char *str);
+int			count_chr(char chr, char *str);
 
-void	check_environment_variable_expansion(t_new_list *aux, t_data *data);
-bool	condition_extract_value_env_quotes(int i, t_new_list *aux);
-void	extract_value_env_quotes(int i, t_new_list *aux, t_data *data);
+void		check_environment_variable_expansion(t_new_list *aux, t_data *data);
+bool		condition_extract_value_env_quotes(int i, t_new_list *aux);
+void		extract_value_env_quotes(int i, t_new_list *aux, t_data *data);
 
-bool	is_redirection(char *str);
-int		get_position_chr(char chr, char *str);
+int			get_position_chr(char chr, char *str);
+bool		valid_string_condition_for_redirection(char *str);
+void		ajust_position(char ***matrix);
+char		**reset_the_array_for_redirection(char **matrix);
 
-bool	valid_string_condition_for_redirection(char *str);
-char	**ajust_position(char ***matrix);
-char	**reset_the_array_for_redirection(char **matrix);
+bool		first_str(char chr, char *str);
+int			count_chr(char chr, char *str);
+int			get_position_chr(char chr, char *str);
+bool		check_valid_redirection(int pos, char *str);
 
-bool	first_str(char chr, char *str);
-int		count_chr(char chr, char *str);
-int		get_position_chr(char chr, char *str);
-bool	check_valid_redirection(int pos, char *str);
-
+/* redirecionamento */
+int			is_redirection(char *str);
+void		init_two_extract(t_two_extract *ext);
+void		init_var_redirection(t_var_red *red);
+void		init_extract(t_extract *extract);
+int			ft_strnpos(const char *big, const char *little, size_t len);
+char		**list_error(void);
+int			count_extract_redirection(char chr, char *str);
+t_extract	*extract_redirection_character(char chr, char *str);
+t_extract	**extract_all_redirection_characters(char *str);
 
 /* list */
 t_new_list  *ft_lstnew_new(char **content);
