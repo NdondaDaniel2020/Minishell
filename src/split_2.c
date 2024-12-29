@@ -47,7 +47,7 @@ static void	init_split(t_split *split, char *str, char chr)
 	split->end = str;
 }
 
-static void	substring(int *i, t_split *split, char chr)
+static void	split_substring(int *i, t_split *split, char chr)
 {
 	split->len = split->end - split->start;
 	split->result[*i] = malloc((split->len + 1) * sizeof(char));
@@ -72,7 +72,7 @@ char	**split_2(char *str, char chr)
 			split.in_quotes = !split.in_quotes;
 		else if (*split.end == chr && !split.in_quotes)
 		{
-			substring(&i, &split, chr);
+			split_substring(&i, &split, chr);
 			continue ;
 		}
 		split.end++;

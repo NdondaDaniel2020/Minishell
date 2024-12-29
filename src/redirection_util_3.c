@@ -12,81 +12,63 @@
 
 #include "minishell.h"
 
-bool	valid_string_condition_for_redirection(char *str)
+void	init_two_extract(t_two_extract *ext)
 {
-	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
-		 || (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
+	ext->len_1 = 0;
+	ext->len_2 = 0;
+	ext->ext1 = NULL;
+	ext->ext2 = NULL;
 }
 
-static void	change_position(int pos, int len, char ***matrix)
+void	init_var_redirection(t_var_red *red)
 {
-	char	**auxm;
-
-	auxm = (char **)ft_calloc(3 , sizeof(char *));
-	auxm[0] = (*matrix)[pos];
-	auxm[1] = (*matrix)[pos + 1];
-	while (pos < len - 2)
-	{
-		(*matrix)[pos] = (*matrix)[pos + 2];
-		pos++;
-	}
-	(*matrix)[len - 2] = auxm[0];
-	(*matrix)[len - 1] = auxm[1];
-	free(auxm);
+	red->list_error = NULL;
+	red->extract_matrix = NULL;
 }
 
-void	ajust_position(char ***matrix)
+void	init_extract(t_extract *extract)
 {
-	int		i;
-	int		len;
-	int		pos;
-
-	i = 0;
-	pos = -1;
-	len = len_matrix((*matrix));
-	while ((*matrix)[i])
-	{
-		if (valid_string_condition_for_redirection((*matrix)[i]))
-		{
-			pos = i;
-			break ;
-		}
-		i++;
-	}
-    if (pos != -1 && pos < len - 1)
-		change_position(pos, len, matrix);
+	extract->string = NULL;
+	extract->start = 0;
+	extract->end = 0;
+	extract->returned = 0;
 }
 
-char	**list_error(void)
+t_extract	*extract_redirection_character(char chr, char *str)
 {
-	static char	*list[] = {"><", ">>>", "<<<", ">><", "<<>",
-							"<>>", "<><", ">> ", "<< ", "<> ",
-							"< ", "> ", NULL};
-
-	return (list);
-}
-
-int	count_extract_redirection(char chr, char *str)
-{
-	int			i;
-	int			end;
-	int			len;
+	int			pos;
+	char		*str_strim;
 	t_extract	*ext;
 
-	i = 0;
-	end = 0;
-	len = ft_strlen(str);
-	while (end < len)
+	ext = (t_extract *)ft_calloc(1, sizeof(t_extract));
+	init_extract(ext);
+	pos = get_position_chr(chr, str);
+	if (pos == -1)
 	{
-		ext = extract_redirection_character(chr, str + end);
-		if (ext == NULL)
-			break;
-		end += ext->returned;
-		free(ext->string);
 		free(ext);
+		return ((t_extract *)NULL);
+	}
+	while ((str[pos + ext->end] == ' ') || (str[pos + ext->end] == '>')
+		|| (str[pos + ext->end] == '<'))
+		ext->end++;
+	str_strim = ft_substr(str, pos, ext->end);
+	ext->string = ft_strtrim(str_strim, " ");
+	ext->start = pos;
+	ext->returned = pos + ext->end;
+	free(str_strim);
+	return (ext);
+}
+
+void	free_extract_matrix(t_extract **matrix)
+{
+	int	i;
+
+	i = 0;
+	while (matrix[i])
+	{
+		free(matrix[i]->string);
+		free(matrix[i]);
 		i++;
 	}
-	return (i);
+	free(matrix);
 }

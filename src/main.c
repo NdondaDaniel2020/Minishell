@@ -64,12 +64,8 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 		return ;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////////////////	
 	len = len_matrix(aux->content);
-	if	(!valid_string_condition_for_redirection(aux->content[len - 2]))
-		ajust_position(&aux->content);
-	
 	//////////////////////////////////////////////////////////////////////////////////////
 
 	if ((valid_string_condition_for_redirection(aux->content[len - 1]))
@@ -103,8 +99,10 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////
+
 	it = 0;
-	while (aux->content[it])  // 
+	ajust_all_position(&aux->content);
+	while (aux->content[it])
 	{
 		ft_printf("[%s]", aux->content[it]);
 		it++;
@@ -113,7 +111,13 @@ void	redirection(int i, t_new_list *aux, t_data *data)
 	ft_printf("\n");
 
 	//3 - Tratamento
-		/// se tiver espanco em algum lugar do nome do arquivo
+		/// se tiver espanco em algum lugar do nome do arquivo manter
+		///  >> test/"test muito estranho"/a2.txt
+		///  >> test/test\ muito\ estranho/a2.txt
+		///  >> test/"   a2.txt  "
+		///  >> test/"""a2.txt"""
+		///  >> test/""''a2.txt''""
+		///  >> test/''""a2.txt""''
 		/// se tiver ""' file '"" -> file 
 		/// ->> retire apenas as chavetar que podem ser ' ou " e o resto vai no file
 		/// not / & ! $ ( ) > < >> << error -> syntax error near unexpected token `caracter'
@@ -150,7 +154,7 @@ void	master(char *command, t_data *data)
 	free_all_data(data);
 }
 
-int	main(void)
+int	main(void) //  test/test muito estranho/  --> saida --> test/test muito estranho/: Is a directory
 {
 	t_data	data;
 	char	*input;

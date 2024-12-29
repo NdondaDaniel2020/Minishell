@@ -12,74 +12,94 @@
 
 #include "minishell.h"
 
-static bool	check_extract_lens(t_two_extract *ext, char *str)
+bool	first_str(char chr, char *str)
 {
-	init_two_extract(ext);
-	ext->len_1 = count_extract_redirection('>', str);
-	ext->len_2 = count_extract_redirection('<', str);
-	if (ext->len_1 == 0 && ext->len_2 == 0)
+	if (str[0] == chr)
 		return (true);
 	return (false);
 }
 
-static void	two_extract(int i, int *end, t_extract **mtx, t_two_extract *ext)
+int	count_chr(char chr, char *str)
 {
-	if (ext->ext1->start < ext->ext2->start)
-	{
-		mtx[i] = ext->ext1;
-		(*end) += ext->ext1->returned;
-		free(ext->ext2->string);
-		free(ext->ext2);
-	}
-	else
-	{
-		mtx[i] = ext->ext2;
-		(*end) += ext->ext2->returned;
-		free(ext->ext1->string);
-		free(ext->ext1);
-	}
-}
-
-static void	extract_redir(int i, int *end, t_extract **mtx, t_two_extract *ext)
-{
-	if (ext->ext1 && ext->ext1->returned > 0 && ext->ext2 == NULL)
-	{
-		mtx[i] = ext->ext1;
-		(*end) += ext->ext1->returned;
-	}
-	else if (ext->ext2 && ext->ext2->returned > 0 && ext->ext1 == NULL)
-	{
-		mtx[i] = ext->ext2;
-		(*end) += ext->ext2->returned;
-	}
-	else if (ext->ext1 && ext->ext2 && ext->ext1->returned > 0
-			&& ext->ext2->returned > 0)
-		two_extract(i, end, mtx, ext);
-}
-
-t_extract	**extract_all_redirection_characters(char *str)
-{
-	int				i;
-	int				end;
-	t_two_extract	ext;
-	t_extract		**matrix_ext;
+	int	i;
+	int	count;
 
 	i = 0;
-	end = 0;
-	if (check_extract_lens(&ext, str))
-		return ((t_extract **)(NULL));
-	matrix_ext = (t_extract **)ft_calloc(ext.len_1 + ext.len_2 + 1,
-		sizeof(t_extract *));
-	if (!matrix_ext)
-		return ((t_extract **)(NULL));
-	while (i < (ext.len_1 + ext.len_2))
+	count = 0;
+	while (str[i])
 	{
-		ext.ext1 = extract_redirection_character('>', str + end);
-		ext.ext2 = extract_redirection_character('<', str + end);
-		if (ext.ext1 == NULL && ext.ext2 == NULL)
-			break ;
-		extract_redir(i, &end, matrix_ext, &ext);
+		if (str[i] == chr)
+			count++;
 		i++;
 	}
-	return (matrix_ext);
+	return (count);
+}
+
+int	get_position_chr(char chr, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == chr)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int	ft_strnpos(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+	size_t	c;
+	size_t	l_lit;
+
+	i = 0;
+	l_lit = ft_strlen(little);
+	if (len == 0 && !little)
+		return (0);
+	if (big == little || l_lit == 0)
+		return (0);
+	while (*big && i < len)
+	{
+		c = 0;
+		if (*big == little[0])
+		{
+			while (little[c] == big[c] && little[c] && big[c] && i + c < len)
+				c++;
+		}
+		if (c == l_lit)
+			return (i);
+		++big;
+		i++;
+	}
+	return (0);
+}
+
+bool	check_valid_redirection(int pos, char *str)
+{
+	bool	i1;
+	bool	i2;
+	int		aux_value;
+
+	i1 = true;
+	i2 = true;
+	aux_value = pos;
+	while (str[pos])
+	{
+		if (str[pos] == '\'' || str[pos] == '"')
+			i1 = false;
+		pos++;
+	}
+	pos = aux_value;
+	while (str[pos])
+	{
+		if (str[pos] == '\'' || str[pos] == '"')
+			i2 = false;
+		pos--;
+	}
+	if (i1 == false && i2 == false)
+		return (false);
+	return (true);
 }

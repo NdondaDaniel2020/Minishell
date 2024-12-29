@@ -12,115 +12,82 @@
 
 #include "minishell.h"
 
-static char	**split_redirection(char *str, const char *chr)
+bool	valid_string_condition_for_redirection(char *str)
 {
-	int		len_n;
-	char	**new_content;
-	char	**aux_content;
-
-	aux_content = ft_split(str, chr[0]);
-	len_n = len_matrix(aux_content);
-	new_content = (char **)ft_calloc(len_n + 2, sizeof(char *));
-	if (len_n == 1 && str[0] == chr[0])
-	{
-		new_content[0] = ft_strdup(chr);
-		new_content[1] = ft_strdup(aux_content[0]);
-	}
-	else if (len_n == 1)
-	{
-		new_content[0] = ft_strdup(aux_content[0]);
-		new_content[1] = ft_strdup(chr);
-	}
-	if (len_n == 2)
-	{
-		new_content[0] = ft_strdup(aux_content[0]);
-		new_content[1] = ft_strdup(chr);
-		new_content[2] = ft_strdup(aux_content[1]);
-	}
-	free_matrix(aux_content);
-	return (new_content);
+	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
+		 || (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
+		 || (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
+		 || (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
 }
 
-static bool	invalid_string_condition_for_redirection(char *str)
+static void	last_adjust(int len, char **end, char **start, char ***matrix)
 {
-	return (((count_chr('>', str) == 1) && (ft_strchr(str, '>') 
-			&& check_valid_redirection(get_position_chr('>', str), str)))
-		 || ((count_chr('<', str) == 1) && (ft_strchr(str, '<')
-		 	&& check_valid_redirection(get_position_chr('<', str), str)))
-		 || ((count_chr('<', str) == 2
-		 	&& check_valid_redirection(get_position_chr('<', str), str)))
-		 || ((count_chr('>', str) == 2
-		 	&& check_valid_redirection(get_position_chr('>', str), str))));
+	int	i;
+	int	e;
+	int	s;
+
+	i = 0;
+	e = 0;
+	s = 0;
+	while (i < len)
+	{
+		if (i < len_matrix(start))
+			(*matrix)[i++] = start[s++];
+		else
+			(*matrix)[i++] = end[e++];
+	}
+	free(end);
+	free(start);
 }
 
-static char	**join_comands(int len_m, int pos, char **matrix, char **split_cont)
+void	ajust_all_position(char ***matrix)
 {
-	int		i1 = 0;
-	int		i2 = 0;
-	int		iter = 0;
-	char	**new_content;
+	int		i;
+	int		e;
+	int		s;
+	int		len;
+	char	**end;
+	char	**start;
 
-	new_content = (char **)ft_calloc(len_m + len_matrix(split_cont), sizeof(char *));
-	while (matrix[i1] && iter < (len_m + len_matrix(split_cont)))
+	i = 0;
+	e = 0;
+	s = 0;
+	len = len_matrix((*matrix));
+	end = (char **)ft_calloc(len + 1, sizeof(char *));
+	start = (char **)ft_calloc(len + 1, sizeof(char *));
+	while (i < len)
 	{
-		if (iter == pos)
+		if (valid_string_condition_for_redirection((*matrix)[i]))
 		{
-			while (split_cont[i2])
-				new_content[iter++] = split_cont[i2++];
-			i1++;
+			end[e++] = (*matrix)[i++];
+			if ((*matrix)[i] != NULL)
+				end[e++] = (*matrix)[i++];
 		}
 		else
-			new_content[iter++] = ft_strdup(matrix[i1++]);
+			start[s++] = (*matrix)[i++];
 	}
-	free(split_cont);
-	return (new_content);
+	last_adjust(len, end, start, matrix);
 }
 
-static bool	condition_redirection(bool *valid, char *str, char ***split_cont)
+int	count_extract_redirection(char chr, char *str)
 {
-	if (valid_string_condition_for_redirection(str))
-	{
-		(*valid) = true;
-		return (true);
-	}
-	if (invalid_string_condition_for_redirection(str))
-	{
-		if (ft_strchr(str, '>') && count_chr('>', str) == 2)
-			(*split_cont) = split_redirection(str, ">>");
-		else if (ft_strchr(str, '<') && count_chr('<', str) == 2)
-			(*split_cont) = split_redirection(str, "<<");
-		else if (ft_strchr(str, '>') && count_chr('>', str) == 1)
-			(*split_cont) = split_redirection(str, ">");
-		else if (ft_strchr(str, '<') && count_chr('<', str) == 1)
-			(*split_cont) = split_redirection(str, "<");
-		return (true);
-	}
-	return (false);
-}
+	int			i;
+	int			end;
+	int			len;
+	t_extract	*ext;
 
-char	**reset_the_array_for_redirection(char **matrix)
-{
-    int		pos;
-    int		iter;
-    int		len_m;
-    bool	valid;
-    char	**split_cont;
-
-    pos = -1;
-    iter = 0;
-    valid = false;
-    split_cont = NULL;
-    len_m = len_matrix(matrix);
-    while (matrix[iter])
-    {
-        if (condition_redirection(&valid, matrix[iter], &split_cont))
-        {
-            pos = iter;
-            break ;
-        }
-        iter++;
-    }
-    if (valid == false && split_cont)
-		return (join_comands(len_m, pos, matrix, split_cont));
-	return (NULL);
+	i = 0;
+	end = 0;
+	len = ft_strlen(str);
+	while (end < len)
+	{
+		ext = extract_redirection_character(chr, str + end);
+		if (ext == NULL)
+			break;
+		end += ext->returned;
+		free(ext->string);
+		free(ext);
+		i++;
+	}
+	return (i);
 }

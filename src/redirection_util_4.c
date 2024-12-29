@@ -12,63 +12,74 @@
 
 #include "minishell.h"
 
-void	init_two_extract(t_two_extract *ext)
+static bool	check_extract_lens(t_two_extract *ext, char *str)
 {
-	ext->len_1 = 0;
-	ext->len_2 = 0;
-	ext->ext1 = NULL;
-	ext->ext2 = NULL;
+	init_two_extract(ext);
+	ext->len_1 = count_extract_redirection('>', str);
+	ext->len_2 = count_extract_redirection('<', str);
+	if (ext->len_1 == 0 && ext->len_2 == 0)
+		return (true);
+	return (false);
 }
 
-void	init_var_redirection(t_var_red *red)
+static void	two_extract(int i, int *end, t_extract **mtx, t_two_extract *ext)
 {
-	red->list_error = NULL;
-	red->extract_matrix = NULL;
-}
-
-void	init_extract(t_extract *extract)
-{
-	extract->string = NULL;
-	extract->start = 0;
-	extract->end = 0;
-	extract->returned = 0;
-}
-
-t_extract	*extract_redirection_character(char chr, char *str)
-{
-	int			pos;
-	char		*str_strim;
-	t_extract	*ext;
-
-	ext = (t_extract *)ft_calloc(1, sizeof(t_extract));
-	init_extract(ext);
-	pos = get_position_chr(chr, str);
-	if (pos == -1)
+	if (ext->ext1->start < ext->ext2->start)
 	{
-		free(ext);
-		return ((t_extract *)NULL);
+		mtx[i] = ext->ext1;
+		(*end) += ext->ext1->returned;
+		free(ext->ext2->string);
+		free(ext->ext2);
 	}
-	while ((str[pos + ext->end] == ' ') || (str[pos + ext->end] == '>')
-		|| (str[pos + ext->end] == '<'))
-		ext->end++;
-	str_strim = ft_substr(str, pos, ext->end);
-	ext->string = ft_strtrim(str_strim, " ");
-	ext->start = pos;
-	ext->returned = pos + ext->end;
-	free(str_strim);
-	return (ext);
+	else
+	{
+		mtx[i] = ext->ext2;
+		(*end) += ext->ext2->returned;
+		free(ext->ext1->string);
+		free(ext->ext1);
+	}
 }
 
-void	free_extract_matrix(t_extract **matrix)
+static void	extract_redir(int i, int *end, t_extract **mtx, t_two_extract *ext)
 {
-	int	i;
+	if (ext->ext1 && ext->ext1->returned > 0 && ext->ext2 == NULL)
+	{
+		mtx[i] = ext->ext1;
+		(*end) += ext->ext1->returned;
+	}
+	else if (ext->ext2 && ext->ext2->returned > 0 && ext->ext1 == NULL)
+	{
+		mtx[i] = ext->ext2;
+		(*end) += ext->ext2->returned;
+	}
+	else if (ext->ext1 && ext->ext2 && ext->ext1->returned > 0
+			&& ext->ext2->returned > 0)
+		two_extract(i, end, mtx, ext);
+}
+
+t_extract	**extract_all_redirection_characters(char *str)
+{
+	int				i;
+	int				end;
+	t_two_extract	ext;
+	t_extract		**matrix_ext;
 
 	i = 0;
-	while (matrix[i])
+	end = 0;
+	if (check_extract_lens(&ext, str))
+		return ((t_extract **)(NULL));
+	matrix_ext = (t_extract **)ft_calloc(ext.len_1 + ext.len_2 + 1,
+		sizeof(t_extract *));
+	if (!matrix_ext)
+		return ((t_extract **)(NULL));
+	while (i < (ext.len_1 + ext.len_2))
 	{
-		free(matrix[i]->string);
-		free(matrix[i]);
+		ext.ext1 = extract_redirection_character('>', str + end);
+		ext.ext2 = extract_redirection_character('<', str + end);
+		if (ext.ext1 == NULL && ext.ext2 == NULL)
+			break ;
+		extract_redir(i, &end, matrix_ext, &ext);
 		i++;
 	}
-	free(matrix);
+	return (matrix_ext);
 }

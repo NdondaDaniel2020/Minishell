@@ -12,94 +12,108 @@
 
 #include "minishell.h"
 
-bool	first_str(char chr, char *str)
+int	str_in_list_redirection(char *str, int len_m)
 {
-	if (str[0] == chr)
-		return (true);
-	return (false);
-}
-
-int	count_chr(char chr, char *str)
-{
-	int	i;
-	int	count;
+	int			i;
+	int			len;
+	int			pos;
+	static char	*list[] = {"<>", ">>", "<<","<", ">", NULL};
 
 	i = 0;
-	count = 0;
-	while (str[i])
+	len = ft_strlen(str);
+	while (list[i])
 	{
-		if (str[i] == chr)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-int	get_position_chr(char chr, char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == chr)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-int	ft_strnpos(const char *big, const char *little, size_t len)
-{
-	size_t	i;
-	size_t	c;
-	size_t	l_lit;
-
-	i = 0;
-	l_lit = ft_strlen(little);
-	if (len == 0 && !little)
-		return (0);
-	if (big == little || l_lit == 0)
-		return (0);
-	while (*big && i < len)
-	{
-		c = 0;
-		if (*big == little[0])
+		pos = ft_strnpos(str, list[i], ft_strlen(str));
+		if (ft_strncmp(str + pos, list[i], ft_strlen(list[i])) == 0)
 		{
-			while (little[c] == big[c] && little[c] && big[c] && i + c < len)
-				c++;
+			if (pos != 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+				|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+				&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+				return (len_m + (count_all_redirection(str) * 2) + 1);
+			if ((pos == 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+				|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+				&& (pos + 2 < len && str[pos + 2] != list[i][0])))) || pos != 0)
+				return (len_m + (count_all_redirection(str) * 2) + 1);
 		}
-		if (c == l_lit)
-			return (i);
-		++big;
 		i++;
 	}
-	return (0);
+	return (len_m);
 }
 
-bool	check_valid_redirection(int pos, char *str)
+static bool	condition_extract(int i, int pos, char *str, char **list)
 {
-	bool	i1;
-	bool	i2;
-	int		aux_value;
+	int	len;
 
-	i1 = true;
-	i2 = true;
-	aux_value = pos;
-	while (str[pos])
+	len = ft_strlen(str);
+	return ((pos != 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+			|| (pos == 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+			|| (pos != 0));
+}
+
+static bool	condition_to_add(char *str, bool added)
+{
+	return (added == false
+			&& (count_extract_redirection('<', str) == 0)
+			&& (count_extract_redirection('>', str) == 0));
+}
+
+static int	new_repartision(int iter, char *str, char **new_content)
+{
+	int			i;
+	int			pos;
+	bool		added;
+	static char	*list[] = {"<>", ">>", "<<","<", ">", NULL};
+
+	i = 0;
+	added = false;
+	while (list[i])
 	{
-		if (str[pos] == '\'' || str[pos] == '"')
-			i1 = false;
-		pos++;
+		pos = ft_strnpos(str, list[i], ft_strlen(str));
+		if (ft_strncmp(str + pos, list[i], ft_strlen(list[i])) == 0
+			&& condition_extract(i, pos, str, list))
+		{
+			many_redirection(str, new_content, &iter);
+			break ;
+		}
+		else if (condition_to_add(str, added))
+		{
+			new_content[iter++] = ft_strdup(str);
+			added = true;
+			break ;
+		}
+		i++;
 	}
-	pos = aux_value;
-	while (str[pos])
+	return (iter);
+}
+
+char	**reset_the_array_for_redirection(char **content)
+{
+	int		i;
+	int		iter;
+	int		len_m;
+	char	**new_content;
+
+	i = 0;
+	len_m = 0;
+	len_m = len_matrix(content);
+	while (content[i])
 	{
-		if (str[pos] == '\'' || str[pos] == '"')
-			i2 = false;
-		pos--;
+		len_m = str_in_list_redirection(content[i], len_m);
+		i++;
 	}
-	if (i1 == false && i2 == false)
-		return (false);
-	return (true);
+	if (len_matrix(content) == len_m)
+		return (NULL);
+	new_content = (char **)ft_calloc(len_m + 1, sizeof(char *));
+	i = 0;
+	iter = 0;
+	while (content[i])
+	{
+		iter = new_repartision(iter, content[i], new_content);
+		i++;
+	}
+	return (new_content);
 }
