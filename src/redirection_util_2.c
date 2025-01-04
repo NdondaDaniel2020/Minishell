@@ -15,9 +15,16 @@
 bool	valid_string_condition_for_redirection(char *str)
 {
 	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
-		 || (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
+		|| (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
+		|| (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
+		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
+}
+
+static bool	condition_add_more_one(int i, char ***matrix)
+{
+	return ((*matrix)[i] != NULL
+		&& (all_char_equal_char((*matrix)[i], '"')
+			|| all_char_equal_char((*matrix)[i], '\'')));
 }
 
 static void	last_adjust(int len, char **end, char **start, char ***matrix)
@@ -45,28 +52,28 @@ void	ajust_all_position(char ***matrix)
 	int		i;
 	int		e;
 	int		s;
-	int		len;
 	char	**end;
 	char	**start;
 
 	i = 0;
 	e = 0;
 	s = 0;
-	len = len_matrix((*matrix));
-	end = (char **)ft_calloc(len + 1, sizeof(char *));
-	start = (char **)ft_calloc(len + 1, sizeof(char *));
-	while (i < len)
+	end = (char **)ft_calloc(len_matrix((*matrix)) + 1, sizeof(char *));
+	start = (char **)ft_calloc(len_matrix((*matrix)) + 1, sizeof(char *));
+	while (i < len_matrix((*matrix)))
 	{
 		if (valid_string_condition_for_redirection((*matrix)[i]))
 		{
 			end[e++] = (*matrix)[i++];
 			if ((*matrix)[i] != NULL)
 				end[e++] = (*matrix)[i++];
+			if (condition_add_more_one(i, matrix))
+				end[e++] = (*matrix)[i++];
 		}
 		else
 			start[s++] = (*matrix)[i++];
 	}
-	last_adjust(len, end, start, matrix);
+	last_adjust(len_matrix((*matrix)), end, start, matrix);
 }
 
 int	count_extract_redirection(char chr, char *str)
@@ -83,7 +90,7 @@ int	count_extract_redirection(char chr, char *str)
 	{
 		ext = extract_redirection_character(chr, str + end);
 		if (ext == NULL)
-			break;
+			break ;
 		end += ext->returned;
 		free(ext->string);
 		free(ext);
