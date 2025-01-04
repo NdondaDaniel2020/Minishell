@@ -43,7 +43,7 @@ static int	firts_str(int i, char *str, char **new_content, t_index **indexsing)
 
 	start = len_matrix(new_content);
 	pos = pos_redirection(str, indexsing[i]->content->string,
-		ft_strlen(str), indexsing[i]->index);
+			ft_strlen(str), indexsing[i]->index);
 	if (pos != 0)
 	{
 		new_content[start++] = substring(str, 0, pos);
@@ -65,11 +65,11 @@ static int	other_str(int i, char *str, char **new_content, t_index **indexsing)
 
 	start = len_matrix(new_content);
 	pos1 = pos_redirection(str, indexsing[i - 1]->content->string,
-		ft_strlen(str), indexsing[i - 1]->index);
+			ft_strlen(str), indexsing[i - 1]->index);
 	pos2 = pos_redirection(str, indexsing[i]->content->string,
-		ft_strlen(str), indexsing[i]->index);
-	new_content[start++] = substring(str, pos1 +
-		ft_strlen(indexsing[i - 1]->content->string), pos2);
+			ft_strlen(str), indexsing[i]->index);
+	new_content[start++] = substring(str, pos1
+			+ ft_strlen(indexsing[i - 1]->content->string), pos2);
 	new_content[start++] = ft_strdup(indexsing[i]->content->string);
 	return (2);
 }
@@ -81,11 +81,11 @@ static int	last_str(int i, char *str, char **new_content, t_index **indexsing)
 
 	start = len_matrix(new_content);
 	pos = pos_redirection(str, indexsing[i - 1]->content->string,
-		ft_strlen(str), indexsing[i - 1]->index);
+			ft_strlen(str), indexsing[i - 1]->index);
 	if ((pos + ft_strlen(indexsing[i - 1]->content->string)) < ft_strlen(str))
 	{
-		new_content[start++] = substring(str, pos +
-			ft_strlen(indexsing[i - 1]->content->string), ft_strlen(str));
+		new_content[start++] = substring(str, pos
+				+ ft_strlen(indexsing[i - 1]->content->string), ft_strlen(str));
 		return (1);
 	}
 	return (0);
@@ -100,7 +100,7 @@ void	many_redirection(char *str, char **new_content, int *iter)
 	i = 0;
 	len_m = count_all_redirection(str);
 	indexsing = indexing_matrix(len_m,
-		extract_all_redirection_characters(str));
+			extract_all_redirection_characters(str));
 	while (i < len_m)
 	{
 		if (i == 0)
