@@ -46,7 +46,7 @@ t_extract	*extract_redirection_character(char chr, char *str)
 	if (pos == -1)
 	{
 		free(ext);
-		return ((t_extract *)NULL);
+		return ((t_extract *) NULL);
 	}
 	while ((str[pos + ext->end] == ' ') || (str[pos + ext->end] == '>')
 		|| (str[pos + ext->end] == '<'))
