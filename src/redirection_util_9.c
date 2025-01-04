@@ -33,7 +33,7 @@ int	count_all_redirection(char *str)
 
 char	*substring(const char *str, int start, int end)
 {
-	int 	len;
+	int		len;
 	char	*sub;
 
 	len = strlen(str);
@@ -54,9 +54,18 @@ char	*substring(const char *str, int start, int end)
 char	**list_error(void)
 {
 	static char	*list[] = {"><", ">>>", "<<<", ">><", "<<>",
-							"<>>", "<><", ">> ", "<< ", "<> ",
-							"< ", "> ", NULL};
+		"<>>", "<><", ">> ", "<< ", "<> ", "< ", "> ", NULL};
 
 	return (list);
 }
 
+bool	all_char_equal_char(char *str, char chr)
+{
+	while (*str)
+	{
+		if (*str != chr)
+			return (false);
+		str++;
+	}
+	return (true);
+}
