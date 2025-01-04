@@ -53,7 +53,7 @@ static void	extract_redir(int i, int *end, t_extract **mtx, t_two_extract *ext)
 		(*end) += ext->ext2->returned;
 	}
 	else if (ext->ext1 && ext->ext2 && ext->ext1->returned > 0
-			&& ext->ext2->returned > 0)
+		&& ext->ext2->returned > 0)
 		two_extract(i, end, mtx, ext);
 }
 
@@ -69,7 +69,7 @@ t_extract	**extract_all_redirection_characters(char *str)
 	if (check_extract_lens(&ext, str))
 		return ((t_extract **)(NULL));
 	matrix_ext = (t_extract **)ft_calloc(ext.len_1 + ext.len_2 + 1,
-		sizeof(t_extract *));
+			sizeof(t_extract *));
 	if (!matrix_ext)
 		return ((t_extract **)(NULL));
 	while (i < (ext.len_1 + ext.len_2))
