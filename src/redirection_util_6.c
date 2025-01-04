@@ -17,7 +17,7 @@ int	str_in_list_redirection(char *str, int len_m)
 	int			i;
 	int			len;
 	int			pos;
-	static char	*list[] = {"<>", ">>", "<<","<", ">", NULL};
+	static char	*list[] = {"<>", ">>", "<<", "<", ">", NULL};
 
 	i = 0;
 	len = ft_strlen(str);
@@ -31,8 +31,9 @@ int	str_in_list_redirection(char *str, int len_m)
 				&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
 				return (len_m + (count_all_redirection(str) * 2) + 1);
 			if ((pos == 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
-				|| ((pos + 1 < len && str[pos + 1] == list[i][0])
-				&& (pos + 2 < len && str[pos + 2] != list[i][0])))) || pos != 0)
+					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+					|| pos != 0)
 				return (len_m + (count_all_redirection(str) * 2) + 1);
 		}
 		i++;
@@ -46,19 +47,19 @@ static bool	condition_extract(int i, int pos, char *str, char **list)
 
 	len = ft_strlen(str);
 	return ((pos != 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
-					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
-					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+			|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+			&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
 			|| (pos == 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
-					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
-					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+				|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+				&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
 			|| (pos != 0));
 }
 
 static bool	condition_to_add(char *str, bool added)
 {
 	return (added == false
-			&& (count_extract_redirection('<', str) == 0)
-			&& (count_extract_redirection('>', str) == 0));
+		&& (count_extract_redirection('<', str) == 0)
+		&& (count_extract_redirection('>', str) == 0));
 }
 
 static int	new_repartision(int iter, char *str, char **new_content)
@@ -66,7 +67,7 @@ static int	new_repartision(int iter, char *str, char **new_content)
 	int			i;
 	int			pos;
 	bool		added;
-	static char	*list[] = {"<>", ">>", "<<","<", ">", NULL};
+	static char	*list[] = {"<>", ">>", "<<", "<", ">", NULL};
 
 	i = 0;
 	added = false;
