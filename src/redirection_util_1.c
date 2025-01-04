@@ -45,12 +45,12 @@ static bool	check_redirection_error(int i1, int i2, t_var_red *red, char *str)
 	int	pos;
 
 	if (ft_strncmp(red->extract_matrix[i1]->string, red->list_error[i2],
-		ft_strlen(red->list_error[i2])) == 0)
+			ft_strlen(red->list_error[i2])) == 0)
 	{
 		pos = ft_strnpos(str, red->extract_matrix[i1]->string, ft_strlen(str));
 		ft_putstr_fd("syntax error near unexpected token `", 2);
 		ft_putchar_fd(str[pos + get_value_erro(red->list_error[i2],
-			 str + pos)], 2);
+				str + pos)], 2);
 		ft_putstr_fd("'\n", 2);
 		free_extract_matrix(red->extract_matrix);
 		return (true);
