@@ -16,7 +16,9 @@ LIBFT = $(DIR_LIBFT)libft.a
 NAME = ./minishell
 SRC = ./src/
 INCLUDE = ./include
-FILES = cd_1.c \
+FILES = adjust_file_name.c \
+		adjust_file_name_util.c \
+		cd_1.c \
 		cd_2.c \
 		check_expansion_1.c \
 		check_expansion_2.c \
@@ -25,6 +27,8 @@ FILES = cd_1.c \
 		echo_3.c \
 		env_1.c \
 		env_2.c \
+		exec_redirection.c \
+		exec_redirection_util.c \
 		exit_1.c \
 		exit_2.c \
 		export_1.c \
@@ -34,6 +38,8 @@ FILES = cd_1.c \
 		lstnew_util_1.c \
 		lstnew_util_2.c \
 		main.c \
+		master_1.c \
+		master_2.c \
 		other_command.c \
 		pwd.c \
 		redirection_util_1.c \
@@ -42,33 +48,13 @@ FILES = cd_1.c \
 		redirection_util_4.c \
 		redirection_util_5.c \
 		redirection_util_6.c \
+		redirection_util_7.c \
+		redirection_util_8.c \
+		redirection_util_9.c \
 		split_2.c \
 		unset.c \
 		util_1.c \
 		util_2.c \
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)
@@ -87,7 +73,7 @@ $(LIBFT):
 	@$(MAKE) bonus -C $(DIR_LIBFT)
 
 r:
-	@cc exmpl/run.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
+	@cc exmpl/run.c exmpl/run_util.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
 
 clean:
 	@/bin/rm -f $(OBJ)
