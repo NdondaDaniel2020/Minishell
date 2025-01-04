@@ -34,7 +34,7 @@ static char	*read_all_path(int i, t_new_list *aux, t_data *data, DIR *open_dir)
 	return (NULL);
 }
 
-char	*get_valid_path(t_new_list *aux, t_data *data)
+static char	*get_valid_path(t_new_list *aux, t_data *data)
 {
 	int				i;
 	char			*dir_path;
@@ -64,22 +64,57 @@ static void	error_command_not_found(t_new_list *aux)
 	ft_putstr_fd(": command not found\n", 2);
 }
 
+char	*get_absolute_path(int i, t_new_list *aux, t_data *data)
+{
+	if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])))
+	{
+		if (aux->content[i][ft_strlen(aux->content[i]) - 1] == '/')
+		{
+			if (is_directory_valid(aux->content[i]))
+			{
+				ft_putstr_fd(aux->content[i], 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+			}
+			else
+			{
+				ft_putstr_fd(aux->content[i], 2);
+				ft_putstr_fd(": No such file or directory\n", 2);
+			}
+			return (NULL);
+		}
+		else
+			return (ft_strdup(aux->content[i]));
+	}
+	else
+		return (get_valid_path(aux, data));
+}
+
 void	other_command(int i, t_new_list *aux, t_data *data)
 {
 	int		pid;
+	int		status;
 	char	*path;
 
-	if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])))
-		path = ft_strdup(aux->content[i]);
-	else
-		path = get_valid_path(aux, data);
+	path = get_absolute_path(i, aux, data);
+	if (path == NULL)
+		return ;
 	if (path)
 	{
 		pid = fork();
+
 		if (pid == 0)
-			execve(path, aux->content, data->envp);
+		{
+			if (execve(path, aux->content, data->envp) == -1)
+				exit(EXIT_FAILURE);
+		}
 		else
-			wait(NULL);
+		{
+			wait(&status);
+			// if (status != 0)
+			// 	// erro
+			// else
+			// 	// ls
+		}
 		free(path);
 	}
 	else
