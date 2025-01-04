@@ -14,6 +14,8 @@
 # define MINISHELL_H
 
 #include "libft.h"
+#include <unistd.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <stdbool.h>
@@ -33,7 +35,6 @@ typedef struct s_data
 {
 	int			write_on_the_pipe;
 	int			read_in_the_pipe;
-	int			copy_fd;
 	bool		is_pipe;
 	bool		space;
 	bool		automatic_input;
@@ -42,6 +43,7 @@ typedef struct s_data
 	char		*put_amb;
 	char		**path;
 	char		**envp;
+	char		**redirection_matrix;
 	t_new_list	*list;
 }			t_data;
 
@@ -82,6 +84,13 @@ typedef struct s_two_extract
 	t_extract	*ext1;
 	t_extract	*ext2;
 }				t_two_extract;
+
+typedef struct s_index
+{
+	int			index;
+	t_extract	*content;
+}				t_index;
+
 
 /* builtin cd*/
 void		cd(t_new_list *aux, t_data *data);
@@ -154,10 +163,10 @@ char		*ft_charjoin_free(char *s1, char c);
 
 /* functions */
 char		**split_2(char *str, char chr);
-char		*get_valid_path(t_new_list *aux, t_data *data);
 
 void		other_command(int i, t_new_list *aux, t_data *data);
 void		insert_data(t_data *data, char *command);
+char		*get_absolute_path(int i, t_new_list *aux, t_data *data);
 
 int			list_builtins(char *command);
 int			len_matrix(char **matrix);
@@ -172,7 +181,7 @@ void		extract_value_env_quotes(int i, t_new_list *aux, t_data *data);
 
 int			get_position_chr(char chr, char *str);
 bool		valid_string_condition_for_redirection(char *str);
-void		ajust_position(char ***matrix);
+void		ajust_all_position(char ***matrix);
 char		**reset_the_array_for_redirection(char **matrix);
 
 bool		first_str(char chr, char *str);
@@ -190,7 +199,31 @@ char		**list_error(void);
 int			count_extract_redirection(char chr, char *str);
 t_extract	*extract_redirection_character(char chr, char *str);
 t_extract	**extract_all_redirection_characters(char *str);
+
+char		**reset_the_array_for_redirection(char **content);
 void		free_extract_matrix(t_extract **matrix);
+int			count_all_redirection(char *str);
+int			str_in_list_redirection(char *str, int len_m);
+int			pos_redirection(const char *big, const char *little, size_t len, int index);
+void		free_indexing_matrix(t_index **indexed);
+void		many_redirection(char *str, char **new_content, int *iter);
+bool		str_in_matrix(char *str, char **matrix);
+char		*substring(const char *str, int start, int end);
+t_index		**indexing_matrix(int len, t_extract **matrix);
+
+
+char		*adjust_file_name(char *content);
+bool		space_before_string(char *str);
+bool		space_after_string(char *str);
+int			star_alpha(char *str);
+bool		condition_adjust(int i, char **new_content);
+char		*strdelchr(char *str, char chr);
+bool	all_char_equal_char(char *str, char chr);
+
+void		insert_data(t_data *data, char *command);
+void		execute_command(int i, t_new_list *aux, t_data *data);
+bool		valid_redirection_syntax(t_new_list *aux);
+bool		adjust_filename_in_redirection_syntax(t_new_list *aux);
 
 /* list */
 t_new_list  *ft_lstnew_new(char **content);
@@ -203,5 +236,12 @@ void	ft_lstnew_delfront(t_new_list **list);
 void	ft_lstnew_delback(t_new_list **list);
 void	ft_show_lstnew(t_new_list *list);
 int     ft_lstnew_size(t_new_list *lst);
+
+
+void	output(t_data *data, t_new_list *aux);
+void	input(t_data *data, t_new_list *aux);
+void	output_append(t_data *data, t_new_list *aux);
+int		open_file(const char *file, int mode);
+void	setup_redir(int fd, int fd_target);
 
 #endif
