@@ -12,26 +12,27 @@
 
 #include "minishell.h"
 
-void free_indexing_matrix(t_index **indexed)
+void	free_indexing_matrix(t_index **indexed)
 {
-    int i = 0;
+	int	i;
 
-    if (!indexed)
-        return;
-    while (indexed[i])
-    {
-        if (indexed[i]->content)
-        {
-            free(indexed[i]->content->string);
-            free(indexed[i]->content);
-        }
-        free(indexed[i]);
-        i++;
-    }
-    free(indexed);
+	i = 0;
+	if (!indexed)
+		return ;
+	while (indexed[i])
+	{
+		if (indexed[i]->content)
+		{
+			free(indexed[i]->content->string);
+			free(indexed[i]->content);
+		}
+		free(indexed[i]);
+		i++;
+	}
+	free(indexed);
 }
 
-static bool release_in_case_of_error(int i, t_index **indexed)
+static bool	release_in_case_of_error(int i, t_index **indexed)
 {
 	if (!indexed[i])
 	{
