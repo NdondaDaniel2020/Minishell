@@ -1,301 +1,119 @@
-/* ************************************************************************** */
-#include <term.h>
-#include <errno.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <dirent.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <unistd.h>
-#include <string.h>
-#include <curses.h>
-#include <termios.h>
-#include <stdbool.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <sys/resource.h>
-#include "../libft/libft.h"
-#include <readline/history.h>
-#include <readline/readline.h>
 
-void	free_matrix(char **matrix)
+#include "run.h"
+
+/////////////
+
+static bool	condition_extract(int i, int pos, char *str, char **list)
 {
-	int	i;
+	int	len;
 
-	if (!matrix)
-		return ;
-	i = 0;
-	while (matrix[i])
-	{
-		free(matrix[i]);
-		matrix[i] = NULL;
-		i++;
-	}
-	free(matrix);
-	matrix = NULL;
-}
-
-int	len_matrix(char **matrix)
-{
-	int	i;
-
-	i = 0;
-	while (matrix[i])
-		i++;
-	return (i);
-}
-
-int	count_chr(char chr, char *str)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str[i])
-	{
-		if (str[i] == chr)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-int	get_position_chr(char chr, char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == chr)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-static bool	check_valid_redirection(int pos, char *str)
-{
-	bool	i1;
-	bool	i2;
-
-	i1 = true;
-	i2 = true;
-	while (str[pos])
-	{
-		if (str[pos] == '\'' || str[pos] == '"')
-			i1 = false;
-		pos++;
-	}
-	pos--;
-	while (pos > 0 && str[pos])
-	{
-		if (str[pos] == '\'' || str[pos] == '"')
-			i2 = false;
-		pos--;
-	}
-	if (!i1 && !i2)
-		return (false);
-	return (true);
-}
-
-
-
-
-
-
-
-static char	**split_redirection(char *str, const char *chr)
-{
-	int		len_n;
-	char	**new_content;
-	char	**aux_content;
-
-	aux_content = ft_split(str, chr[0]);
-	len_n = len_matrix(aux_content);
-	new_content = (char **)ft_calloc(len_n + 2, sizeof(char *));
-	if (len_n == 1 && str[0] == chr[0])
-	{
-		new_content[0] = ft_strdup(chr);
-		new_content[1] = ft_strdup(aux_content[0]);
-	}
-	else if (len_n == 1)
-	{
-		new_content[0] = ft_strdup(aux_content[0]);
-		new_content[1] = ft_strdup(chr);
-	}
-	if (len_n == 2)
-	{
-		new_content[0] = ft_strdup(aux_content[0]);
-		new_content[1] = ft_strdup(chr);
-		new_content[2] = ft_strdup(aux_content[1]);
-	}
-	free_matrix(aux_content);
-	return (new_content);
+	len = ft_strlen(str);
+	return ((pos != 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+			|| (pos == 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+			|| (pos != 0));
 }
 
 bool	valid_string_condition_for_redirection(char *str)
 {
 	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
-		 || (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
-		 || (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
+		|| (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
+		|| (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
+		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
 }
 
-static bool	invalid_string_condition_for_redirection(char *str)
+static bool	condition_to_add(char *str, bool added)
 {
-	return ((count_chr('>', str) == 1) && (ft_strchr(str, '>')
-				&& check_valid_redirection(get_position_chr('>', str), str))
-		 || (count_chr('<', str) == 1) && (ft_strchr(str, '<')
-		 		&& check_valid_redirection(get_position_chr('<', str), str))
-		 || (count_chr('<', str) == 2
-		 		&& check_valid_redirection(get_position_chr('<', str), str))
-		 || (count_chr('>', str) == 2
-		 		&& check_valid_redirection(get_position_chr('>', str), str)));
+	return (added == false
+		&& (valid_string_condition_for_redirection(str)
+			|| (count_extract_redirection('<', str) == 0
+			&& count_extract_redirection('>', str) == 0)));
 }
 
-static char	**join_comands(int len_m, int pos, char **matrix, char **split_cont)
+int	new_repartision(int iter, char *str, char **new_content)
 {
-	int		i1 = 0;
-	int		i2 = 0;
-	int		iter = 0;
-	char	**new_content;
-
-	new_content = (char **)ft_calloc(len_m + len_matrix(split_cont), sizeof(char *));
-	while (matrix[i1] && iter < (len_m + len_matrix(split_cont)))
-	{
-		if (iter == pos)
-		{
-			while (split_cont[i2])
-				new_content[iter++] = split_cont[i2++];
-			i1++;
-		}
-		else
-			new_content[iter++] = ft_strdup(matrix[i1++]);
-	}
-	free(split_cont);
-	return (new_content);
-}
-
-static bool	condition_redirection(bool *valid, char *str, char ***split_cont)
-{
-	if (valid_string_condition_for_redirection(str))
-	{
-		(*valid) = true;
-		return (true);
-	}
-	if (invalid_string_condition_for_redirection(str))
-	{
-		if (ft_strchr(str, '>') && count_chr('>', str) == 2)
-			(*split_cont) = split_redirection(str, ">>");
-		else if (ft_strchr(str, '<') && count_chr('<', str) == 2)
-			(*split_cont) = split_redirection(str, "<<");
-		else if (ft_strchr(str, '>') && count_chr('>', str) == 1)
-			(*split_cont) = split_redirection(str, ">");
-		else if (ft_strchr(str, '<') && count_chr('<', str) == 1)
-			(*split_cont) = split_redirection(str, "<");
-		return (true);
-	}
-	return (false);
-}
-
-static void	change_position(int pos, int len, char ***matrix)
-{
-	char	**auxm;
-
-	auxm = (char **)ft_calloc(3 , sizeof(char *));
-	auxm[0] = (*matrix)[pos];
-	auxm[1] = (*matrix)[pos + 1];
-	while (pos < len - 2)
-	{
-		(*matrix)[pos] = (*matrix)[pos + 2];
-		pos++;
-	}
-	(*matrix)[len - 2] = auxm[0];
-	(*matrix)[len - 1] = auxm[1];
-	free(auxm);
-}
-
-void	**ajust_position(char ***matrix)
-{
-	int		i;
-	int		len;
-	int		pos;
+	int			i;
+	int			pos;
+	bool		added;
+	static char	*list[] = {"<>", ">>", "<<","<", ">", NULL};
 
 	i = 0;
-	pos = -1;
-	len = len_matrix((*matrix));
-	while ((*matrix)[i])
+	added = false;
+	while (list[i])
 	{
-		if (valid_string_condition_for_redirection((*matrix)[i]))
+		pos = ft_strnpos(str, list[i], ft_strlen(str));
+		if (ft_strncmp(str + pos, list[i], ft_strlen(list[i])) == 0
+			&& condition_extract(i, pos, str, list))
 		{
-			pos = i;
+			many_redirection(str, new_content, &iter);
+			break ;
+		}
+		else if (condition_to_add(str, added))
+		{
+			new_content[iter++] = ft_strdup(str);
+			added = true;
 			break ;
 		}
 		i++;
 	}
-    if (pos != -1 && pos < len - 1)
-		change_position(pos, len, matrix);
+	return (iter);
 }
 
-char **reset_the_array_for_redirection(char **matrix)
+////////////////////////////////////////////////////////////////////////
+char	**reset_the_array_for_redirection(char **content)
 {
-    int		pos;
-    int		iter;
-    int		len_m;
-    bool	valid;
-    char	**split_cont;
+	int		i;
+	int		iter;
+	int		len_m;
+	char	**new_content;
 
-    pos = -1;
-    iter = 0;
-    valid = false;
-    split_cont = NULL;
-    len_m = len_matrix(matrix);
-    while (matrix[iter])
-    {
-        if (condition_redirection(&valid, matrix[iter], &split_cont))
-        {
-            pos = iter;
-            break ;
-        }
-        iter++;
-    }
-    if (valid == false && split_cont)
-		return (join_comands(len_m, pos, matrix, split_cont));
-	return (NULL);
+	i = 0;
+	len_m = 0;
+	len_m = len_matrix(content);
+	while (content[i])
+	{
+		len_m = str_in_list_redirection(content[i], len_m);
+		i++;
+	}
+	if (len_matrix(content) == len_m)
+		return (NULL);
+	new_content = (char **)ft_calloc(len_m + 1, sizeof(char *));
+	i = 0;
+	iter = 0;
+	while (content[i])
+	{
+		iter = new_repartision(iter, content[i], new_content);
+		i++;
+	}
+	return (new_content);
 }
 
 int main(void)
 {
 	int		i;
 	char	**new_content;
-	char	**matrix;
+	char	**content;
 
-	i = 0;
-	matrix = (char **)ft_calloc(9, sizeof(char *));
-	matrix[0] = ft_strdup("echo");
-	matrix[1] = ft_strdup("TEST");
-	matrix[2] = ft_strdup("test>");
-	matrix[3] = ft_strdup("file.txt");
-	matrix[4] = ft_strdup("TEST");
-	matrix[5] = ft_strdup(">>");
-	matrix[6] = ft_strdup("TEST");
-	matrix[7] = ft_strdup("TEST");
+	content = (char **)ft_calloc(9, sizeof(char *));
+	content[0] = ft_strdup(">>");
+	content[1] = ft_strdup("test1");
+	content[2] = ft_strdup(">>");
+	content[3] = ft_strdup("test2>test3>");
 
-	new_content = reset_the_array_for_redirection(matrix);
-	new_content = ajust_position(&new_content);
+	new_content = reset_the_array_for_redirection(content);
 	if (new_content)
 	{
+		i = 0;
 		while (new_content[i])
 		{
-			ft_printf("%i - %s\n", i, new_content[i]);
+			ft_printf("%s\n", new_content[i]);
 			i++;
 		}
 		free_matrix(new_content);
 	}
-	free_matrix(matrix);
+	free_matrix(content);
     return (0);
 }

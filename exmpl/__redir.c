@@ -164,31 +164,31 @@ int main()
 	data.command = ft_strdup("echo Hello, World! 1234567890");
 
     // Redirecionar saída para arquivo >
-    output(&data, "output_1.txt");
+    output(&data, "test 123/output_2.txt");
 
     // Redirecionar entrada a partir de um arquivo <
-	if (data.command)
-	{
-		free(data.command);
-		data.command = NULL;
-	}
-	data.command = ft_strdup("cat");
-	input(&data, "output_1.txt");
+	// if (data.command)
+	// {
+	// 	free(data.command);
+	// 	data.command = NULL;
+	// }
+	// data.command = ft_strdup("cat");
+	// input(&data, "output_1.txt");
 
     // Teste com modo de append
-    while (i <= 10)
-    {
-		// >>
-		if (data.command)
-		{
-			free(data.command);
-			data.command = NULL;
-		}
-		data.command = ft_strdup("echo Hello, World! 1234567890");
-    	output_append(&data, "output_1.txt");
-		i++;
-	}
-	printf("TESTE COM APPEND\n");
+    // while (i <= 10)
+    // {
+	// 	// >>
+	// 	if (data.command)
+	// 	{
+	// 		free(data.command);
+	// 		data.command = NULL;
+	// 	}
+	// 	data.command = ft_strdup("echo Hello, World! 1234567890");
+    // 	output_append(&data, "output_1.txt");
+	// 	i++;
+	// }
+	// printf("TESTE COM APPEND\n");
     return 0;
 }
 

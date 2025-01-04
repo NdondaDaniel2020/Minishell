@@ -66,48 +66,26 @@ bool	condition_adjust(int i, char **new_content)
 						+ star_alpha(new_content[i]))) % 2 != 0));
 }
 
-char	*strdelchr(char *str, char chr)
+bool	condition_error_directory(int i, char **new_content)
 {
-	int	i;
-	int	coun_chr;
-	char	*new_str;
-
-	i = 0;
-	coun_chr = count_chr(chr, str);
-	new_str = (char *)ft_calloc((ft_strlen(str) - coun_chr) + 1, sizeof(char));
-	while (*str)
-	{
-		if (*str != chr)
-			new_str[i++] = *str;
-		str++;
-	}
-	return (new_str);
+	return (((count_chr('\'', new_content[i]) > 0
+					&& count_chr('"', new_content[i]) == 0)
+				|| (count_chr('"', new_content[i]) > 0
+					&& count_chr('\'', new_content[i]) == 0))
+			&& (space_before_string(new_content[i]) == true));
 }
 
-static char	*other_join(int i2, int len_m, char *join, char **new_content)
+bool	condition_error_not_found(int i, char **new_content)
 {
-	char	*aux;
-
-	if (new_content[i2][0] == '"' || new_content[i2][0] == '\'')
-	{
-		aux = ft_strtrim(new_content[i2], "'\"");
-		join = ft_strjoin_free(join, aux);
-		free(aux);
-	}
-	else if (ft_strchr(new_content[i2], '\\'))
-	{
-		aux = strdelchr(new_content[i2], '\\');
-		join = ft_strjoin_free(join, aux);
-		free(aux);
-	}
-	else
-		join = ft_strjoin_free(join, new_content[i2]);
-	if (i2 < len_m - 1)
-		join = ft_strjoin_free(join, "/");
-	return (join);
+	return (((count_chr('\'', new_content[i]) > 0
+					&& count_chr('"', new_content[i]) == 0)
+				|| (count_chr('"', new_content[i]) > 0
+					&& count_chr('\'', new_content[i]) == 0))
+			&& (space_before_string(new_content[i]) == false
+				&& space_after_string(new_content[i]) == true));
 }
 
-char	*the_file_directory_is_validated(int len_m, bool *valid, char **new_content)
+char	*the_file_directory_is_validated(int len_m, char **new_content)
 {
 	int		i2;
 	char	*join;
@@ -116,19 +94,48 @@ char	*the_file_directory_is_validated(int len_m, bool *valid, char **new_content
 	join = (char *)ft_calloc(1, sizeof(char));
 	while (i2 < len_m)
 	{
-		if (i2 == len_m - 1 && (!is_directory_valid(join) || *valid == false)
+		if (i2 == len_m - 1 && !is_directory_valid(join)
 			&& len_matrix(new_content) > 1)
 		{
 			join = ft_strjoin_free(join, new_content[i2]);
+			join = ft_strjoin_free(join, "/");
 			ft_putstr_fd(join, 2);
 			ft_putstr_fd(": No such file or directory", 2);
 			return (free(join), NULL);
 		}
 		else
-			join = other_join(i2, len_m, join, new_content);
+		{
+			join = ft_strjoin_free(join, new_content[i2]);
+			if (i2 < len_m - 1)
+				join = ft_strjoin_free(join, "/");
+		}
 		i2++;
 	}
 	return (join);
+}
+
+static bool	show_error_is_directory(int len_m, char **new_content)
+{
+	int		i2;
+	char	*join;
+
+	if (len_m == 1)
+		ft_putstr_fd(": No such file or directory", 2);
+	else
+	{
+		i2 = 0;
+		join = (char *)ft_calloc(1, sizeof(char));
+		while (i2 < len_m - 1)
+		{
+			join = ft_strjoin_free(join, new_content[i2]);
+			join = ft_strjoin_free(join, "/");
+			i2++;
+		}
+		ft_putstr_fd(join, 2);
+		ft_putstr_fd(": Is a directory", 2);
+		free(join);
+	}
+	return (true);
 }
 
 static void	remove_excess(int i, char **new_content)
@@ -145,10 +152,25 @@ static void	remove_excess(int i, char **new_content)
 
 static void	set_value(int i, bool *valid, char **new_content)
 {
-	(*valid) = ((count_chr(' ', new_content[i]) > 0 && count_chr('"', new_content[i]) > 0) 
-		|| (count_chr(' ', new_content[i]) > 0 && count_chr('\'', new_content[i]) > 0) 
-		|| (count_chr(' ', new_content[i]) > 0 && count_chr('\\', new_content[i]) == count_chr(' ', new_content[i]))
-		|| (count_chr(' ', new_content[i]) == 0));
+	(*valid) = (count_chr(' ', new_content[i]) > 0
+				&& count_chr('"', new_content[i]) > 0)
+			|| (count_chr(' ', new_content[i]) > 0
+				&& count_chr('\\', new_content[i])
+				== count_chr(' ', new_content[i]))
+			|| (count_chr(' ', new_content[i]) == 0);
+}
+
+static bool	operating_conditions(int i, int len_m, char **new_content)
+{
+	if (condition_adjust(i, new_content))
+		remove_excess(i, new_content);
+	else if (condition_error_directory(i, new_content)
+		&& show_error_is_directory(len_m, new_content))
+		return (true);
+	else if (condition_error_not_found(i, new_content)
+		&& ft_printf(": command not found", 2))
+		return (true);
+	return (false);
 }
 
 char	*adjust_file_name(char *content)
@@ -167,14 +189,14 @@ char	*adjust_file_name(char *content)
 		i = 0;
 		while (new_content[i])
 		{
-			if (i == (len_m - 1) && condition_adjust(i, new_content))
-				remove_excess(i, new_content);
+			if (i == (len_m - 1) && operating_conditions(i, len_m, new_content))
+				return (free_matrix(new_content), NULL);
 			else
 				set_value(i, &valid, new_content);
 			i++;
 		}
-		join = the_file_directory_is_validated(len_m, &valid, new_content);
-		if (valid == false && join == NULL)
+		join = the_file_directory_is_validated(len_m, new_content);
+		if (!valid && join == NULL)
 			return (free_matrix(new_content), NULL);
 	}
     return (free_matrix(new_content), join);
@@ -185,11 +207,9 @@ int	main(void)
 	char	*content;
 	char	*new_content;
 
-	content = ft_strdup("test/test\\ 1/'''tes1.txt'''");
-
+	content = ft_strdup("\"\"tes1.txt\"\"");
 	new_content = adjust_file_name(content);
-	ft_printf("\n[[[%s]]]\n", new_content);
-
+	ft_printf("%s\n", new_content);
 	free(content);
 	free(new_content);
     return (0);

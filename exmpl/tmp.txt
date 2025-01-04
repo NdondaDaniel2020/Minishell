@@ -229,33 +229,125 @@ t_extract	extract_redirection_character(char *str)
 
 
 
-static void	extract_redirection(t_two_extract *ext, t_extract *mtx, int *end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////
+static bool	condition_extract(int i, int pos, char *str, char **list)
 {
-	if (ext.ext1 && ext1->returned > 0 && ext.ext2 == NULL)
-	{
-		mtx[i] = ext.ext1;
-		(*end) += ext1->returned;
-	}
-	else if (ext.ext2 && ext2->returned > 0 && ext.ext1 == NULL)
-	{	
-		mtx[i] = ext.ext2;
-		(*end) += ext2->returned;
-	}
-	else if (ext.ext1 && ext.ext2 && ext.ext1->returned > 0 && ext.ext2->returned > 0)
-	{
-		if (ext.ext1->start < ext.ext2->start)
-		{
-			mtx[i] = ext.ext1;
-			(*end) += ext.ext1->returned;
-			free(ext.ext2->string);
-			free(ext.ext2);
-		}
-		else
-		{
-			mtx[i] = ext.ext2;
-			(*end) += ext.ext2->returned;
-			free(ext.ext1->string);
-			free(ext.ext1);
-		}
-	}
+	int	len;
+
+	len = ft_strlen(str);
+	return ((pos != 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+			|| (pos == 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
+					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
+					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
+			|| (pos != 0));
 }
+
+static bool	condition_to_add(char *str, char **new_content)
+{
+	return (str_in_matrix(str, new_content) == false
+			&& (count_extract_redirection('<', str) == 0)
+			&& (count_extract_redirection('>', str) == 0));
+}
+
+int	new_repartision(int iter, char *str, char **new_content)
+{
+	int			i;
+	int			pos;
+	static char	*list[] = {"<>", ">>", "<<","<", ">", NULL};
+
+	i = 0;
+	while (list[i])
+	{
+		pos = ft_strnpos(str, list[i], ft_strlen(str));
+		if (ft_strncmp(str + pos, list[i], ft_strlen(list[i])) == 0
+			&& condition_extract(i, pos, str, list))
+		{
+			many_redirection(str, new_content, &iter);
+			break ;
+		}
+		else if (condition_to_add(str, new_content))
+		{
+			new_content[iter] = ft_strdup(str);
+			iter++;
+			break ;
+		}
+		i++;
+	}
+	return (iter);
+}
+/////////////
+
+char	**reset_the_array_for_redirection(char **content)
+{
+	int		i;
+	int		iter;
+	int		len_m;
+	char	**new_content;
+
+	i = 0;
+	len_m = 0;
+	len_m = len_matrix(content);
+	while (content[i])
+	{
+		len_m = str_in_list_redirection(content[i], len_m);
+		i++;
+	}
+	if (len_matrix(content) == len_m)
+		return (NULL);
+	new_content = (char **)ft_calloc(len_m + 1, sizeof(char *));
+	i = 0;
+	iter = 0;
+	while (content[i])
+	{
+		iter = new_repartision(iter, content[i], new_content);
+		i++;
+	}
+	return (new_content);
+}
+
+int	main(void)
+{
+	int		i;
+	char	**new_content;
+	char	**content;
+
+	content = (char **)ft_calloc(9, sizeof(char *));
+	content[0] = ft_strdup("echo>file");
+	content[1] = ft_strdup("test");
+	content[2] = ft_strdup("test1");
+	content[3] = ft_strdup("test2");
+	new_content = reset_the_array_for_redirection(content);
+	if (new_content)
+	{
+		i = 0;
+		while (new_content[i])
+		{
+			printf("new_content[%d] = %s\n", i, new_content[i]);
+			i++;
+		}
+		free_matrix(new_content);
+	}
+	free_matrix(content);
+	return (0);
+}
+
+
+
+
+
+
