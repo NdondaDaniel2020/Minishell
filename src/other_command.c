@@ -77,7 +77,8 @@ char	*get_absolute_path(int i, t_new_list *aux, t_data *data)
 {
 	if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])))
 	{
-		if (aux->content[i][ft_strlen(aux->content[i]) - 1] == '/')
+		if (aux->content[i][ft_strlen(aux->content[i]) - 1] == '/'
+			|| is_other_file(aux->content[i]))
 		{
 			if (is_directory_valid(aux->content[i]))
 			{

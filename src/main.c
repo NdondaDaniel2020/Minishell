@@ -62,6 +62,8 @@ void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
 	}
 }
 
+// ...DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO
+// ESTUDAR OS REDIRECIONAMENTO COMHINADO 
 void	redirection(t_new_list *aux, t_data *data)
 {
 	int		len_m;
@@ -89,8 +91,6 @@ void	redirection(t_new_list *aux, t_data *data)
 		input(data, aux);
 	else if (ft_strncmp(data->redirection_matrix[len_m - 2], ">", 1) == 0)
 		output(data, aux);
-	// ...DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO
-	// ESTUDAR OS REDIRECIONAMENTO COMHINADO 
 }
 
 void	master(char *command, t_data *data)
