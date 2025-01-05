@@ -93,7 +93,7 @@ typedef struct s_index
 
 
 /* builtin cd*/
-void		cd(t_new_list *aux, t_data *data);
+int			cd(t_new_list *aux, t_data *data);
 void		update_pwd(t_data *data);
 void		update_oldwpd(t_data *data);
 void		add_in_list(char *value_env, t_new_list *aux, t_data *data);
@@ -101,15 +101,15 @@ void		add_in_list(char *value_env, t_new_list *aux, t_data *data);
 int			is_directory_valid(const char *path);
 
 bool		add_expanded_variable(t_new_list *aux, t_data *data);
-bool		check_many_arguments(t_new_list *aux, t_data *data);
+bool		check_many_arguments(t_new_list *aux);
 
 
 /*builtin pwd*/
-void		pwd(t_new_list *aux, t_data *data);
+int			pwd(t_new_list *aux, t_data *data);
 
 
 /*builtin echo*/
-void		echo(t_new_list *aux, t_data *data);
+int			echo(t_new_list *aux, t_data *data);
 void		init_valid(t_valid	*valid);
 void		traverse_n(int *i, t_data *data);
 
@@ -126,16 +126,16 @@ bool		check_error_exit(int i, int *ex, t_new_list *aux);
 
 
 /*builtin env*/
-void		env(t_new_list *aux, t_data *data);
+int			env(t_new_list *aux, t_data *data);
 
 char		*get_env(char *env, t_data *data);
 char		**get_all_environment(void);
 
 
 /*builtin export*/
-void		export(t_new_list *aux, t_data *data);
+int			export(t_new_list *aux, t_data *data);
 void		add_environment_variable(char *env_var, t_data *data);
-void		change_environment_variables_question_mark(int value, t_data *data);
+int			change_environment_variables_question_mark(int value, t_data *data);
 
 int			is_valid_char(char c);
 int			ft_strnchrcmp(const char *s1, const char *s2, size_t n, char chr);
@@ -147,7 +147,7 @@ char		*analize_env(char *env);
 
 
 /*builtin unset*/
-void		unset(t_data *data);
+int			unset(t_data *data);
 void		remove_env(int i1, char *env, t_data *data);
 
 
@@ -164,7 +164,7 @@ char		*ft_charjoin_free(char *s1, char c);
 /* functions */
 char		**split_2(char *str, char chr);
 
-void		other_command(int i, t_new_list *aux, t_data *data);
+int			other_command(int i, t_new_list *aux, t_data *data);
 void		insert_data(t_data *data, char *command);
 char		*get_absolute_path(int i, t_new_list *aux, t_data *data);
 
@@ -221,7 +221,7 @@ char		*strdelchr(char *str, char chr);
 bool	all_char_equal_char(char *str, char chr);
 
 void		insert_data(t_data *data, char *command);
-void		execute_command(int i, t_new_list *aux, t_data *data);
+int			execute_command(int i, t_new_list *aux, t_data *data);
 bool		valid_redirection_syntax(t_new_list *aux);
 bool		adjust_filename_in_redirection_syntax(t_new_list *aux);
 
@@ -244,4 +244,5 @@ void	output_append(t_data *data, t_new_list *aux);
 int		open_file(const char *file, int mode);
 void	setup_redir(int fd, int fd_target);
 
+bool	is_other_file(char *str);
 #endif
