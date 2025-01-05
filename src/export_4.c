@@ -54,7 +54,6 @@ bool	print_export(t_data *data)
 			ft_strlen(aux->content[i1 - 1])))
 	{
 		print_env_order(data);
-		change_environment_variables_question_mark(0, data);
 		return (true);
 	}
 	return (false);

@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-static bool	error_pwd(t_new_list *aux, t_data *data)
+static bool	error_pwd(t_new_list *aux)
 {
-	int		i;
-	int		len;
+	int	i;
+	int	len;
 
 	i = 0;
 	len = 0;
@@ -29,7 +29,6 @@ static bool	error_pwd(t_new_list *aux, t_data *data)
 		if (len > 0 && ft_strlen(aux->content[i]) > 0)
 		{
 			write(2, "pwd: too many arguments\n", 24);
-			change_environment_variables_question_mark(1, data);
 			return (true);
 		}
 		i++;
@@ -38,20 +37,17 @@ static bool	error_pwd(t_new_list *aux, t_data *data)
 	return (false);
 }
 
-void	pwd(t_new_list *aux, t_data *data)
+int	pwd(t_new_list *aux, t_data *data)
 {
 	char	*cwd;
 
-	if (error_pwd(aux, data))
-		return ;
+	if (error_pwd(aux))
+		return (change_environment_variables_question_mark(1, data));
 	cwd = ft_calloc(5048, sizeof(char));
 	if (!cwd)
-	{
-		change_environment_variables_question_mark(2, data);
-		return ;
-	}
+		return (change_environment_variables_question_mark(2, data));
 	getcwd(cwd, 5048);
 	ft_printf("%s\n", cwd);
 	free(cwd);
-	change_environment_variables_question_mark(0, data);
+	return (change_environment_variables_question_mark(0, data));
 }

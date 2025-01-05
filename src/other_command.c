@@ -58,10 +58,19 @@ static char	*get_valid_path(t_new_list *aux, t_data *data)
 	return (NULL);
 }
 
-static void	error_command_not_found(t_new_list *aux)
+static void	other_case_execution(int i, t_new_list *aux, t_data *data)
 {
-	ft_putstr_fd(aux->content[0], 2);
-	ft_putstr_fd(": command not found\n", 2);
+	if (ft_strchr(aux->content[i], '$'))
+	{	
+		check_environment_variable_expansion(aux, data);
+		change_environment_variables_question_mark(0, data);
+	}
+	else
+	{
+		ft_putstr_fd(aux->content[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+		change_environment_variables_question_mark(127, data);
+	}
 }
 
 char	*get_absolute_path(int i, t_new_list *aux, t_data *data)
@@ -74,11 +83,13 @@ char	*get_absolute_path(int i, t_new_list *aux, t_data *data)
 			{
 				ft_putstr_fd(aux->content[i], 2);
 				ft_putstr_fd(": Is a directory\n", 2);
+				change_environment_variables_question_mark(126, data);
 			}
 			else
 			{
 				ft_putstr_fd(aux->content[i], 2);
 				ft_putstr_fd(": No such file or directory\n", 2);
+				change_environment_variables_question_mark(127, data);
 			}
 			return (NULL);
 		}
@@ -89,7 +100,7 @@ char	*get_absolute_path(int i, t_new_list *aux, t_data *data)
 		return (get_valid_path(aux, data));
 }
 
-void	other_command(int i, t_new_list *aux, t_data *data)
+int	other_command(int i, t_new_list *aux, t_data *data)
 {
 	int		pid;
 	int		status;
@@ -97,11 +108,10 @@ void	other_command(int i, t_new_list *aux, t_data *data)
 
 	path = get_absolute_path(i, aux, data);
 	if (path == NULL)
-		return ;
+		return (1);
 	if (path)
 	{
 		pid = fork();
-
 		if (pid == 0)
 		{
 			if (execve(path, aux->content, data->envp) == -1)
@@ -109,19 +119,12 @@ void	other_command(int i, t_new_list *aux, t_data *data)
 		}
 		else
 		{
+			free(path);
 			wait(&status);
-			// if (status != 0)
-			// 	// erro
-			// else
-			// 	// ls
+			return (change_environment_variables_question_mark(0, data));
 		}
-		free(path);
 	}
 	else
-	{
-		if (ft_strchr(aux->content[i], '$'))
-			check_environment_variable_expansion(aux, data);
-		else
-			error_command_not_found(aux);
-	}
+		other_case_execution(i, aux, data);
+	return (change_environment_variables_question_mark(1, data));
 }

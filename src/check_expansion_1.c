@@ -54,6 +54,7 @@ static void	extract_value_env(int i, t_new_list *aux, t_data *data)
 		{
 			ft_putstr_fd(value_env, 2);
 			ft_putstr_fd(": Is a directory\n", 2);
+			change_environment_variables_question_mark(126, data);
 		}
 		else
 		{
@@ -80,6 +81,7 @@ void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 	{
 		ft_putstr_fd(aux->content[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
+		change_environment_variables_question_mark(127, data);
 	}
 	else if (condition_extract_value_env_quotes(i, aux))
 		extract_value_env_quotes(i, aux, data);
@@ -88,6 +90,7 @@ void	check_environment_variable_expansion(t_new_list *aux, t_data *data)
 		value_env = ft_strtrim(aux->content[0], "'");
 		ft_putstr_fd(value_env, 2);
 		ft_putstr_fd(": command not found\n", 2);
+		change_environment_variables_question_mark(127, data);
 		free(value_env);
 	}
 }

@@ -74,7 +74,7 @@ bool	add_expanded_variable(t_new_list *aux, t_data *data)
 	return (false);
 }
 
-bool	check_many_arguments(t_new_list *aux, t_data *data)
+bool	check_many_arguments(t_new_list *aux)
 {
 	int		i;
 	int		len;
@@ -94,7 +94,6 @@ bool	check_many_arguments(t_new_list *aux, t_data *data)
 	if (len > 2)
 	{
 		ft_putstr_fd("cd: too many arguments\n", 2);
-		change_environment_variables_question_mark(1, data);
 		return (true);
 	}
 	return (false);

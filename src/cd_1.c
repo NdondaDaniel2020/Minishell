@@ -43,9 +43,8 @@ void	add_in_list(char *value_env, t_new_list *aux, t_data *data)
 	free(value_env);
 }
 
-static void	error_file_or_directory(char *dir, t_data *data)
+static void	error_file_or_directory(char *dir)
 {
-	change_environment_variables_question_mark(1, data);
 	write(2, "cd: ", 4);
 	ft_putstr_fd(dir, 2);
 	write(2, ": No such file or directory\n", 28);
@@ -61,15 +60,15 @@ static void	change_dir(char *dir, t_data *data)
 	free(dir);
 }
 
-void	cd(t_new_list *aux, t_data *data)
+int	cd(t_new_list *aux, t_data *data)
 {
 	char	*dir;
 	char	*home;
 
 	if (ft_strchr(aux->content[1], '$') && add_expanded_variable(aux, data))
-		return ;
-	if (check_many_arguments(aux, data))
-		return ;
+		return (change_environment_variables_question_mark(0, data));
+	if (check_many_arguments(aux))
+		return (change_environment_variables_question_mark(1, data));
 	update_oldwpd(data);
 	dir = aux->content[get_last_position(aux)];
 	if (is_directory_valid(dir))
@@ -83,9 +82,9 @@ void	cd(t_new_list *aux, t_data *data)
 		change_dir(dir, data);
 	else
 	{
-		error_file_or_directory(dir, data);
-		return ;
+		error_file_or_directory(dir);
+		return (change_environment_variables_question_mark(1, data));
 	}
 	update_pwd(data);
-	change_environment_variables_question_mark(0, data);
+	return (change_environment_variables_question_mark(0, data));
 }

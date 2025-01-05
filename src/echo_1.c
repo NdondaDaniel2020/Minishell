@@ -28,15 +28,14 @@ void	init_valid(t_valid	*valid)
 	valid->is_transition = false;
 }
 
-static bool	echo_is_empty(t_data *data)
+static bool	echo_is_empty(t_new_list *aux)
 {
 	int		i;
 
-	i = count_word(data->list->content);
+	i = count_word(aux->content);
 	if (i == 1)
 	{
 		ft_putchar_fd('\n', 1);
-		change_environment_variables_question_mark(0, data);
 		return (1);
 	}
 	return (0);
@@ -49,15 +48,15 @@ static void	add_bar_n(int i, t_data *data)
 		ft_putchar_fd('\n', 1);
 }
 
-void	echo(t_new_list *aux, t_data *data)
+int	echo(t_new_list *aux, t_data *data)
 {
 	int		i1;
 	int		i2;
 	t_valid	valid;
 
 	init_valid(&valid);
-	if (echo_is_empty(data))
-		return ;
+	if (echo_is_empty(aux))
+		return (change_environment_variables_question_mark(0, data));
 	i1 = 0;
 	while (!ft_strncmp(aux->content[i1], "echo", ft_strlen(aux->content[i1])))
 		i1++;
@@ -75,5 +74,5 @@ void	echo(t_new_list *aux, t_data *data)
 		i1++;
 	}
 	add_bar_n(i1, data);
-	change_environment_variables_question_mark(0, data);
+	return (change_environment_variables_question_mark(0, data));
 }
