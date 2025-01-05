@@ -12,14 +12,6 @@
 
 #include "minishell.h"
 
-bool	valid_string_condition_for_redirection(char *str)
-{
-	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
-		|| (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
-		|| (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
-		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
-}
-
 static bool	condition_add_more_one(int i, char ***matrix)
 {
 	return ((*matrix)[i] != NULL
@@ -27,24 +19,49 @@ static bool	condition_add_more_one(int i, char ***matrix)
 			|| all_char_equal_char((*matrix)[i], '\'')));
 }
 
+static void	special_adjust(char ***start)
+{
+    int		s;
+    int		len_m;
+    char	*aux;
+
+    if (start == NULL || *start == NULL)
+        return ;
+    s = 0;
+    len_m = len_matrix((*start));
+    if (len_m <= 1)
+        return ;
+    aux = (*start)[0];
+    while (s < len_m - 1)
+    {
+        (*start)[s] = (*start)[s + 1];
+        s++;
+    }
+    (*start)[s] = aux;
+}
+
 static void	last_adjust(int len, char **end, char **start, char ***matrix)
 {
-	int	i;
-	int	e;
-	int	s;
+    int	i;
+    int	e;
+    int	s;
 
-	i = 0;
-	e = 0;
-	s = 0;
-	while (i < len)
-	{
-		if (i < len_matrix(start))
-			(*matrix)[i++] = start[s++];
-		else
-			(*matrix)[i++] = end[e++];
-	}
-	free(end);
-	free(start);
+    i = 0;
+    e = 0;
+    s = 0;
+    if (start == NULL || *start == NULL || matrix == NULL || *matrix == NULL)
+        return ;
+    if (ft_strlen(start[0]) == 0)
+        special_adjust(&start);
+    while (i < len)
+    {
+        if (i < len_matrix(start))
+            (*matrix)[i++] = start[s++];
+        else
+            (*matrix)[i++] = end[e++];
+    }
+    free(end);
+    free(start);
 }
 
 void	ajust_all_position(char ***matrix)

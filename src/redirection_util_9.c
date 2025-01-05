@@ -61,6 +61,8 @@ char	**list_error(void)
 
 bool	all_char_equal_char(char *str, char chr)
 {
+	if (ft_strlen(str) == 0)
+		return (false);
 	while (*str)
 	{
 		if (*str != chr)
@@ -69,3 +71,5 @@ bool	all_char_equal_char(char *str, char chr)
 	}
 	return (true);
 }
+
+

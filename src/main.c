@@ -49,20 +49,22 @@ void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
 	data->redirection_matrix = ft_calloc(len + 1, sizeof(char *));
 	while (i < len_m)
 	{
-		if (valid_string_condition_for_redirection(aux->content[i])
-			&& valid == false)
+		if (valid_string_condition_for_redirection(aux->content[i]) && !valid)
 			valid = true;
 		if (valid)
 		{
 			data->redirection_matrix[rm++] = aux->content[i];
 			aux->content[i] = NULL;
 		}
+		if (valid == false && ft_strlen(aux->content[i]) == 0)
+			aux->content[i] = NULL;
 		i++;
 	}
 }
 
 void	redirection(t_new_list *aux, t_data *data)
 {
+	int		len_m;
 	char	**new_content;
 
 	new_content = reset_the_array_for_redirection(aux->content);
@@ -78,8 +80,7 @@ void	redirection(t_new_list *aux, t_data *data)
 		return ;
 	ajust_all_position(&aux->content);
 	split_redirect_between_file_and_content(aux, data);
-
-	int	len_m = len_matrix(data->redirection_matrix);
+	len_m = len_matrix(data->redirection_matrix);
 	if (ft_strncmp(data->redirection_matrix[len_m - 2], ">>", 2) == 0)
 		output_append(data, aux);
 	else if (ft_strncmp(data->redirection_matrix[len_m - 2], "<<", 2) == 0)
