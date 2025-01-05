@@ -12,51 +12,49 @@
 
 #include "minishell.h"
 
+static void	free_redirection_matrix(int status, t_data *data)
+{
+	if (data->redirection_matrix != NULL)
+	{
+		if (status != 0)
+		{
+			int i = 0;
+			while (data->redirection_matrix[i])
+			{
+				if (!valid_string_condition_for_redirection(
+						data->redirection_matrix[i]))
+					unlink(data->redirection_matrix[i]);
+				i++;
+			}
+		}
+		free_matrix(data->redirection_matrix);
+	}
+}
 
-/* main */
-/*mudar o tipo de saada de todos os comandos para saber para saber se foram bem executados ou nao*/
 static void	handle_redir(t_data *data, t_new_list *aux, int mode, int fd_target)
 {
 	int	i;
 	int	fd;
 	int cpy_fd;
+	int	status;
 
 	i = 0;
 	while (data->redirection_matrix[i])
 	{
-		if (valid_string_condition_for_redirection(data->redirection_matrix[i]) == false)
+		if (valid_string_condition_for_redirection(data->redirection_matrix[i])
+			== false)
 			fd = open_file(data->redirection_matrix[i], mode);
 		i++;
 	}
-	
 	cpy_fd = dup(fd_target);
 	setup_redir(fd, fd_target);
-
 	if (ft_strlen(aux->content[0]) == 0)
-		execute_command(1, aux, data);
+		status = execute_command(1, aux, data);
 	else
-		execute_command(0, aux, data);
-
+		status = execute_command(0, aux, data);
 	dup2(cpy_fd, fd_target);
-
-	// pegar o status e naoi bem executado apagar os arquivos
-	// if (data->redirection_matrix != NULL)
-	// {
-	// 	if (status != 0)
-	// 	{
-	// 		int i = 0;
-	// 		while (data->redirection_matrix[i])
-	// 		{
-	// 			if (!valid_string_condition_for_redirection(data->redirection_matrix[i]))
-	// 				unlink(data->redirection_matrix[i]);
-	// 			i++;
-	// 		}
-	// 	}
-	// 	free_matrix(data->redirection_matrix);
-	// }	
+	free_redirection_matrix(status, data);
 }
-
-/* redirections */
 
 void	output(t_data *data, t_new_list *aux)
 {

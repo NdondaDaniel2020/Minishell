@@ -62,8 +62,7 @@ void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
 	}
 }
 
-// ...DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO
-// ESTUDAR OS REDIRECIONAMENTO COMHINADO 
+/* ...DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO ESTUDAR OS REDIRECIONAMENTO COMHINADO */
 void	redirection(t_new_list *aux, t_data *data)
 {
 	int		len_m;
