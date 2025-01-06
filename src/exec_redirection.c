@@ -14,11 +14,13 @@
 
 static void	free_redirection_matrix(int status, t_data *data)
 {
+	int	i;
+
 	if (data->redirection_matrix != NULL)
 	{
 		if (status != 0)
 		{
-			int i = 0;
+			i = 0;
 			while (data->redirection_matrix[i])
 			{
 				if (!valid_string_condition_for_redirection(
@@ -35,7 +37,7 @@ static void	handle_redir(t_data *data, t_new_list *aux, int mode, int fd_target)
 {
 	int	i;
 	int	fd;
-	int cpy_fd;
+	int	cpy_fd;
 	int	status;
 
 	i = 0;

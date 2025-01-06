@@ -49,27 +49,27 @@ int	star_alpha(char *str)
 bool	condition_adjust(int i, char **new_content)
 {
 	return ((count_chr('"', new_content[i]) > 0
-					&& count_chr('\'', new_content[i]) > 0)
-			|| (((count_chr('\'', new_content[i]) > 0
-							&& count_chr('"', new_content[i]) == 0)
-						|| (count_chr('"', new_content[i]) > 0
-							&& count_chr('\'', new_content[i]) == 0))
-					&& (space_before_string(new_content[i]) == false
-						&& space_after_string(new_content[i]) == false))
-			|| (count_chr('\'', new_content[i]) > 0
-					&& count_chr('"', new_content[i]) == 0
-					&& count_chr('\'', (new_content[i]
-						+ star_alpha(new_content[i]))) % 2 != 0)
-			|| (count_chr('"', new_content[i]) > 0
-					&& count_chr('\'', new_content[i]) == 0
-					&& count_chr('"', (new_content[i]
-						+ star_alpha(new_content[i]))) % 2 != 0));
+			&& count_chr('\'', new_content[i]) > 0)
+		|| (((count_chr('\'', new_content[i]) > 0
+					&& count_chr('"', new_content[i]) == 0)
+				|| (count_chr('"', new_content[i]) > 0
+					&& count_chr('\'', new_content[i]) == 0))
+			&& (space_before_string(new_content[i]) == false
+				&& space_after_string(new_content[i]) == false))
+		|| (count_chr('\'', new_content[i]) > 0
+			&& count_chr('"', new_content[i]) == 0
+			&& count_chr('\'', (new_content[i]
+					+ star_alpha(new_content[i]))) % 2 != 0)
+		|| (count_chr('"', new_content[i]) > 0
+			&& count_chr('\'', new_content[i]) == 0
+			&& count_chr('"', (new_content[i]
+					+ star_alpha(new_content[i]))) % 2 != 0));
 }
 
 char	*strdelchr(char *str, char chr)
 {
-	int	i;
-	int	coun_chr;
+	int		i;
+	int		coun_chr;
 	char	*new_str;
 
 	i = 0;

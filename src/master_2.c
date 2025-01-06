@@ -19,7 +19,7 @@ static bool	change_value_in_adjust_filename(int i, bool *valid, t_new_list *aux)
 	aux_aux = ft_strdup(aux->content[i]);
 	aux->content[i] = adjust_file_name(aux->content[i]);
 	if (aux->content[i] == NULL)
-	{	
+	{
 		aux->content[i] = aux_aux;
 		return (true);
 	}
@@ -28,7 +28,7 @@ static bool	change_value_in_adjust_filename(int i, bool *valid, t_new_list *aux)
 	return (false);
 }
 
-static bool error_filename_syntax(int i, t_new_list *aux)
+static bool	error_filename_syntax(int i, t_new_list *aux)
 {
 	if (ft_strlen(aux->content[i]) == 0)
 	{

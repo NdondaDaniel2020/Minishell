@@ -35,7 +35,8 @@ static char	*other_join(int i2, int len_m, char *join, char **new_content)
 	return (join);
 }
 
-static char	*the_file_directory_is_validated(int len_m, bool *valid, char **new_content)
+static char	*the_file_directory_is_validated(
+		int len_m, bool *valid, char **new_content)
 {
 	int		i2;
 	char	*join;
@@ -73,10 +74,14 @@ static void	remove_excess(int i, char **new_content)
 
 static void	set_value(int i, bool *valid, char **new_content)
 {
-	(*valid) = ((count_chr(' ', new_content[i]) > 0 && count_chr('"', new_content[i]) > 0) 
-		|| (count_chr(' ', new_content[i]) > 0 && count_chr('\'', new_content[i]) > 0) 
-		|| (count_chr(' ', new_content[i]) > 0 && count_chr('\\', new_content[i]) == count_chr(' ', new_content[i]))
-		|| (count_chr(' ', new_content[i]) == 0));
+	(*valid) = ((count_chr(' ', new_content[i]) > 0
+				&& count_chr('"', new_content[i]) > 0)
+			|| (count_chr(' ', new_content[i]) > 0
+				&& count_chr('\'', new_content[i]) > 0)
+			|| (count_chr(' ', new_content[i]) > 0
+				&& count_chr('\\', new_content[i])
+				== count_chr(' ', new_content[i]))
+			|| (count_chr(' ', new_content[i]) == 0));
 }
 
 char	*adjust_file_name(char *content)
@@ -105,5 +110,5 @@ char	*adjust_file_name(char *content)
 		if (valid == false && join == NULL)
 			return (free_matrix(new_content), NULL);
 	}
-    return (free_matrix(new_content), join);
+	return (free_matrix(new_content), join);
 }

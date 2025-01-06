@@ -32,7 +32,7 @@ void	insert_data(t_data *data, char *command)
 
 int	execute_command(int i, t_new_list *aux, t_data *data)
 {
-	int re;
+	int	re;
 	int	len;
 
 	re = 0;
@@ -65,7 +65,7 @@ bool	valid_redirection_syntax(t_new_list *aux)
 	len = len_matrix(aux->content);
 	if ((valid_string_condition_for_redirection(aux->content[len - 1]))
 		|| ((ft_strlen(aux->content[len - 1]) == 0)
-		&& valid_string_condition_for_redirection(aux->content[len - 2])))
+			&& valid_string_condition_for_redirection(aux->content[len - 2])))
 	{
 		ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
 		return (true);

@@ -71,5 +71,3 @@ bool	all_char_equal_char(char *str, char chr)
 	}
 	return (true);
 }
-
-

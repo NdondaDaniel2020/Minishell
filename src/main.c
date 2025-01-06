@@ -14,7 +14,7 @@
 
 static int	count_file_redirection(t_new_list *aux)
 {
-	int 	i;
+	int		i;
 	int		len;
 	bool	valid;
 
@@ -35,7 +35,7 @@ static int	count_file_redirection(t_new_list *aux)
 
 void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
 {
-	int 	i;
+	int		i;
 	int		rm;
 	int		len;
 	int		len_m;
@@ -62,7 +62,7 @@ void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
 	}
 }
 
-/* ...DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO ESTUDAR OS REDIRECIONAMENTO COMHINADO */
+/* ...DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO ESTUDAR OS REDIRECIONAMENTO COMHINADO  */
 void	redirection(t_new_list *aux, t_data *data)
 {
 	int		len_m;
@@ -126,7 +126,6 @@ int	main(void)
 	char	*input;
 
 	init_data(&data);
-	setup_signal();
 	data.envp = get_all_environment();
 	data.path = ft_split(get_env("PATH", &data), ':');
 	while (1)
