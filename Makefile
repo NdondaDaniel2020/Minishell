@@ -51,6 +51,7 @@ FILES = adjust_file_name.c \
 		redirection_util_7.c \
 		redirection_util_8.c \
 		redirection_util_9.c \
+		signs_handler.c \
 		split_2.c \
 		unset.c \
 		util_1.c \

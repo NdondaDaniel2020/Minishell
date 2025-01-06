@@ -218,7 +218,7 @@ bool		space_after_string(char *str);
 int			star_alpha(char *str);
 bool		condition_adjust(int i, char **new_content);
 char		*strdelchr(char *str, char chr);
-bool	all_char_equal_char(char *str, char chr);
+bool		all_char_equal_char(char *str, char chr);
 
 void		insert_data(t_data *data, char *command);
 int			execute_command(int i, t_new_list *aux, t_data *data);
@@ -228,21 +228,23 @@ bool		adjust_filename_in_redirection_syntax(t_new_list *aux);
 /* list */
 t_new_list  *ft_lstnew_new(char **content);
 
-void	ft_lstnew_addafter_pos(t_new_list **lst, t_new_list *ref, t_new_list *new);
-void    ft_lstnew_addback(t_new_list **lst, t_new_list *new);
-void    ft_lstnew_addfront(t_new_list **lst, t_new_list *new);
-void	ft_lstnew_free(char **matrix, t_new_list *removed);
-void	ft_lstnew_delfront(t_new_list **list);
-void	ft_lstnew_delback(t_new_list **list);
-void	ft_show_lstnew(t_new_list *list);
-int     ft_lstnew_size(t_new_list *lst);
+void		ft_lstnew_addafter_pos(t_new_list **lst, t_new_list *ref, t_new_list *new);
+void    	ft_lstnew_addback(t_new_list **lst, t_new_list *new);
+void    	ft_lstnew_addfront(t_new_list **lst, t_new_list *new);
+void		ft_lstnew_free(char **matrix, t_new_list *removed);
+void		ft_lstnew_delfront(t_new_list **list);
+void		ft_lstnew_delback(t_new_list **list);
+void		ft_show_lstnew(t_new_list *list);
+int     	ft_lstnew_size(t_new_list *lst);
 
 
-void	output(t_data *data, t_new_list *aux);
-void	input(t_data *data, t_new_list *aux);
-void	output_append(t_data *data, t_new_list *aux);
-int		open_file(const char *file, int mode);
-void	setup_redir(int fd, int fd_target);
+void		output(t_data *data, t_new_list *aux);
+void		input(t_data *data, t_new_list *aux);
+void		output_append(t_data *data, t_new_list *aux);
+int			open_file(const char *file, int mode);
+void		setup_redir(int fd, int fd_target);
 
-bool	is_other_file(char *str);
+bool		is_other_file(char *str);
+void		handle_sigint(int sig);
+void		setup_signal(void);
 #endif
