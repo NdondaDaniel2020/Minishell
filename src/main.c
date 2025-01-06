@@ -126,6 +126,7 @@ int	main(void)
 	char	*input;
 
 	init_data(&data);
+	setup_signal();
 	data.envp = get_all_environment();
 	data.path = ft_split(get_env("PATH", &data), ':');
 	while (1)
