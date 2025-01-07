@@ -80,8 +80,8 @@ void	redirection(t_new_list *aux, t_data *data)
 		return ;
 	ajust_all_position(&aux->content);
 	split_redirect_between_file_and_content(aux, data);
-
-	if (ft_strncmp(data->redirection_matrix[0], ">>", 2) == 0)
+	if (ft_strncmp(data->redirection_matrix[0], ">>", 2) == 0
+		|| ft_strncmp(data->redirection_matrix[0], "<>", 2) == 0)
 		output_append(data, aux);
 	else if (ft_strncmp(data->redirection_matrix[0], "<<", 2) == 0)
 		ft_putstr_fd("opcao ainda nao desenvolvida\n", 2);

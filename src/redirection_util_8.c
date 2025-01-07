@@ -17,7 +17,8 @@ bool	valid_string_condition_for_redirection(char *str)
 	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
 		|| (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
 		|| (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
-		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2));
+		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2)
+		|| (ft_strncmp(str, "<>", 2) == 0 && ft_strlen(str) == 2));
 }
 
 void	free_indexing_matrix(t_index **indexed)

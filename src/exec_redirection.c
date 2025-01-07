@@ -35,110 +35,105 @@ static void	free_redirection_matrix(int status, t_data *data)
 
 static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 {
-    int	i;
-    int	fd;
-    int	len_m;
-    int	cpy_fd;
-    int	status;
-    int	first_fd;
-    int	first_cpy_fd;
+	int	i;
+	int	fd;
+	int	len_m;
+	int	cpy_fd;
+	int	status;
+	int	first_fd;
+	int	first_cpy_fd;
 
-    i = 0;
-    fd = -1;
-    first_fd = -1;
-    len_m = len_matrix(data->redirection_matrix);
-    while (data->redirection_matrix[i])
-    {
-        if (ft_strncmp(data->redirection_matrix[i], "<>", 2) == 0)
-        {
+	i = 0;
+	fd = -1;
+	first_fd = -1;
+	len_m = len_matrix(data->redirection_matrix);
+	while (data->redirection_matrix[i])
+	{
+		if (ft_strncmp(data->redirection_matrix[i], "<>", 2) == 0)
+		{
 			/////////////////////////////////////////////////////////////////
-			ft_printf("test de algo muito estranho\n");
-			fd = open_file(data->redirection_matrix[i + 1],
-				O_WRONLY | O_CREAT | O_APPEND);
+			fd = open_file(data->redirection_matrix[i + 1], O_WRONLY | O_CREAT | O_APPEND);
 			fd = dup(STDOUT_FILENO);
-			ft_printf("fd: %d\n", fd);
 			/////////////////////////////////////////////////////////////////
-        }
-        else if (ft_strncmp(data->redirection_matrix[i], ">>", 2) == 0)
-        {
+		}
+		else if (ft_strncmp(data->redirection_matrix[i], ">>", 2) == 0)
+		{
 			/////////////////////////////////////////////////////////////////
-            fd = open_file(data->redirection_matrix[i + 1],
-				O_WRONLY | O_CREAT | O_APPEND);
-            if (i + 2 < len_m)
-                close(fd);
+			fd = open_file(data->redirection_matrix[i + 1], O_WRONLY | O_CREAT | O_APPEND);
+			if (i + 2 < len_m)
+				close(fd);
 			/////////////////////////////////////////////////////////////////
-        }
-        else if (ft_strncmp(data->redirection_matrix[i], "<<", 2) == 0)
-        {
-            ft_printf("herdoc %s\n", data->redirection_matrix[i + 1]);
-        }
-        else if (ft_strncmp(data->redirection_matrix[i], ">", 1) == 0)
-        {
+		}
+		else if (ft_strncmp(data->redirection_matrix[i], "<<", 2) == 0)
+		{
+			ft_printf("herdoc %s\n", data->redirection_matrix[i + 1]);
+		}
+		else if (ft_strncmp(data->redirection_matrix[i], ">", 1) == 0)
+		{
 			/////////////////////////////////////////////////////////////////
-            fd = open_file(data->redirection_matrix[i + 1],
-				O_WRONLY | O_CREAT | O_TRUNC);
-            if (i + 2 < len_m)
-                close(fd);
+			fd = open_file(data->redirection_matrix[i + 1], O_WRONLY | O_CREAT | O_TRUNC);
+			if (i + 2 < len_m)
+				close(fd);
 			/////////////////////////////////////////////////////////////////
-        }
-        else if (ft_strncmp(data->redirection_matrix[i], "<", 1) == 0)
-        {
-            /////////////////////////////////////////////////////////////////
+		}
+		else if (ft_strncmp(data->redirection_matrix[i], "<", 1) == 0)
+		{
+			/////////////////////////////////////////////////////////////////
 			fd = open_file(data->redirection_matrix[i + 1], O_RDONLY);
-            if (fd == -1)
-            {
-                ft_putstr_fd(data->redirection_matrix[i + 1], 2);
-                ft_putstr_fd(": No such file or directory\n", 2);
-                return ;
-            }
-            if (fd_target == STDIN_FILENO && (i + 2) < len_m
+			if (fd == -1)
+			{
+				ft_putstr_fd(data->redirection_matrix[i + 1], 2);
+				ft_putstr_fd(": No such file or directory\n", 2);
+				return ;
+			}
+			if (fd_target == STDIN_FILENO && (i + 2) < len_m
 				&& ft_strncmp(data->redirection_matrix[i + 2], "<", 1) != 0)
 				first_fd = dup(fd);
-            else if (i + 2 < len_m)
-                close(fd);
+			else if (i + 2 < len_m)
+				close(fd);
 			/////////////////////////////////////////////////////////////////
-        }
-        i++;
-    }
-    if (len_matrix(aux->content) > 0)
-    {
-        if (first_fd == -1)
-        {
+		}
+		i++;
+	}
+	if (len_matrix(aux->content) > 0)
+	{
+		if (first_fd == -1)
+		{
 			///////////////////////////////////////////
-            cpy_fd = dup(fd_target);
-            setup_redir(fd, fd_target);
-            if (ft_strlen(aux->content[0]) == 0)
-                status = execute_command(1, aux, data);
-            else
-                status = execute_command(0, aux, data);
-            dup2(cpy_fd, fd_target);
-            close(cpy_fd);
+			cpy_fd = dup(fd_target);
+			setup_redir(fd, fd_target);
+			if (ft_strlen(aux->content[0]) == 0)
+				status = execute_command(1, aux, data);
+			else
+				status = execute_command(0, aux, data);
+			dup2(cpy_fd, fd_target);
+			close(cpy_fd);
 			///////////////////////////////////////////
-        }
-        else
-        {
+		}
+		else
+		{
 			///////////////////////////////////////////
-            first_cpy_fd = dup(STDIN_FILENO);
-            setup_redir(first_fd, STDIN_FILENO);
-            cpy_fd = dup(STDOUT_FILENO);
-            setup_redir(fd, STDOUT_FILENO);
-            if (ft_strlen(aux->content[0]) == 0)
-                status = execute_command(1, aux, data);
-            else
-                status = execute_command(0, aux, data);
-            dup2(cpy_fd, STDOUT_FILENO);
-            close(cpy_fd);
-            dup2(first_cpy_fd, STDIN_FILENO);
-            close(first_cpy_fd);
+			first_cpy_fd = dup(STDIN_FILENO);
+			setup_redir(first_fd, STDIN_FILENO);
+			cpy_fd = dup(STDOUT_FILENO);
+			setup_redir(fd, STDOUT_FILENO);
+			if (ft_strlen(aux->content[0]) == 0)
+				status = execute_command(1, aux, data);
+			else
+				status = execute_command(0, aux, data);
+			dup2(cpy_fd, STDOUT_FILENO);
+			close(cpy_fd);
+			dup2(first_cpy_fd, STDIN_FILENO);
+			close(first_cpy_fd);
 			///////////////////////////////////////////
-        }
-    }
-    else
-    {
-        status = 0;
-        close(fd);
-    }
-    free_redirection_matrix(status, data);
+		}
+	}
+	else
+	{
+		status = 0;
+		close(fd);
+	}
+	free_redirection_matrix(status, data);
 }
 
 void	output(t_data *data, t_new_list *aux)

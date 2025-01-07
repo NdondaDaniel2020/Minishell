@@ -26,6 +26,8 @@ int	str_in_list_redirection(char *str, int len_m)
 		pos = ft_strnpos(str, list[i], ft_strlen(str));
 		if (ft_strncmp(str + pos, list[i], ft_strlen(list[i])) == 0)
 		{
+			if (len == 2 && str[0] == '<' && str[1] == '>')
+				return (len_m);		
 			if (pos != 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
 				|| ((pos + 1 < len && str[pos + 1] == list[i][0])
 				&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
