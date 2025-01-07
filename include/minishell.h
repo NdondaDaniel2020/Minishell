@@ -219,8 +219,8 @@ int			star_alpha(char *str);
 bool		condition_adjust(int i, char **new_content);
 char		*strdelchr(char *str, char chr);
 bool		all_char_equal_char(char *str, char chr);
+int			str_in_list_redirection(char *str, int len_m);
 
-void		insert_data(t_data *data, char *command);
 int			execute_command(int i, t_new_list *aux, t_data *data);
 bool		valid_redirection_syntax(t_new_list *aux);
 bool		adjust_filename_in_redirection_syntax(t_new_list *aux);
