@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirection_util_6.c                               :+:      :+:    :+:   */
+/*   redirection_util_8.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,91 +12,103 @@
 
 #include "minishell.h"
 
-bool	valid_string_condition_for_redirection(char *str)
+int	pos_redirection(const char *big, const char *little, size_t len, int index)
 {
-	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
-		|| (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
-		|| (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
-		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2)
-		|| (ft_strncmp(str, "<>", 2) == 0 && ft_strlen(str) == 2));
-}
-
-void	free_indexing_matrix(t_index **indexed)
-{
-	int	i;
+	size_t	i;
+	size_t	l_lit;
 
 	i = 0;
-	if (!indexed)
-		return ;
-	while (indexed[i])
+	l_lit = ft_strlen(little);
+	if ((len == 0 && !little) || big == little || l_lit == 0)
+		return (-1);
+	while (i < len)
 	{
-		if (indexed[i]->content)
-		{
-			free(indexed[i]->content->string);
-			free(indexed[i]->content);
-		}
-		free(indexed[i]);
+		if (l_lit == 1 && big[i] == little[0]
+			&& (big[i - 1] != '>' && big[i - 1] != '<')
+			&& (big[i + 1] != '>' && big[i + 1] != '<') && --index == 0)
+			return (i);
+		else if (l_lit == 2 && big[i] == little[0] && big[i + 1] == little[1]
+			&& (big[i - 1] != '>' && big[i - 1] != '<')
+			&& (big[i + 2] != '>' && big[i + 2] != '<') && --index == 0)
+			return (i);
 		i++;
 	}
-	free(indexed);
-}
-
-static bool	release_in_case_of_error(int i, t_index **indexed)
-{
-	if (!indexed[i])
-	{
-		while (i-- > 0)
-		{
-			free(indexed[i]->content->string);
-			free(indexed[i]->content);
-			free(indexed[i]);
-		}
-		free(indexed);
-		return (true);
-	}
-	return (false);
-}
-
-static int	get_value_index(int i, t_extract **matrix)
-{
-	if (ft_strncmp(matrix[i]->string, "<>", 2) == 0)
-		return (0);
-	else if (ft_strncmp(matrix[i]->string, ">>", 2) == 0)
-		return (1);
-	else if (ft_strncmp(matrix[i]->string, "<<", 2) == 0)
-		return (2);
-	else if (ft_strncmp(matrix[i]->string, ">", 1) == 0)
-		return (3);
-	else if (ft_strncmp(matrix[i]->string, "<", 1) == 0)
-		return (4);
 	return (-1);
 }
 
-t_index	**indexing_matrix(int len, t_extract **matrix)
+static int	firts_str(int i, char *str, char **new_content, t_index **indexsing)
+{
+	int	pos;
+	int	start;
+
+	start = len_matrix(new_content);
+	pos = pos_redirection(str, indexsing[i]->content->string,
+			ft_strlen(str), indexsing[i]->index);
+	if (pos != 0)
+	{
+		new_content[start++] = substring(str, 0, pos);
+		new_content[start++] = ft_strdup(indexsing[i]->content->string);
+		return (2);
+	}
+	else
+	{
+		new_content[start++] = ft_strdup(indexsing[i]->content->string);
+		return (1);
+	}
+}
+
+static int	other_str(int i, char *str, char **new_content, t_index **indexsing)
+{
+	int	pos1;
+	int	pos2;
+	int	start;
+
+	start = len_matrix(new_content);
+	pos1 = pos_redirection(str, indexsing[i - 1]->content->string,
+			ft_strlen(str), indexsing[i - 1]->index);
+	pos2 = pos_redirection(str, indexsing[i]->content->string,
+			ft_strlen(str), indexsing[i]->index);
+	new_content[start++] = substring(str, pos1
+			+ ft_strlen(indexsing[i - 1]->content->string), pos2);
+	new_content[start++] = ft_strdup(indexsing[i]->content->string);
+	return (2);
+}
+
+static int	last_str(int i, char *str, char **new_content, t_index **indexsing)
+{
+	int	pos;
+	int	start;
+
+	start = len_matrix(new_content);
+	pos = pos_redirection(str, indexsing[i - 1]->content->string,
+			ft_strlen(str), indexsing[i - 1]->index);
+	if ((pos + ft_strlen(indexsing[i - 1]->content->string)) < ft_strlen(str))
+	{
+		new_content[start++] = substring(str, pos
+				+ ft_strlen(indexsing[i - 1]->content->string), ft_strlen(str));
+		return (1);
+	}
+	return (0);
+}
+
+void	many_redirection(char *str, char **new_content, int *iter)
 {
 	int		i;
-	int		vidx;
-	int		index[5];
-	t_index	**indexed;
+	int		len_m;
+	t_index	**indexsing;
 
 	i = 0;
-	vidx = 0;
-	while (vidx < 5)
-		index[vidx++] = 0;
-	indexed = (t_index **)ft_calloc(len + 1, sizeof(t_index *));
-	if (!indexed)
-		return (NULL);
-	while (matrix[i])
+	len_m = count_all_redirection(str);
+	indexsing = indexing_matrix(len_m,
+			extract_all_redirection_characters(str));
+	while (i < len_m)
 	{
-		indexed[i] = (t_index *)ft_calloc(1, sizeof(t_index));
-		if (release_in_case_of_error(i, indexed))
-			return (NULL);
-		vidx = get_value_index(i, matrix);
-		index[vidx]++;
-		indexed[i]->index = index[vidx];
-		indexed[i]->content = matrix[i];
+		if (i == 0)
+			(*iter) += firts_str(i, str, new_content, indexsing);
+		else
+			(*iter) += other_str(i, str, new_content, indexsing);
 		i++;
 	}
-	free(matrix);
-	return (indexed);
+	(*iter) += last_str(i, str, new_content, indexsing);
+	free_indexing_matrix(indexsing);
 }

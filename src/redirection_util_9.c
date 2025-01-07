@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirection_util_6.c                               :+:      :+:    :+:   */
+/*   redirection_util_9.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,62 +12,91 @@
 
 #include "minishell.h"
 
-void	init_index(t_index *index)
+bool	valid_string_condition_for_redirection(char *str)
 {
-	index->index = 0;
-	index->content = NULL;
+	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
+		|| (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
+		|| (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
+		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2)
+		|| (ft_strncmp(str, "<>", 2) == 0 && ft_strlen(str) == 2));
 }
 
-int	count_all_redirection(char *str)
+void	free_indexing_matrix(t_index **indexed)
 {
-	int			i;
-	t_extract	**matrix;
+	int	i;
 
 	i = 0;
-	matrix = extract_all_redirection_characters(str);
-	while (matrix[i])
-		i++;
-	free_extract_matrix(matrix);
-	return (i);
-}
-
-char	*substring(const char *str, int start, int end)
-{
-	int		len;
-	char	*sub;
-
-	len = strlen(str);
-	if (start > end)
-		return (NULL);
-	if (start < 0)
-		start = 0;
-	if (end > len)
-		end = len;
-	sub = (char *)malloc((end - start + 1) * sizeof(char));
-	if (!sub)
-		return (NULL);
-	ft_strlcpy(sub, str + start, end - start + 1);
-	sub[end - start] = '\0';
-	return (sub);
-}
-
-char	**list_error(void)
-{
-	static char	*list[] = {"><", ">>>", "<<<", ">><", "<<>",
-		"<>>", "<><", ">> ", "<< ", "<> ", "< ", "> ", NULL};
-
-	return (list);
-}
-
-bool	all_char_equal_char(char *str, char chr)
-{
-	if (ft_strlen(str) == 0)
-		return (false);
-	while (*str)
+	if (!indexed)
+		return ;
+	while (indexed[i])
 	{
-		if (*str != chr)
-			return (false);
-		str++;
+		if (indexed[i]->content)
+		{
+			free(indexed[i]->content->string);
+			free(indexed[i]->content);
+		}
+		free(indexed[i]);
+		i++;
 	}
-	return (true);
+	free(indexed);
+}
+
+static bool	release_in_case_of_error(int i, t_index **indexed)
+{
+	if (!indexed[i])
+	{
+		while (i-- > 0)
+		{
+			free(indexed[i]->content->string);
+			free(indexed[i]->content);
+			free(indexed[i]);
+		}
+		free(indexed);
+		return (true);
+	}
+	return (false);
+}
+
+static int	get_value_index(int i, t_extract **matrix)
+{
+	if (ft_strncmp(matrix[i]->string, "<>", 2) == 0)
+		return (0);
+	else if (ft_strncmp(matrix[i]->string, ">>", 2) == 0)
+		return (1);
+	else if (ft_strncmp(matrix[i]->string, "<<", 2) == 0)
+		return (2);
+	else if (ft_strncmp(matrix[i]->string, ">", 1) == 0)
+		return (3);
+	else if (ft_strncmp(matrix[i]->string, "<", 1) == 0)
+		return (4);
+	return (-1);
+}
+
+t_index	**indexing_matrix(int len, t_extract **matrix)
+{
+	int		i;
+	int		vidx;
+	int		index[5];
+	t_index	**indexed;
+
+	i = 0;
+	vidx = 0;
+	while (vidx < 5)
+		index[vidx++] = 0;
+	indexed = (t_index **)ft_calloc(len + 1, sizeof(t_index *));
+	if (!indexed)
+		return (NULL);
+	while (matrix[i])
+	{
+		indexed[i] = (t_index *)ft_calloc(1, sizeof(t_index));
+		if (release_in_case_of_error(i, indexed))
+			return (NULL);
+		vidx = get_value_index(i, matrix);
+		index[vidx]++;
+		indexed[i]->index = index[vidx];
+		indexed[i]->content = matrix[i];
+		i++;
+	}
+	free(matrix);
+	return (indexed);
 }
