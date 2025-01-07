@@ -120,7 +120,7 @@ void	exec_redir(t_data *data, int fd, int fd_target)
 	else
 	{
 		close(fd);
-		wait(&status);
+		wait(&status);|
 		if (status != 0)
 			printf("O comando '%s' falhou com status %d\n", data->command, status);
 	}
@@ -133,6 +133,7 @@ void	handle_redir(t_data *data, char *file, int mode, int fd_target)
 	int	fd;
 
 	fd = open_file(file, mode);
+
 	exec_redir(data, fd, fd_target);
 }
 

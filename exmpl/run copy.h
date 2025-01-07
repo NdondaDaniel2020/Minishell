@@ -35,46 +35,6 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-
-typedef struct s_new_list
-{
-	int					item;
-	char				**content;
-	struct s_new_list	*next;
-}						t_new_list;
-
-typedef struct s_data
-{
-	int			write_on_the_pipe;
-	int			read_in_the_pipe;
-	bool		is_pipe;
-	bool		space;
-	bool		automatic_input;
-	char		*command;
-	char		*output;
-	char		*put_amb;
-	char		**path;
-	char		**envp;
-	char		**redirection_matrix;
-	t_new_list	*list;
-}				t_data;
-
-typedef struct s_valid
-{
-	bool	is_quota;
-	bool	is_transition;
-}			t_valid;
-
-typedef struct s_split
-{
-	int		len;
-	int		in_quotes;
-	int		substr_count;
-	char	**result;
-	char	*start;
-	char	*end;
-} 			t_split;
-
 typedef struct s_extract
 {
 	char	*string;
@@ -103,18 +63,35 @@ typedef struct s_index
 	t_extract	*content;
 }				t_index;
 
-
-void		init_data(t_data *data);
+void		init_index(t_index *index);
 void		free_matrix(char **matrix);
-char		**split_2(char *str, char chr);
-void		ft_lstnew_addback(t_new_list **lst, t_new_list *new);
-void		ft_lstnew_addfront(t_new_list **lst, t_new_list *new);
-void		ft_lstnew_addafter_pos( t_new_list **lst, t_new_list *ref, t_new_list *new);
-t_new_list	*ft_lstnew_new(char **content);
-int			ft_lstnew_size(t_new_list *lst);
-void		ft_lstnew_free(char **matrix, t_new_list *removed);
-void		ft_lstnew_delfront(t_new_list **list);
-void		ft_lstnew_delback(t_new_list **list);
-void		ft_show_lstnew(t_new_list *list);
+int			len_matrix(char **matrix);
+int			get_position_chr(char chr, char *str);
+bool		check_valid_redirection(int pos, char *str);
+void		init_two_extract(t_two_extract *ext);
+void		init_var_redirection(t_var_red *red);
+void		init_extract(t_extract *extract);
+bool		first_str(char chr, char *str);
+int			count_chr(char chr, char *str);
+t_extract	*extract_redirection_character(char chr, char *str);
+int			count_extract_redirection(char chr, char *str);
+t_extract	**extract_all_redirection_characters(char *str);
+char		**list_error(void);
+int			get_value_erro(char *str, char *str_pos);
+int			ft_strnpos(const char *big, const char *little, size_t len);
+void		free_extract_matrix(t_extract **matrix);
+int			is_redirection(char *str);
+
+
+////////////////////////////////////////////////////////////////////////
+int			count_all_redirection(char *str);
+int			str_in_list_redirection(char *str, int len_m);
+int			pos_redirection(const char *big, const char *little, size_t len, int index);
+void		free_indexing_matrix(t_index **indexed);
+void		many_redirection(char *str, char **new_content, int *iter);
+char		*substring(const char *str, int start, int end);
+t_index		**indexing_matrix(int len, t_extract **matrix);
+char	**reset_the_array_for_redirection(char **content);
+int		new_repartision(int iter, char *str, char **new_content);
 
 #endif

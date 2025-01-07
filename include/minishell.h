@@ -45,7 +45,7 @@ typedef struct s_data
 	char		**envp;
 	char		**redirection_matrix;
 	t_new_list	*list;
-}			t_data;
+}				t_data;
 
 typedef struct s_valid
 {
@@ -246,5 +246,5 @@ void		setup_redir(int fd, int fd_target);
 
 bool		is_other_file(char *str);
 void		handle_sigint(int sig);
-void		setup_signal(void);
+
 #endif

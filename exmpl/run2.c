@@ -20,19 +20,28 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+typedef struct s_new_list
+{
+	int					item;
+	char				**content;
+	struct s_new_list	*next;
+}						t_new_list;
+
 typedef struct s_data
 {
-	bool	space;
-	bool	automatic_input;
-	char	*command;
-	char	*output;
-	char	*put_amb;
-	char	**path;
-	char	**envp;
-	// t_btree	*btree;
-	int		write_on_the_pipe;
-	int		read_in_the_pipe;
-}			t_data;
+	int			write_on_the_pipe;
+	int			read_in_the_pipe;
+	bool		is_pipe;
+	bool		space;
+	bool		automatic_input;
+	char		*command;
+	char		*output;
+	char		*put_amb;
+	char		**path;
+	char		**envp;
+	char		**redirection_matrix;
+	t_new_list	*list;
+}				t_data;
 
 int mai()
 {
@@ -64,12 +73,10 @@ int mai()
 
 int maina()
 {
-    int pipefd[2]; // Array para armazenar os descritores do pipe (0 para leitura, 1 para escrita)
-    pid_t pid;
-    char buffer[2000]; // Buffer para armazenar a mensagem recebida
-
-   	int new_fd;
-
+	int		new_fd;
+    int		pipefd[2];
+    pid_t	pid;
+    char	buffer[2000]; // Buffer para armazenar a mensagem recebida
 
     pipe(pipefd);
 	new_fd = dup(STDOUT_FILENO);

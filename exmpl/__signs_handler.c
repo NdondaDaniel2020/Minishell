@@ -24,11 +24,12 @@ void	handle_sigint(int sig)
 
 /* CTRL-\ */
 
-void	setup_signal()
+void	setup_signal(void)
 {
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
+
 int main() {
     char input[256];
 

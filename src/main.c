@@ -65,7 +65,6 @@ void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
 /*DEPOIS DE CADA (>, <, >>, <<, <>) REDIRECIONAMENTO FUNCIONAR SOZINHO ESTUDAR OS REDIRECIONAMENTO COMHINADO*/
 void	redirection(t_new_list *aux, t_data *data)
 {
-	int		len_m;
 	char	**new_content;
 
 	new_content = reset_the_array_for_redirection(aux->content);
@@ -81,14 +80,14 @@ void	redirection(t_new_list *aux, t_data *data)
 		return ;
 	ajust_all_position(&aux->content);
 	split_redirect_between_file_and_content(aux, data);
-	len_m = len_matrix(data->redirection_matrix);
-	if (ft_strncmp(data->redirection_matrix[len_m - 2], ">>", 2) == 0)
+
+	if (ft_strncmp(data->redirection_matrix[0], ">>", 2) == 0)
 		output_append(data, aux);
-	else if (ft_strncmp(data->redirection_matrix[len_m - 2], "<<", 2) == 0)
+	else if (ft_strncmp(data->redirection_matrix[0], "<<", 2) == 0)
 		ft_putstr_fd("opcao ainda nao desenvolvida\n", 2);
-	else if (ft_strncmp(data->redirection_matrix[len_m - 2], "<", 1) == 0)
+	else if (ft_strncmp(data->redirection_matrix[0], "<", 1) == 0)
 		input(data, aux);
-	else if (ft_strncmp(data->redirection_matrix[len_m - 2], ">", 1) == 0)
+	else if (ft_strncmp(data->redirection_matrix[0], ">", 1) == 0)
 		output(data, aux);
 }
 
