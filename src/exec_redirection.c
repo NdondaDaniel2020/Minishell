@@ -66,7 +66,7 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 		}
 		else if (ft_strncmp(data->redirection_matrix[i], "<<", 2) == 0)
 		{
-			ft_printf("herdoc %s\n", data->redirection_matrix[i + 1]);
+			ft_printf("herdoc>\n");
 		}
 		else if (ft_strncmp(data->redirection_matrix[i], ">", 1) == 0)
 		{
@@ -84,6 +84,7 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 			{
 				ft_putstr_fd(data->redirection_matrix[i + 1], 2);
 				ft_putstr_fd(": No such file or directory\n", 2);
+				change_environment_variables_question_mark(1, data);
 				return ;
 			}
 			if (fd_target == STDIN_FILENO && (i + 2) < len_m
@@ -99,6 +100,7 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 	{
 		if (first_fd == -1)
 		{
+			// caso de execucao de redirecionamento simples
 			///////////////////////////////////////////
 			cpy_fd = dup(fd_target);
 			setup_redir(fd, fd_target);
@@ -112,6 +114,7 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 		}
 		else
 		{
+			// caso de execucao de redirecionamento duplo
 			///////////////////////////////////////////
 			first_cpy_fd = dup(STDIN_FILENO);
 			setup_redir(first_fd, STDIN_FILENO);

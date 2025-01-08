@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int	g_exit_status = 0;
+
 static int	count_file_redirection(t_new_list *aux)
 {
 	int		i;
@@ -84,7 +86,7 @@ void	redirection(t_new_list *aux, t_data *data)
 		|| ft_strncmp(data->redirection_matrix[0], "<>", 2) == 0)
 		output_append(data, aux);
 	else if (ft_strncmp(data->redirection_matrix[0], "<<", 2) == 0)
-		ft_putstr_fd("opcao ainda nao desenvolvida\n", 2);
+		input(data, aux);
 	else if (ft_strncmp(data->redirection_matrix[0], "<", 1) == 0)
 		input(data, aux);
 	else if (ft_strncmp(data->redirection_matrix[0], ">", 1) == 0)
@@ -124,6 +126,7 @@ int	main(void)
 	t_data	data;
 	char	*input;
 
+	setup_signal();
 	init_data(&data);
 	data.envp = get_all_environment();
 	data.path = ft_split(get_env("PATH", &data), ':');

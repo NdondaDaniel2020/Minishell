@@ -14,8 +14,9 @@
 # define MINISHELL_H
 
 #include "libft.h"
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <stdbool.h>
@@ -91,6 +92,7 @@ typedef struct s_index
 	t_extract	*content;
 }				t_index;
 
+extern int	g_exit_status;
 
 /* builtin cd*/
 int			cd(t_new_list *aux, t_data *data);
@@ -245,6 +247,6 @@ int			open_file(const char *file, int mode);
 void		setup_redir(int fd, int fd_target);
 
 bool		is_other_file(char *str);
-void		handle_sigint(int sig);
+void		setup_signal(void);
 
 #endif
