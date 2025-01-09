@@ -131,7 +131,12 @@ int	main(void)
 	while (1)
 	{
 		input = readline("TeamWork> ");
-		if (input[0] != '\0')
+		if (input == NULL)
+		{	
+			free_data(&data);
+			exit(0);
+		}
+		else if (input[0] != '\0')
 		{
 			add_history(input);
 			master(input, &data);
