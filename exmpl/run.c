@@ -41,6 +41,16 @@ typedef struct s_mini
 	int		fdout;
 }			t_mini;
 
+///////////////////////////////////////////////////////////////////////
+static void	handle_sigint(int sig)
+{
+	(void)sig;
+	write(STDERR_FILENO, "\n", 1);
+	exit(EXIT_SUCCESS);
+}
+
+///////////////////////////////////////////////////////////////////////
+
 static void	handle_error(t_mini *mini, char *msg)
 {
 	(void)mini;
@@ -49,23 +59,12 @@ static void	handle_error(t_mini *mini, char *msg)
 	exit(EXIT_FAILURE);
 }
 
-static void	handle_sigint(int sig)
-{
-	(void)sig;
-	write(STDOUT_FILENO, "\nTeamWork> ", 12);
-}
-
-void	setup_signal(void)
-{
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
-}
-
 static void	handle_heredoc_input(t_data *data, char *delimiter)
 {
 	char	*line;
 
-	setup_signal();
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 	close(data->read_in_the_pipe);
 	while (1)
 	{
