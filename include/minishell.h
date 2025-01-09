@@ -93,6 +93,12 @@ typedef struct s_index
 	t_extract	*content;
 }				t_index;
 
+typedef struct s_index_str
+{
+	int			index;
+	char		*str;
+}				t_index_str;
+
 
 /* builtin cd*/
 int			cd(t_new_list *aux, t_data *data);
@@ -123,6 +129,7 @@ int			trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
 /*builtin exit*/
 void		exit_(t_new_list *aux, t_data *data);
+void		free_data(t_data *data);
 
 bool		check_error_exit(int i, int *ex, t_new_list *aux);
 
@@ -167,8 +174,9 @@ char		*ft_charjoin_free(char *s1, char c);
 char		**split_2(char *str, char chr);
 
 int			other_command(int i, t_new_list *aux, t_data *data);
+char		*get_valid_path(t_new_list *aux, t_data *data);
 void		insert_data(t_data *data, char *command);
-char		*get_absolute_path(int i, t_new_list *aux, t_data *data);
+t_index_str	*get_absolute_path(int i, t_new_list *aux, t_data *data);
 
 int			list_builtins(char *command);
 int			len_matrix(char **matrix);
