@@ -36,6 +36,7 @@ typedef struct s_data
 {
 	int			write_on_the_pipe;
 	int			read_in_the_pipe;
+	int			heredoc_line_delimited;
 	bool		is_pipe;
 	bool		space;
 	bool		automatic_input;
@@ -248,5 +249,6 @@ void		setup_redir(int fd, int fd_target);
 bool		is_other_file(char *str);
 void		setup_signal(void);
 void		heredoc(t_data *data, char *delimiter);
+void		put_warning(int line, char *delimiter);
 
 #endif
