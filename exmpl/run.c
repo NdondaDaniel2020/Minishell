@@ -46,9 +46,8 @@ static void	handle_sigint(int sig)
 {
 	(void)sig;
 	write(STDERR_FILENO, "\n", 1);
-	exit(EXIT_SUCCESS);
+	exit(130);
 }
-
 ///////////////////////////////////////////////////////////////////////
 
 static void	handle_error(t_mini *mini, char *msg)
