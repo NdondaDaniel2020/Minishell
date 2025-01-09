@@ -1,7 +1,6 @@
 
 #include "run.h"
 
-
 void	ft_lstnew_addback(t_new_list **lst, t_new_list *new)
 {
 	t_new_list	*aux;

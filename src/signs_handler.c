@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-static void handle_sigint(int sig)
+static void	handle_sigint(int sig)
 {
 	(void)sig;
 	write(STDOUT_FILENO, "\nTeamWork> ", 12);
 }
 
-void setup_signal(void)
+void	setup_signal(void)
 {
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);

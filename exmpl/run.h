@@ -35,7 +35,6 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-
 typedef struct s_new_list
 {
 	int					item;

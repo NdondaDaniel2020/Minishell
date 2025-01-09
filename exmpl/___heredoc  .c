@@ -91,7 +91,7 @@ void	heredoc(t_mini *mini, t_token *token)
 		handle_heredoc_input(pipefd, token->str);
 	waitpid(pid, NULL, 0);
 	close(pipefd[1]);
-	ft_close(mini->fdin);
+	close(mini->fdin);
 	mini->fdin = pipefd[0];
 	if (dup2(mini->fdin, STDIN) == -1)
 	{
