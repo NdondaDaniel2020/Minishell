@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_4.c                                         :+:      :+:    :+:   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -16,7 +16,7 @@ static void	local_handle_sigint(int sig)
 {
 	(void)sig;
 	write(STDERR_FILENO, "\n", 1);
-	exit(130);
+	exit(1);
 }
 
 static void	handle_error(char *msg)
@@ -36,6 +36,8 @@ static void	handle_heredoc_input(t_data *data, char *delimiter)
 	while (1)
 	{
 		line = readline("> ");
+		if (line == NULL)
+			put_warning(data->heredoc_line_delimited, delimiter);
 		if (!line || ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
 			break ;
 		write(data->write_on_the_pipe, line, ft_strlen(line));
@@ -44,11 +46,14 @@ static void	handle_heredoc_input(t_data *data, char *delimiter)
 	}
 	free(line);
 	close(data->write_on_the_pipe);
+	if (line == NULL)
+		exit(1);
 	exit(0);
 }
 
 void	heredoc(t_data *data, char *delimiter)
 {
+	int		status;
 	int		pipefd[2];
 	pid_t	pid;
 
@@ -65,7 +70,9 @@ void	heredoc(t_data *data, char *delimiter)
 	}
 	if (pid == 0)
 		handle_heredoc_input(data, delimiter);
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
+	if (status != 0)
+		data->heredoc_line_delimited++;
 	close(pipefd[0]);
 	close(pipefd[1]);
 	close(data->write_on_the_pipe);

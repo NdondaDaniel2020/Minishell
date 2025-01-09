@@ -76,6 +76,7 @@ void	init_data(t_data *data)
 	data->read_in_the_pipe = -1;
 	data->write_on_the_pipe = -1;
 	data->redirection_matrix = NULL;
+	data->heredoc_line_delimited = 3;
 }
 
 void	free_matrix(char **matrix)
