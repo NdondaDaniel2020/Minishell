@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	free_data(t_data *data)
+void	free_data(t_data *data)
 {
 	if (data->path)
 		free_matrix(data->path);
