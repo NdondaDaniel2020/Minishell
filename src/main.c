@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-int	g_exit_status = 0;
-
 static int	count_file_redirection(t_new_list *aux)
 {
 	int		i;

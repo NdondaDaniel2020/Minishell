@@ -92,7 +92,6 @@ typedef struct s_index
 	t_extract	*content;
 }				t_index;
 
-extern int	g_exit_status;
 
 /* builtin cd*/
 int			cd(t_new_list *aux, t_data *data);
