@@ -90,7 +90,7 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 		{
 			if (execve(path->str, aux->content, data->envp) == -1)
 				exit(EXIT_FAILURE);
-			// free(path);  // possivel double free
+			/* free(path); possivel double free */
 			exit(0);
 		}
 		wait(&ret);

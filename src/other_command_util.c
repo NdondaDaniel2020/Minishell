@@ -25,7 +25,7 @@ void	set_index_str(int index, char *str, t_index_str *index_str)
 }
 
 t_index_str	*chack_path_is_directory(int i,
-	t_index_str	*index_str,  t_new_list *aux, t_data *data)
+				t_index_str	*index_str, t_new_list *aux, t_data *data)
 {
 	if (is_directory_valid(aux->content[i]))
 	{
@@ -54,7 +54,7 @@ t_index_str	*get_absolute_path(int i, t_new_list *aux, t_data *data)
 	{
 		if (aux->content[i][ft_strlen(aux->content[i]) - 1] == '/'
 			|| is_other_file(aux->content[i]))
-			return (chack_path_is_directory(i, index_str,  aux, data));
+			return (chack_path_is_directory(i, index_str, aux, data));
 		else
 		{
 			set_index_str(0, ft_strdup(aux->content[i]), index_str);

@@ -132,7 +132,7 @@ int	main(void)
 	{
 		input = readline("TeamWork> ");
 		if (input == NULL)
-		{	
+		{
 			free_data(&data);
 			exit(0);
 		}
