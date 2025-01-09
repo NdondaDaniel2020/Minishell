@@ -248,5 +248,6 @@ void		setup_redir(int fd, int fd_target);
 
 bool		is_other_file(char *str);
 void		setup_signal(void);
+void		heredoc(t_data *data, char *delimiter);
 
 #endif

@@ -67,8 +67,24 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 		else if (ft_strncmp(data->redirection_matrix[i], "<<", 2) == 0)
 		{
 			////////////////////////////////////////////////////////////////////////////////////////
-			ft_printf("herdoc>\n");
-			////////////////////////////////////////////////////////////////////////////////////////
+			if ((i + 2) < len_m)
+			{
+				heredoc(data, data->redirection_matrix[i + 1]);
+				if (first_fd != -1)
+					close(first_fd);
+				first_fd = dup(data->read_in_the_pipe);
+				close(data->read_in_the_pipe);
+				close(data->write_on_the_pipe);
+				fd = dup(STDOUT_FILENO);
+			}
+			else
+			{
+				heredoc(data, data->redirection_matrix[i + 1]);
+				fd = dup(data->read_in_the_pipe);
+				close(data->read_in_the_pipe);
+				close(data->write_on_the_pipe);
+			}
+			///////////////////////////////////////////////////////////////////////////////////////
 		}
 		else if (ft_strncmp(data->redirection_matrix[i], ">", 1) == 0)
 		{
@@ -91,7 +107,11 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 			}
 			if (fd_target == STDIN_FILENO && (i + 2) < len_m
 				&& ft_strncmp(data->redirection_matrix[i + 2], "<", 1) != 0)
+			{	
+				if (first_fd != -1)
+					close(first_fd);
 				first_fd = dup(fd);
+			}
 			else if (i + 2 < len_m)
 				close(fd);
 			////////////////////////////////////////////////////////////////////////////////////////

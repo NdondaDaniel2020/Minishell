@@ -35,6 +35,7 @@ FILES = adjust_file_name.c \
 		export_2.c \
 		export_3.c \
 		export_4.c \
+		heredoc.c \
 		lstnew_util_1.c \
 		lstnew_util_2.c \
 		main.c \
