@@ -12,22 +12,11 @@
 
 #include "minishell.h"
 
-/////
-static void clear_buffer(void)
-{
-	char	c;
-
-	while (read(STDIN_FILENO, &c, 1) > 0)
-	{
-		if (c == '\n')
-			break ;
-	}
-}
 static void	handle_sigint(int sig)
 {
 	(void)sig;
-	clear_buffer();
-	write (STDOUT_FILENO, "\nTeamWork> ", 12);
+	rl_clear_history();
+	write(STDOUT_FILENO, "\nTeamWork> ", 12);
 }
 
 void	setup_signal(void)
@@ -35,18 +24,3 @@ void	setup_signal(void)
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
-/////
-
-
-
-// static void	handle_sigint(int sig)
-// {
-// 	(void)sig;
-// 	write(STDOUT_FILENO, "\nTeamWork> ", 12);
-// }
-
-// void	setup_signal(void)
-// {
-// 	signal(SIGINT, handle_sigint);
-// 	signal(SIGQUIT, SIG_IGN);
-// }
