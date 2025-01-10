@@ -99,6 +99,13 @@ typedef struct s_index_str
 	char		*str;
 }				t_index_str;
 
+typedef struct t_red_fd
+{
+	int	fd;
+	int	status;
+	int	first_fd;
+	int fd_target;
+}		t_red_fd;
 
 /* builtin cd*/
 int			cd(t_new_list *aux, t_data *data);
@@ -247,12 +254,22 @@ void		ft_lstnew_delback(t_new_list **list);
 void		ft_show_lstnew(t_new_list *list);
 int     	ft_lstnew_size(t_new_list *lst);
 
-
+/* rediction exec*/
 void		output(t_data *data, t_new_list *aux);
 void		input(t_data *data, t_new_list *aux);
 void		output_append(t_data *data, t_new_list *aux);
-int			open_file(const char *file, int mode);
 void		setup_redir(int fd, int fd_target);
+void		init_red_fd(t_red_fd *red_fd);
+
+int			open_file(const char *file, int mode);
+int			left_right_redirection(int i, t_data *data, int mode);
+int			double_right_redirect(int i, t_data *data, int mode);
+int			double_left_redirect(int i, t_data *data, t_red_fd *red_fd);
+int			right_redirect(int i, t_data *data, int mode);
+int			left_redirect(int i, t_data *data, int mode, t_red_fd *red_fd);
+void		all_redirect_directions_are_handled_here(int i, t_red_fd *red_fd, t_data *data);
+void		no_such_file_or_directory(int i, t_data *data);
+void		redirect_main_execution(t_red_fd *red_fd, t_data *data, t_new_list *aux);
 
 bool		is_other_file(char *str);
 void		setup_signal(void);

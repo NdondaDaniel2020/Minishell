@@ -35,130 +35,27 @@ static void	free_redirection_matrix(int status, t_data *data)
 
 static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 {
-	int	i;
-	int	fd;
-	int	len_m;
-	int	cpy_fd;
-	int	status;
-	int	first_fd;
-	int	first_cpy_fd;
+	int			i;
+	t_red_fd	*red_fd;
 
 	i = 0;
-	fd = -1;
-	first_fd = -1;
-	len_m = len_matrix(data->redirection_matrix);
+	red_fd = (t_red_fd *)ft_calloc(1, sizeof(t_red_fd));
+	init_red_fd(red_fd);
+	red_fd->fd_target = fd_target;
 	while (data->redirection_matrix[i])
 	{
-		if (ft_strncmp(data->redirection_matrix[i], "<>", 2) == 0)
+		all_redirect_directions_are_handled_here(i, red_fd, data);
+		if (ft_strncmp(data->redirection_matrix[i], "<", 1) == 0
+			&& ft_strlen(data->redirection_matrix[i]) == 1 && red_fd->fd == -1)
 		{
-			////////////////////////////////////////////////////////////////////////////////////////
-			fd = open_file(data->redirection_matrix[i + 1], O_WRONLY | O_CREAT | O_APPEND);
-			fd = dup(STDOUT_FILENO);
-			////////////////////////////////////////////////////////////////////////////////////////
-		}
-		else if (ft_strncmp(data->redirection_matrix[i], ">>", 2) == 0)
-		{
-			////////////////////////////////////////////////////////////////////////////////////////
-			fd = open_file(data->redirection_matrix[i + 1], O_WRONLY | O_CREAT | O_APPEND);
-			if (i + 2 < len_m)
-				close(fd);
-			////////////////////////////////////////////////////////////////////////////////////////
-		}
-		else if (ft_strncmp(data->redirection_matrix[i], "<<", 2) == 0)
-		{
-			////////////////////////////////////////////////////////////////////////////////////////
-			if ((i + 2) < len_m)
-			{
-				heredoc(data, data->redirection_matrix[i + 1]);
-				if (first_fd != -1)
-					close(first_fd);
-				first_fd = dup(data->read_in_the_pipe);
-				close(data->read_in_the_pipe);
-				close(data->write_on_the_pipe);
-				fd = dup(STDOUT_FILENO);
-			}
-			else
-			{
-				heredoc(data, data->redirection_matrix[i + 1]);
-				fd = dup(data->read_in_the_pipe);
-				close(data->read_in_the_pipe);
-				close(data->write_on_the_pipe);
-			}
-			///////////////////////////////////////////////////////////////////////////////////////
-		}
-		else if (ft_strncmp(data->redirection_matrix[i], ">", 1) == 0)
-		{
-			////////////////////////////////////////////////////////////////////////////////////////
-			fd = open_file(data->redirection_matrix[i + 1], O_WRONLY | O_CREAT | O_TRUNC);
-			if (i + 2 < len_m)
-				close(fd);
-			////////////////////////////////////////////////////////////////////////////////////////
-		}
-		else if (ft_strncmp(data->redirection_matrix[i], "<", 1) == 0)
-		{
-			////////////////////////////////////////////////////////////////////////////////////////
-			fd = open_file(data->redirection_matrix[i + 1], O_RDONLY);
-			if (fd == -1)
-			{
-				ft_putstr_fd(data->redirection_matrix[i + 1], 2);
-				ft_putstr_fd(": No such file or directory\n", 2);
-				change_environment_variables_question_mark(1, data);
-				return ;
-			}
-			if (fd_target == STDIN_FILENO && (i + 2) < len_m
-				&& ft_strncmp(data->redirection_matrix[i + 2], "<", 1) != 0)
-			{	
-				if (first_fd != -1)
-					close(first_fd);
-				first_fd = dup(fd);
-			}
-			else if (i + 2 < len_m)
-				close(fd);
-			////////////////////////////////////////////////////////////////////////////////////////
+			no_such_file_or_directory(i, data);
+			return ;
 		}
 		i++;
 	}
-	if (len_matrix(aux->content) > 0)
-	{
-		if (first_fd == -1)
-		{
-			// caso de execucao de redirecionamento simples
-			////////////////////////////////////////////////////////////////////////////////////////
-			cpy_fd = dup(fd_target);
-			setup_redir(fd, fd_target);
-			if (ft_strlen(aux->content[0]) == 0)
-				status = execute_command(1, aux, data);
-			else
-				status = execute_command(0, aux, data);
-			dup2(cpy_fd, fd_target);
-			close(cpy_fd);
-			////////////////////////////////////////////////////////////////////////////////////////
-		}
-		else
-		{
-			// caso de execucao de redirecionamento duplo
-			////////////////////////////////////////////////////////////////////////////////////////
-			first_cpy_fd = dup(STDIN_FILENO);
-			setup_redir(first_fd, STDIN_FILENO);
-			cpy_fd = dup(STDOUT_FILENO);
-			setup_redir(fd, STDOUT_FILENO);
-			if (ft_strlen(aux->content[0]) == 0)
-				status = execute_command(1, aux, data);
-			else
-				status = execute_command(0, aux, data);
-			dup2(cpy_fd, STDOUT_FILENO);
-			close(cpy_fd);
-			dup2(first_cpy_fd, STDIN_FILENO);
-			close(first_cpy_fd);
-			////////////////////////////////////////////////////////////////////////////////////////
-		}
-	}
-	else
-	{
-		status = 0;
-		close(fd);
-	}
-	free_redirection_matrix(status, data);
+	redirect_main_execution(red_fd, data, aux);
+	free_redirection_matrix(red_fd->status, data);
+	free(red_fd);
 }
 
 void	output(t_data *data, t_new_list *aux)

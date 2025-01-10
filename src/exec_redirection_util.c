@@ -12,21 +12,13 @@
 
 #include "minishell.h"
 
-/* Abre o arquivo com o modo e permissões necessarias*/
-
 int	open_file(const char *file, int mode)
 {
 	int	fd;
 
 	fd = open(file, mode, 0644);
-	if (fd < 0)
-	{
-		exit (EXIT_FAILURE);
-	}
 	return (fd);
 }
-
-/* configura o redirecionamento para o descritor de arquivo fornecido.*/
 
 void	setup_redir(int fd, int fd_target)
 {
@@ -36,4 +28,12 @@ void	setup_redir(int fd, int fd_target)
 		exit (EXIT_FAILURE);
 	}
 	close (fd);
+}
+
+void	init_red_fd(t_red_fd *red_fd)
+{
+	red_fd->fd = -1;
+	red_fd->status = 0;
+	red_fd->first_fd = -1;
+	red_fd->fd_target = -1;
 }
