@@ -73,7 +73,7 @@ int main0(void)
     return 0;
 }
 
-int main()
+int mainia()
 {
 	int			pipefd[2];
 	int			prev_pipefd[2];
@@ -81,21 +81,10 @@ int main()
 	t_data		data;
 	t_new_list	*aux;
 
-	init_data(&data);
-	// ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("ls", ' ')));
-	// ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("wc -l", ' ')));
-
-	ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("cat exmpl/to_do_liste.md ", ' ')));
-	ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("grep \"algo\" ", ' ')));
-	// ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("sort ", ' ')));
-	// ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("uniq", ' ')));
-
-	ft_show_lstnew(data.list);
-
-	aux = data.list;
-
+	aux = data.list;	
 	while (aux)
 	{
+		// input = readline("TeamWork> ");
 		if (aux->next != NULL)
 		{
 			// Cria um novo pipe
@@ -105,7 +94,6 @@ int main()
 				exit(EXIT_FAILURE);
 			}
 		}
-
 		// Código do processo filho
 		pid = fork();
 		if (pid == 0)
@@ -150,9 +138,54 @@ int main()
 
 			wait(NULL);
 		}
-
 		aux = aux->next;
 	}
-
+	/**/
 	return 0;
+}
+
+void	master(char *command, t_data *data)
+{
+	int			i;
+	t_new_list	*aux;
+
+	insert_data(data, command);
+	aux = data->list;
+	while (aux)
+	{
+		i = 0;
+		while (aux->content[i])
+		{
+			ft_printf("%s", aux->content[i]);
+			i++;
+		}
+		ft_printf("\n");
+		aux = aux->next;
+	}
+}
+
+int	main(void)
+{
+	t_data	data;
+	char	*input;
+
+	init_data(&data);
+	data.envp = get_all_environment();
+	data.path = ft_split(get_env("PATH", &data), ':');
+	while (1)
+	{
+		input = readline("TeamWork> ");
+		if (input == NULL)
+		{
+			free_data(&data);
+			exit(0);
+		}
+		else if (input[0] != '\0')
+		{
+			add_history(input);
+			master(input, &data);
+			free(input);
+		}
+	}
+	return (0);
 }
