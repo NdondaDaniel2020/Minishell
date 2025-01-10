@@ -73,95 +73,147 @@ int main0(void)
     return 0;
 }
 
-int mainia()
+
+int main90()
 {
-	int			pipefd[2];
-	int			prev_pipefd[2];
-	pid_t		pid;
-	t_data		data;
-	t_new_list	*aux;
+    int         pipefd[2];
+    int         prev_pipefd[2];
+    pid_t       pid;
+    t_data      data;
+    t_new_list  *aux;
 
-	aux = data.list;	
-	while (aux)
-	{
-		// input = readline("TeamWork> ");
-		if (aux->next != NULL)
-		{
-			// Cria um novo pipe
-			if (pipe(pipefd) == -1)
-			{
-				perror("pipe");
-				exit(EXIT_FAILURE);
-			}
-		}
-		// Código do processo filho
-		pid = fork();
-		if (pid == 0)
-		{
-			if (aux->next != NULL)
-			{
-				// Redireciona a saída do comando atual para o pipe
-				dup2(pipefd[1], STDOUT_FILENO);
-				close(pipefd[1]);
-				close(pipefd[0]);
-			}
+    init_data(&data);
+    // ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("ls", ' ')));
+	// ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("wc -l", ' ')));
 
-			if (aux != data.list)
-			{
-				// Redireciona a entrada do comando atual para o pipe anterior
-				dup2(prev_pipefd[0], STDIN_FILENO);
-				close(prev_pipefd[0]);
-				close(prev_pipefd[1]);
-			}
+	ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("cat exmpl/to_do_liste.md ", ' ')));
+	ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("grep \"algo\" ", ' ')));
+	// ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("sort ", ' ')));
+	// ft_lstnew_addback(&data.list, ft_lstnew_new(split_2("uniq", ' ')));
+
+	ft_show_lstnew(data.list);
+
+    aux = data.list;
+
+    while (aux)
+    {
+        if (aux->next != NULL)
+        {
+            // Cria um novo pipe
+            if (pipe(pipefd) == -1)
+            {
+                perror("pipe");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        // Código do processo filho
+        pid = fork();
+        if (pid == 0)
+        {
+            if (aux->next != NULL)
+            {
+                // Redireciona a saída do comando atual para o pipe
+                dup2(pipefd[1], STDOUT_FILENO);
+                close(pipefd[1]);
+                close(pipefd[0]);
+            }
+
+            if (aux != data.list)
+            {
+                // Redireciona a entrada do comando atual para o pipe anterior
+                dup2(prev_pipefd[0], STDIN_FILENO);
+                close(prev_pipefd[0]);
+                close(prev_pipefd[1]);
+            }
 
 			if (aux->content[1] == NULL)
-				execlp(aux->content[0], aux->content[0], NULL);
+            	execlp(aux->content[0], aux->content[0], NULL);
 			else if (aux->content[2] == NULL)
-				execlp(aux->content[0], aux->content[0], aux->content[1], NULL);
-			perror("execlp");
-			exit(EXIT_FAILURE);
-		}
-		else
-		{
-			// Código do processo pai
-			if (aux != data.list)
-			{
-				close(prev_pipefd[0]);
-				close(prev_pipefd[1]);
-			}
+            	execlp(aux->content[0], aux->content[0], aux->content[1], NULL);
+            perror("execlp");
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            // Código do processo pai
+            if (aux != data.list)
+            {
+                close(prev_pipefd[0]);
+                close(prev_pipefd[1]);
+            }
 
-			if (aux->next != NULL)
-			{
-				prev_pipefd[0] = pipefd[0];
-				prev_pipefd[1] = pipefd[1];
-			}
+            if (aux->next != NULL)
+            {
+                prev_pipefd[0] = pipefd[0];
+                prev_pipefd[1] = pipefd[1];
+            }
 
-			wait(NULL);
-		}
-		aux = aux->next;
-	}
-	/**/
-	return 0;
+            wait(NULL);
+        }
+
+        aux = aux->next;
+    }
+
+    return 0;
 }
+
 
 void	master(char *command, t_data *data)
 {
 	int			i;
+	int			stdin_;
+	int			stdout_;
+	int         pipefd[2];
+    int         aux_pipefd;
+	pid_t		pid;
 	t_new_list	*aux;
 
 	insert_data(data, command);
 	aux = data->list;
+	aux_pipefd = -1;
+	// stdin_ = dup(STDIN_FILENO);
+	// stdout_ = dup(STDOUT_FILENO);
 	while (aux)
 	{
-		i = 0;
-		while (aux->content[i])
+		if (aux->next != NULL)
+			pipe(pipefd);
+		pid = fork();
+		if (pid == 0)
 		{
-			ft_printf("%s", aux->content[i]);
-			i++;
+			if (aux != data->list)
+			{
+				dup2(aux_pipefd, STDIN_FILENO);
+				close(aux_pipefd);
+			}
+			if (aux->next != NULL)
+			{
+				dup2(pipefd[1], STDOUT_FILENO);
+				close(pipefd[1]);
+				close(pipefd[0]);
+			}
+			///////////////////////////////////////////////////////////////////
+			if (execlp(aux->content[0], aux->content[0], NULL) == -1)
+				exit(EXIT_FAILURE);
+			exit(0);
 		}
-		ft_printf("\n");
+		else
+		{
+			if (aux_pipefd != -1)
+				close(aux_pipefd);
+			if (aux->next != NULL)
+			{
+				close(pipefd[1]);
+				aux_pipefd = pipefd[0];
+			}
+			wait(NULL);
+		}
+		///////////////////////////////////////////////////////////////////
 		aux = aux->next;
 	}
+	// dup2(stdin_, STDIN_FILENO);
+	// dup2(stdout_, STDOUT_FILENO);
+	free_all_data(data);
 }
 
 int	main(void)

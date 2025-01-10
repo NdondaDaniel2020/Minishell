@@ -360,24 +360,6 @@ char	**get_all_environment(void)
 	return (new_env);
 }
 
-void	insert_data(t_data *data, char *command)
-{
-	int		i;
-	char	**spliting;
-
-	i = 0;
-	data->command = command;
-	spliting = split_2(command, '|');
-	while (spliting[i])
-	{
-		ft_lstnew_addfront(&data->list,
-			ft_lstnew_new(split_2(spliting[i], ' ')));
-		free(spliting[i]);
-		i++;
-	}
-	free(spliting);
-}
-
 char	*get_env(char *env, t_data *data)
 {
 	int	i;
@@ -417,3 +399,230 @@ int	len_matrix(char **matrix)
 		i++;
 	return (i);
 }
+
+//////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+char	*ft_charjoin(char *s1, char c)
+{
+	char	*join;
+	int		l1;
+	int		i;
+
+	if (!s1 && !c)
+		return (NULL);
+	i = 0;
+	l1 = ft_strlen(s1);
+	join = malloc((l1 + 2) * sizeof(char));
+	if (!join)
+		return (NULL);
+	while (i < (l1 + 1))
+	{
+		if (i < l1)
+			join[i] = s1[i];
+		else
+			join[i] = c;
+		i++;
+	}
+	join[i] = '\0';
+	return (join);
+}
+
+static char	*read_all_path(int i, t_new_list *aux, t_data *data, DIR *open_dir)
+{
+	char			*dir_path;
+	struct dirent	*entry;
+
+	entry = readdir(open_dir);
+	while (entry != NULL)
+	{
+		if (!ft_strncmp(entry->d_name, aux->content[0], ft_strlen(entry->d_name))
+			&& ft_strlen(entry->d_name) == ft_strlen(data->list->content[0]))
+		{
+			dir_path = ft_charjoin(data->path[i], '/');
+			dir_path = ft_strjoin_free(dir_path, entry->d_name);
+			closedir(open_dir);
+			return (dir_path);
+		}
+		entry = readdir(open_dir);
+	}
+	return (NULL);
+}
+
+char	*get_valid_path(t_new_list *aux, t_data *data)
+{
+	int				i;
+	char			*dir_path;
+	DIR				*open_dir;
+
+	i = 0;
+	if (data->path == NULL)
+		return (NULL);
+	while (data->path[i])
+	{
+		open_dir = opendir(data->path[i]);
+		if (open_dir)
+		{
+			dir_path = read_all_path(i, aux, data, open_dir);
+			if (dir_path)
+				return (dir_path);
+		}
+		closedir(open_dir);
+		i++;
+	}
+	return (NULL);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+bool	all_char_equal_char(char *str, char chr)
+{
+	if (ft_strlen(str) == 0)
+		return (false);
+	while (*str)
+	{
+		if (*str != chr)
+			return (false);
+		str++;
+	}
+	return (true);
+}
+
+bool	valid_string_condition_for_redirection(char *str)
+{
+	return ((ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
+		|| (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
+		|| (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
+		|| (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2)
+		|| (ft_strncmp(str, "<>", 2) == 0 && ft_strlen(str) == 2));
+}
+
+bool	condition_add_more_one(int i, char ***matrix)
+{
+	return ((*matrix)[i] != NULL
+		&& (all_char_equal_char((*matrix)[i], '"')
+			|| all_char_equal_char((*matrix)[i], '\'')));
+}
+
+static void	special_adjust(char ***start)
+{
+	int		s;
+	int		len_m;
+	char	*aux;
+
+	if (start == NULL || *start == NULL)
+		return ;
+	s = 0;
+	len_m = len_matrix((*start));
+	if (len_m <= 1)
+		return ;
+	aux = (*start)[0];
+	while (s < len_m - 1)
+	{
+		(*start)[s] = (*start)[s + 1];
+		s++;
+	}
+	(*start)[s] = aux;
+}
+
+static void	last_adjust(int len, char **end, char **start, char ***matrix)
+{
+	int	i;
+	int	e;
+	int	s;
+
+	i = 0;
+	e = 0;
+	s = 0;
+	if (start == NULL || *start == NULL || matrix == NULL || *matrix == NULL)
+		return ;
+	if (ft_strlen(start[0]) == 0)
+		special_adjust(&start);
+	while (i < len)
+	{
+		if (i < len_matrix(start))
+			(*matrix)[i++] = start[s++];
+		else
+			(*matrix)[i++] = end[e++];
+	}
+	free(end);
+	free(start);
+}
+
+void	ajust_all_position(char ***matrix)
+{
+	int		i;
+	int		e;
+	int		s;
+	char	**end;
+	char	**start;
+
+	i = 0;
+	e = 0;
+	s = 0;
+	end = (char **)ft_calloc(len_matrix((*matrix)) + 1, sizeof(char *));
+	start = (char **)ft_calloc(len_matrix((*matrix)) + 1, sizeof(char *));
+	while (i < len_matrix((*matrix)))
+	{
+		if (valid_string_condition_for_redirection((*matrix)[i]))
+		{
+			end[e++] = (*matrix)[i++];
+			if ((*matrix)[i] != NULL)
+				end[e++] = (*matrix)[i++];
+			if (condition_add_more_one(i, matrix))
+				end[e++] = (*matrix)[i++];
+		}
+		else
+			start[s++] = (*matrix)[i++];
+	}
+	last_adjust(len_matrix((*matrix)), end, start, matrix);
+}
+
+void	insert_data(t_data *data, char *command)
+{
+	int		i;
+	int		len_m;
+	char	**matrix;
+	char	**spliting;
+
+	i = 0;
+	data->command = command;
+	spliting = split_2(command, '|');
+	len_m = len_matrix(spliting);
+	if (len_m > 1)
+		data->is_pipe = true;
+	else
+		data->is_pipe = false;
+	while (spliting[i])
+	{
+		matrix = split_2(spliting[i], ' ');
+		ajust_all_position(&matrix);
+		ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
+		free(spliting[i]);
+		i++;
+	}
+	free(spliting);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+void	free_all_data(t_data *data)
+{
+	if (!data)
+		return ;
+	if (data->list)
+	{
+		while (data->list)
+			ft_lstnew_delback(&data->list);
+		data->list = NULL;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+

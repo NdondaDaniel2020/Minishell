@@ -102,6 +102,11 @@ typedef struct s_index
 	t_extract	*content;
 }				t_index;
 
+typedef struct s_index_str
+{
+	int			index;
+	char		*str;
+}				t_index_str;
 
 void		init_data(t_data *data);
 void		free_matrix(char **matrix);
@@ -121,5 +126,15 @@ char		*get_env(char *env, t_data *data);
 void		free_data(t_data *data);
 int			len_matrix(char **matrix);
 void		master(char *command, t_data *data);
+
+char	*get_valid_path(t_new_list *aux, t_data *data);
+char	*ft_charjoin(char *s1, char c);
+char	*get_valid_path(t_new_list *aux, t_data *data);
+bool	all_char_equal_char(char *str, char chr);
+bool	valid_string_condition_for_redirection(char *str);
+bool	condition_add_more_one(int i, char ***matrix);
+void	ajust_all_position(char ***matrix);
+void	insert_data(t_data *data, char *command);
+void	free_all_data(t_data *data);
 
 #endif

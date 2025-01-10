@@ -15,15 +15,23 @@
 void	insert_data(t_data *data, char *command)
 {
 	int		i;
+	int		len_m;
+	char	**matrix;
 	char	**spliting;
 
 	i = 0;
 	data->command = command;
 	spliting = split_2(command, '|');
+	len_m = len_matrix(spliting);
+	if (len_m > 1)
+		data->is_pipe = true;
+	else
+		data->is_pipe = false;
 	while (spliting[i])
 	{
-		ft_lstnew_addfront(&data->list,
-			ft_lstnew_new(split_2(spliting[i], ' ')));
+		matrix = split_2(spliting[i], ' ');
+		ajust_all_position(&matrix);
+		ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
 		free(spliting[i]);
 		i++;
 	}
