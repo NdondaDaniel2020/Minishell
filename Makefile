@@ -27,6 +27,9 @@ FILES = adjust_file_name.c \
 		echo_3.c \
 		env_1.c \
 		env_2.c \
+		exec_all_redirect_directions.c \
+		exec_main_redirect.c \
+		exec_redirect_directions.c \
 		exec_redirection.c \
 		exec_redirection_util.c \
 		exit_1.c \
@@ -35,16 +38,17 @@ FILES = adjust_file_name.c \
 		export_2.c \
 		export_3.c \
 		export_4.c \
-		heredoc_util.c \
 		heredoc.c \
+		heredoc_util.c \
 		lstnew_util_1.c \
 		lstnew_util_2.c \
 		main.c \
 		master_1.c \
 		master_2.c \
-		other_command_util.c \
 		other_command.c \
+		other_command_util.c \
 		pwd.c \
+		redirection_util_10.c \
 		redirection_util_1.c \
 		redirection_util_2.c \
 		redirection_util_3.c \
@@ -54,7 +58,6 @@ FILES = adjust_file_name.c \
 		redirection_util_7.c \
 		redirection_util_8.c \
 		redirection_util_9.c \
-		redirection_util_10.c \
 		signs_handler.c \
 		split_2.c \
 		unset.c \
