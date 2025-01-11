@@ -35,9 +35,8 @@ void	master(char *command, t_data *data)
 		return ;
 	value_redirection = is_redirection(command);
 	insert_data(data, command);
-
-	ft_printf("is_pipe: %d\n", data->is_pipe);
-
+	if (is_pipe_heredoc(command))
+		heredoc_pipe_fork(data);
 	if (data->is_pipe == false)
 		execute_commands_without_pipe(value_redirection, data);
 	else

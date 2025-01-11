@@ -60,8 +60,7 @@ void	ft_lstnew_delback(t_new_list **list)
 	}
 }
 
-/* remover mais tarde */
-void	ft_show_lstnew(t_new_list *list)
+void	ft_show_lstnew(t_new_list *list) /* remover mais tarde */
 {
 	int	i;
 

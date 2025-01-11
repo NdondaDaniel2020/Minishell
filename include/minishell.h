@@ -283,4 +283,6 @@ void		null_string(char ***matrix);
 void		execute_commands_with_pipe(int value_redirection, t_data *data);
 void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
+void	heredoc_pipe_fork(t_data *data);
+
 #endif
