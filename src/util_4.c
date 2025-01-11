@@ -76,7 +76,7 @@ bool	adjust_filename_in_redirection_syntax(t_new_list *aux)
 
 void	null_string(char ***matrix)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while ((*matrix)[i])

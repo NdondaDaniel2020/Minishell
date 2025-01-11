@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-static char	*read_all_path(int i, t_new_list *aux, t_data *data, DIR *open_dir)
+static char	*read_all_path(int i, t_new_list *aux, t_data *data,
+	DIR *open_dir)
 {
 	char			*dir_path;
 	struct dirent	*entry;
@@ -81,9 +82,6 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 
 	ret = 0;
 	path = get_absolute_path(i, aux, data);
-
-	ft_printf("%i %s\n", path->index, path->str);
-
 	if (path->index == -1)
 		return (free(path), 1);
 	if (path->index == 0)

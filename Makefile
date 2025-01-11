@@ -32,6 +32,8 @@ FILES = adjust_file_name.c \
 		exec_redirect_directions.c \
 		exec_redirection.c \
 		exec_redirection_util.c \
+		execute_commands_without_pipe.c \
+		execute_commands_with_pipe.c \
 		exit_1.c \
 		exit_2.c \
 		export_1.c \
@@ -46,6 +48,7 @@ FILES = adjust_file_name.c \
 		other_command.c \
 		other_command_util.c \
 		pwd.c \
+		redirection.c \
 		redirection_util_10.c \
 		redirection_util_1.c \
 		redirection_util_2.c \

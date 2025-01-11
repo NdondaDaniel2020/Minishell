@@ -207,6 +207,7 @@ int			get_position_chr(char chr, char *str);
 bool		check_valid_redirection(int pos, char *str);
 
 /* redirecionamento */
+void		redirection(t_new_list *aux, t_data *data);
 int			is_redirection(char *str);
 void		init_two_extract(t_two_extract *ext);
 void		init_var_redirection(t_var_red *red);
@@ -278,5 +279,8 @@ void		setup_signal(void);
 void		heredoc(t_data *data, char *delimiter);
 void		put_warning(int line, char *delimiter);
 void		null_string(char ***matrix);
+
+void		execute_commands_with_pipe(int value_redirection, t_data *data);
+void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
 #endif
