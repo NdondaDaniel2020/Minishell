@@ -33,7 +33,7 @@ static int	count_file_redirection(t_new_list *aux)
 	return (len);
 }
 
-void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
+static void	split_redirect_between_file_and_content(t_new_list *aux, t_data *data)
 {
 	int		i;
 	int		rm;
@@ -90,30 +90,88 @@ void	redirection(t_new_list *aux, t_data *data)
 		output(data, aux);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+void	change_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux, t_data *data)
+{
+	if (aux != data->list)
+	{
+		dup2((*aux_pipefd), STDIN_FILENO);
+		close((*aux_pipefd));
+	}
+	if (aux->next != NULL)
+	{
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+		close(pipefd[0]);
+	}
+}
+
+void	pass_the_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux)
+{
+	if ((*aux_pipefd) != -1)
+		close((*aux_pipefd));
+	if (aux->next != NULL)
+	{
+		close(pipefd[1]);
+		(*aux_pipefd) = pipefd[0];
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void	master(char *command, t_data *data)
 {
 	int			i;
 	t_new_list	*aux;
 	int			value_redirection;
 
-	if (count_chr('\'', command) % 2 != 0 || count_chr('"', command) % 2 != 0)
-	{
-		ft_putstr("unclosed quotes\n", 2);
+	if (simple_error(command))
 		return ;
-	}
 	value_redirection = is_redirection(command);
 	insert_data(data, command);
 	aux = data->list;
-	while (aux)
+	if (data->is_pipe == false)
 	{
-		i = 0;
-		if (ft_strlen(aux->content[i]) == 0)
-			i++;
-		if (value_redirection == 1)
-			redirection(aux, data);
-		else if (value_redirection == 0)
-			execute_command(i, aux, data);
-		aux = aux->next;
+		while (aux)
+		{
+			i = 0;
+			if (ft_strlen(aux->content[i]) == 0)
+				i++;
+			if (value_redirection == 1)
+				redirection(aux, data);
+			else if (value_redirection == 0)
+				execute_command(i, aux, data);
+			aux = aux->next;
+		}
+	}
+	else
+	{
+		pid_t	pid;
+		int		pipefd[2];
+		int		aux_pipefd;
+
+		while (aux)
+		{
+			if (aux->next != NULL)
+				pipe(pipefd);
+			pid = fork();
+			if (pid == 0)
+			{
+				change_fd(&aux_pipefd, pipefd, aux, data);
+				if (value_redirection == 1)
+					redirection(aux, data);
+				else if (value_redirection == 0)
+					execute_command(0, aux, data);
+				exit(0);
+			}
+			else
+			{
+				pass_the_fd(&aux_pipefd, pipefd, aux);
+				wait(NULL);
+			}
+			aux = aux->next;
+		}
 	}
 	free_all_data(data);
 }

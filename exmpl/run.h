@@ -46,6 +46,7 @@ typedef struct s_data
 {
 	int			write_on_the_pipe;
 	int			read_in_the_pipe;
+	int			cpy_fd;
 	bool		is_pipe;
 	bool		space;
 	bool		automatic_input;

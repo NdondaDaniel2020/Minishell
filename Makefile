@@ -43,8 +43,6 @@ FILES = adjust_file_name.c \
 		lstnew_util_1.c \
 		lstnew_util_2.c \
 		main.c \
-		master_1.c \
-		master_2.c \
 		other_command.c \
 		other_command_util.c \
 		pwd.c \
@@ -63,6 +61,8 @@ FILES = adjust_file_name.c \
 		unset.c \
 		util_1.c \
 		util_2.c \
+		util_3.c \
+		util_4.c \
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)

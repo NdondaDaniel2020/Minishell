@@ -158,12 +158,37 @@ int main90()
     return 0;
 }
 
+void	change_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux, t_data *data)
+{
+	if (aux != data->list)
+	{
+		dup2((*aux_pipefd), STDIN_FILENO);
+		close((*aux_pipefd));
+	}
+	if (aux->next != NULL)
+	{
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+		close(pipefd[0]);
+	}
+}
+
+void	pass_the_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux)
+{
+	if ((*aux_pipefd) != -1)
+		close((*aux_pipefd));
+	if (aux->next != NULL)
+	{
+		close(pipefd[1]);
+		(*aux_pipefd) = pipefd[0];
+	}
+}
 
 void	master(char *command, t_data *data)
 {
 	int			i;
-	int			stdin_;
-	int			stdout_;
+	// int			stdin_;
+	// int			stdout_;
 	int         pipefd[2];
     int         aux_pipefd;
 	pid_t		pid;
@@ -181,34 +206,16 @@ void	master(char *command, t_data *data)
 		pid = fork();
 		if (pid == 0)
 		{
-			if (aux != data->list)
-			{
-				dup2(aux_pipefd, STDIN_FILENO);
-				close(aux_pipefd);
-			}
-			if (aux->next != NULL)
-			{
-				dup2(pipefd[1], STDOUT_FILENO);
-				close(pipefd[1]);
-				close(pipefd[0]);
-			}
-			///////////////////////////////////////////////////////////////////
+			change_fd(&aux_pipefd, pipefd, aux, data);
 			if (execlp(aux->content[0], aux->content[0], NULL) == -1)
 				exit(EXIT_FAILURE);
 			exit(0);
 		}
 		else
 		{
-			if (aux_pipefd != -1)
-				close(aux_pipefd);
-			if (aux->next != NULL)
-			{
-				close(pipefd[1]);
-				aux_pipefd = pipefd[0];
-			}
+			pass_the_fd(&aux_pipefd, pipefd, aux);
 			wait(NULL);
 		}
-		///////////////////////////////////////////////////////////////////
 		aux = aux->next;
 	}
 	// dup2(stdin_, STDIN_FILENO);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   master_2.c                                         :+:      :+:    :+:   */
+/*   util_4.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -72,4 +72,37 @@ bool	adjust_filename_in_redirection_syntax(t_new_list *aux)
 		i++;
 	}
 	return (false);
+}
+
+void	null_string(char ***matrix)
+{
+	int i;
+
+	i = 0;
+	while ((*matrix)[i])
+	{
+		if (ft_strlen((*matrix)[i]) == 0)
+			(*matrix)[i] = NULL;
+		i++;
+	}
+}
+
+void	matrix_space_position_adjustment(char ***matrix)
+{
+	int		i;
+	int		len_m;
+	char	*aux;
+
+	if (ft_strlen((*matrix)[0]) == 0)
+	{
+		i = 0;
+		len_m = len_matrix(*matrix);
+		aux = (*matrix)[0];
+		while (i < len_m - 1)
+		{
+			(*matrix)[i] = (*matrix)[i + 1];
+			i++;
+		}
+		(*matrix)[i] = aux;
+	}
 }

@@ -359,58 +359,88 @@ int	main(void)
 
 
 
+/////////////////////////////////////////////////////////////////////////////
+void	change_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux, t_data *data)
+{
+	if (aux != data->list)
+	{
+		dup2((*aux_pipefd), STDIN_FILENO);
+		close((*aux_pipefd));
+	}
+	if (aux->next != NULL)
+	{
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+		close(pipefd[0]);
+	}
+}
 
+void	pass_the_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux)
+{
+	if ((*aux_pipefd) != -1)
+		close((*aux_pipefd));
+	if (aux->next != NULL)
+	{
+		close(pipefd[1]);
+		(*aux_pipefd) = pipefd[0];
+	}
+}
 
+/////////////////////////////////////////////////////////////////////////////
+// echo | |
+// bash: syntax error near unexpected token `|'
+void	master(char *command, t_data *data)
+{
+	int			i;
+	t_new_list	*aux;
+	int			value_redirection;
+	pid_t		pid;
+	int			pipefd[2];
+	int			aux_pipefd;
 
-
-
-
-
-        if (aux->next != NULL && pipe(pipefd) == -1){
-            perror("Erro ao criar pipe");
-            exit(EXIT_FAILURE);
-        }
-
-        pid = fork();
-        if (pid == -1) {
-            perror("Erro ao criar processo");
-            exit(EXIT_FAILURE);
-        }
-
-        if (pid == 0) { // Processo filho
-            if (prev_fd != -1)
+	if (simple_error(command))
+		return ;
+	value_redirection = is_redirection(command);
+	insert_data(data, command);
+	aux = data->list;
+	if (data->is_pipe == false)
+	{
+		while (aux)
+		{
+			i = 0;
+			if (ft_strlen(aux->content[i]) == 0)
+				i++;
+			if (value_redirection == 1)
+				redirection(aux, data);
+			else if (value_redirection == 0)
+				execute_command(i, aux, data);
+			aux = aux->next;
+		}
+	}
+	else
+	{
+		while (aux)
+		{
+			// ft_printf("[%s]\n", aux->content[0]);
+			if (aux->next != NULL)
+				pipe(pipefd);
+			pid = fork();
+			if (pid == 0)
 			{
-                dup2(prev_fd, STDIN_FILENO); // Entrada do comando atual
-                close(prev_fd);
-            }
-            if (aux->next != NULL) {
-                dup2(pipefd[1], STDOUT_FILENO); // Saída para o próximo comando
-                close(pipefd[1]);
-            }
-
-            // Fechar os descritores de pipe não usados no filho
-            if (aux->next != NULL) close(pipefd[0]);
-
-            // Executar o comando
-            if (execlp(aux->content[0], aux->content[0], NULL) == -1) {
-                perror("Erro ao executar comando");
-                exit(EXIT_FAILURE);
-            }
-        } else { // Processo pai
-            // Fechar descritores usados pelo filho
-            if (prev_fd != -1) close(prev_fd);
-            if (aux->next != NULL) close(pipefd[1]);
-
-            // Preparar para o próximo comando
-            prev_fd = pipefd[0];
-
-            waitpid(pid, NULL, 0); // Esperar o filho
-        }
-
-
-Exemplo Resumido: Pipeline A | B | C
-Se você usar múltiplos pipes:
-
-A escreve no pipe1[1], B lê do pipe1[0].
-B escreve no pipe2[1], C lê do pipe2[0].
-Com isso, o fluxo de dados é controlado de maneira clara e previsível.
+				change_fd(&aux_pipefd, pipefd, aux, data);
+				if (value_redirection == 1)
+					redirection(aux, data);
+				else if (value_redirection == 0)
+					execute_command(0, aux, data);
+				exit(0);
+			}
+			else
+			{
+				pass_the_fd(&aux_pipefd, pipefd, aux);
+				wait(NULL);
+			}
+			aux = aux->next;
+		}
+	}
+	free_all_data(data);
+}

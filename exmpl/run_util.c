@@ -159,6 +159,7 @@ void	init_data(t_data *data)
 	data->put_amb = NULL;
 	data->is_pipe = false;
 	data->automatic_input = false;
+	data->cpy_fd = -1;
 	data->read_in_the_pipe = -1;
 	data->write_on_the_pipe = -1;
 	data->redirection_matrix = NULL;

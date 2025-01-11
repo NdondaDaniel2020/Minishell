@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   master_1.c                                         :+:      :+:    :+:   */
+/*   util_3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -30,7 +30,8 @@ void	insert_data(t_data *data, char *command)
 	while (spliting[i])
 	{
 		matrix = split_2(spliting[i], ' ');
-		ajust_all_position(&matrix);
+		matrix_space_position_adjustment(&matrix);
+		null_string(&matrix);
 		ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
 		free(spliting[i]);
 		i++;
@@ -88,6 +89,46 @@ bool	valid_redirection_syntax(t_new_list *aux)
 			return (true);
 		}
 		i++;
+	}
+	return (false);
+}
+
+static bool	check_pipe_valid(char *command)
+{
+	int		i;
+	char	**spliting;
+
+	i = 0;
+	spliting = split_2(command, ' ');
+	if (spliting == NULL)
+		return (false);
+	while (spliting[i])
+	{
+		if (i > 0 && ft_strncmp(spliting[i], "|", 1) == 0
+			&& ft_strncmp(spliting[i - 1], "|", 1) == 0)
+		{
+			free_matrix(spliting);
+			return (true);
+		}
+		i++;
+	}
+	free_matrix(spliting);
+	return (false);
+}
+
+bool	simple_error(char *command)
+{
+	if (command[0] == '|' || check_pipe_valid(command))
+	{
+		ft_putstr("syntax error near unexpected token `", 2);
+		ft_putstr("|", 2);
+		ft_putstr("'\n", 2);
+		return (true);
+	}
+	if (count_chr('\'', command) % 2 != 0 || count_chr('"', command) % 2 != 0)
+	{
+		ft_putstr("unclosed quotes\n", 2);
+		return (true);
 	}
 	return (false);
 }

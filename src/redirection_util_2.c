@@ -51,8 +51,6 @@ static void	last_adjust(int len, char **end, char **start, char ***matrix)
 	s = 0;
 	if (start == NULL || *start == NULL || matrix == NULL || *matrix == NULL)
 		return ;
-	if (ft_strlen(start[0]) == 0)
-		special_adjust(&start);
 	while (i < len)
 	{
 		if (i < len_matrix(start))
@@ -60,6 +58,7 @@ static void	last_adjust(int len, char **end, char **start, char ***matrix)
 		else
 			(*matrix)[i++] = end[e++];
 	}
+	special_adjust(matrix);
 	free(end);
 	free(start);
 }

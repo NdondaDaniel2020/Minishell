@@ -81,6 +81,9 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 
 	ret = 0;
 	path = get_absolute_path(i, aux, data);
+
+	// ft_printf("%i %s\n", path->index, path->str);
+
 	if (path->index == -1)
 		return (free(path), 1);
 	if (path->index == 0)
@@ -88,9 +91,8 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 		pid = fork();
 		if (pid == 0)
 		{
-			if (execve(path->str, aux->content, data->envp) == -1)
+			if (execve(path->str, aux->content, data->envp) == -1)  /* free(path); possivel double free */
 				exit(EXIT_FAILURE);
-			/* free(path); possivel double free */
 			exit(0);
 		}
 		wait(&ret);

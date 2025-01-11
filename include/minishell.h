@@ -241,6 +241,8 @@ int			str_in_list_redirection(char *str, int len_m);
 int			execute_command(int i, t_new_list *aux, t_data *data);
 bool		valid_redirection_syntax(t_new_list *aux);
 bool		adjust_filename_in_redirection_syntax(t_new_list *aux);
+bool		simple_error(char *command);
+void		matrix_space_position_adjustment(char ***matrix);
 
 /* list */
 t_new_list  *ft_lstnew_new(char **content);
@@ -275,5 +277,6 @@ bool		is_other_file(char *str);
 void		setup_signal(void);
 void		heredoc(t_data *data, char *delimiter);
 void		put_warning(int line, char *delimiter);
+void		null_string(char ***matrix);
 
 #endif
