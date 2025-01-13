@@ -138,4 +138,14 @@ void	ajust_all_position(char ***matrix);
 void	insert_data(t_data *data, char *command);
 void	free_all_data(t_data *data);
 
+
+void	*ft_realloc(void *ptr, size_t original_size, size_t new_size);
+bool	first_str(char chr, char *str);
+int		count_chr(char chr, char *str);
+int		get_position_chr(char chr, char *str);
+int		ft_strnpos(const char *big, const char *little, size_t len);
+
+
+
+
 #endif

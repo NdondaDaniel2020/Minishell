@@ -253,6 +253,15 @@ void	free_matrix(char **matrix)
 	matrix = NULL;
 }
 
+void	free_data(t_data *data)
+{
+	if (data->path)
+		free_matrix(data->path);
+	if (data->envp)
+		free_matrix(data->envp);
+	free_all_data(data);
+}
+
 ////////////////////
 
 
@@ -383,13 +392,6 @@ char	*get_env(char *env, t_data *data)
 	return (NULL);
 }
 
-void	free_data(t_data *data)
-{
-	if (data->path)
-		free_matrix(data->path);
-	if (data->envp)
-		free_matrix(data->envp);
-}
 
 int	len_matrix(char **matrix)
 {
@@ -627,3 +629,94 @@ void	free_all_data(t_data *data)
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 
+bool	first_str(char chr, char *str)
+{
+	if (str[0] == chr)
+		return (true);
+	return (false);
+}
+
+int	count_chr(char chr, char *str)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		if (str[i] == chr)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int	get_position_chr(char chr, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == chr)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int	ft_strnpos(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+	size_t	c;
+	size_t	l_lit;
+
+	i = 0;
+	l_lit = ft_strlen(little);
+	if (len == 0 && !little)
+		return (0);
+	if (big == little || l_lit == 0)
+		return (0);
+	while (*big && i < len)
+	{
+		c = 0;
+		if (*big == little[0])
+		{
+			while (little[c] == big[c] && little[c] && big[c] && i + c < len)
+				c++;
+		}
+		if (c == l_lit)
+			return (i);
+		++big;
+		i++;
+	}
+	return (0);
+}
+
+void	*ft_realloc(void *ptr, size_t original_size, size_t new_size)
+{
+	void	*new_ptr;
+
+	if (new_size == 0)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	if (ptr == NULL)
+	{
+		return (malloc(new_size));
+	}
+	new_ptr = malloc(new_size);
+	if (new_ptr == NULL)
+	{
+		return (NULL);
+	}
+	if (original_size > new_size)
+	{
+		original_size = new_size;
+	}
+	ft_memmove(new_ptr, ptr, original_size);
+	free(ptr);
+	return (new_ptr);
+}
