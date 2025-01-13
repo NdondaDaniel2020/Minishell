@@ -191,7 +191,6 @@ char	*extract_value_env(int i, char *str, t_data *data)
 
 
 
-
 // void	check_environment_variable_expansion(char **str, t_data *data)
 
 static int	adjust_position_variation(int pos, char *sub, char *str, t_data *data)
