@@ -238,18 +238,26 @@ char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
 	return (join);
 }
 
-void	environment_variation_expansion(int i, char ***matrix, t_data *data)
+void	environment_variation_expansion(char ***matrix, t_data *data)
 {
+	int		i;
 	int		old_size;
 	int		new_size;
 	char	*value_env;
 
-	value_env = get_environment_variation_expansion(i, matrix, data);
-	old_size = ft_strlen((*matrix)[i]);
-	new_size = ft_strlen(value_env);
-	(*matrix)[i] = ft_realloc((*matrix)[i], old_size, new_size + 1);
-	ft_strlcpy((*matrix)[i], value_env, new_size + 1);
-	free(value_env);
+	while ((*matrix)[i])
+	{
+		if (ft_strchr((*matrix)[i], '$'))
+		{
+			value_env = get_environment_variation_expansion(i, matrix, data);
+			old_size = ft_strlen((*matrix)[i]);
+			new_size = ft_strlen(value_env);
+			(*matrix)[i] = ft_realloc((*matrix)[i], old_size, new_size + 1);
+			ft_strlcpy((*matrix)[i], value_env, new_size + 1);
+			free(value_env);
+		}
+		i++;
+	}
 }
 
 int	main(void)
@@ -262,13 +270,7 @@ int	main(void)
 	init_data(&data);
 	data.envp = get_all_environment();
 	matrix = split_2("echo:'\"$USER\"''\"$HOME\"'", ':');
-	while (matrix[i])
-	{
-		if (ft_strchr(matrix[i], '$'))
-			environment_variation_expansion(i, &matrix, &data);
-		ft_printf("[[%s]]\n", matrix[i]);
-		i++;
-	}
+	environment_variation_expansion(&matrix, &data);
 	free_matrix(matrix);
 	free_data(&data);
 	return (0);
