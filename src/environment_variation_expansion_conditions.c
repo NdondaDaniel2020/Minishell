@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
+#include "minishell.h"
 
 char	*invert_str(char *str)
 {
@@ -40,7 +40,7 @@ bool	condition_extract_value_env_quotes(char *str, char *sub)
 		&& (count_chr('\'', sub) > 0));
 }
 
-bool	condition_put_env(char *str, char *sub)
+bool	condition_put_env_environment(char *str, char *sub)
 {
 	return ((count_chr('"', str) == 0 && (count_chr('\'', sub) % 2 != 0))
 		 || (first_str('"', str) && (count_chr('"', sub) % 2 == 0)

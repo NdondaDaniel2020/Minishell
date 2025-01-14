@@ -20,13 +20,15 @@ FILES = adjust_file_name.c \
 		adjust_file_name_util.c \
 		cd_1.c \
 		cd_2.c \
-		check_expansion_1.c \
-		check_expansion_2.c \
 		echo_1.c \
 		echo_2.c \
 		echo_3.c \
 		env_1.c \
 		env_2.c \
+		environment_variation_expansion.c \
+		environment_variation_expansion_conditions.c \
+		environment_variation_expansion_extract.c \
+		environment_variation_expansion_extract_main.c \
 		exec_all_redirect_directions.c \
 		exec_main_redirect.c \
 		exec_redirect_directions.c \

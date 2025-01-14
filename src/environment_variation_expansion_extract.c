@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
+#include "minishell.h"
 
-char	*put_env(char *str)
+char	*put_env_environment(char *str)
 {
 	int 	pos;
 	int		end;

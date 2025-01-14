@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
+#include "minishell.h"
 
-static int	adjust_position_variation(int pos, char *sub, char *str, t_data *data)
+static int	adjust_position_variation(int pos, char *sub, char *str)
 {
 	int len;
 
@@ -49,13 +49,13 @@ static char	*get_environment_variation_expansion(int i, char ***matrix, t_data *
 	len = ft_strlen((*matrix)[i]);
 	while (pos < len)
 	{
-		value_env = extract_main_value_env(i, (*matrix)[i] + pos, data);
+		value_env = extract_main_value_env((*matrix)[i] + pos, data);
 		sub = ft_substr(((*matrix)[i] + pos), 0,
 			ft_strchr(((*matrix)[i] + pos), '$') - ((*matrix)[i] + pos));
 		if (value_env && sub && ft_strnstr(sub, value_env, ft_strlen(sub)))
 			pos += ft_strlen(sub);
 		else
-			pos = adjust_position_variation(pos, sub, (*matrix)[i], data);
+			pos = adjust_position_variation(pos, sub, (*matrix)[i]);
 		join_value_env(&join, value_env);
 		free(value_env);
 		free(sub);

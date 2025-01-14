@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "run.h"
+#include "minishell.h"
 
 static char	*treat_string(char *sub)
 {
@@ -20,20 +20,21 @@ static char	*treat_string(char *sub)
 	while (sub[i] == '\'' || sub[i] == '"')
 		i++;
 	if (count_chr('\'', sub) == 0 && count_chr('"', sub) == 0)
-		return (ft_strdup(sub)); 
+		return (ft_strdup(sub));
 	else if ((count_chr('\'', sub) > 0 && count_chr('"', sub) == 0)
 		|| (count_chr('\'', sub) == 0 && count_chr('"', sub) > 0)
 		|| (first_str('"', sub) && (count_chr('"', sub + i) % 2 == 0)
 			&& (count_chr('\'', sub) > 0))
 		|| (first_str('\'', sub) && (count_chr('\'', sub + i) % 2 == 0)
 			&& (count_chr('"', sub) > 0)))
-		return (put_env(sub));
+		return (put_env_environment(sub));
 	else if (first_str('"', sub) && (count_chr('"', sub + 1) % 2 != 0)
 		&& (count_chr('\'', sub) > 0))
 		return (str_quotes(sub, "\""));
 	else if (first_str('\'', sub) && (count_chr('\'', sub + 1) % 2 != 0)
 		&& (count_chr('"', sub) > 0))
 		return (str_quotes(sub, "'"));
+	return (ft_strdup(sub));
 }
 
 static bool	all_is_quotes(char *str)
@@ -49,7 +50,7 @@ static bool	all_is_quotes(char *str)
 	return (true);
 }
 
-char	*extract_main_value_env(int i, char *str, t_data *data)
+char	*extract_main_value_env(char *str, t_data *data)
 {
 	char	*sub;
 	char	*result;
@@ -57,8 +58,8 @@ char	*extract_main_value_env(int i, char *str, t_data *data)
 	sub = ft_substr(str, 0, ft_strchr(str, '$') - str);
 	if (all_is_quotes(sub))
 	{
-		if (condition_put_env(str, sub))
-			result = put_env(str);
+		if (condition_put_env_environment(str, sub))
+			result = put_env_environment(str);
 		else if (condition_extract_value_env(str, sub))
 			result = extract_value_env(str, data);
 		else if (condition_extract_value_env_quotes(str, sub))
