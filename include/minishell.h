@@ -192,10 +192,6 @@ int			get_last_position(t_new_list *aux);
 bool		first_str(char chr, char *str);
 int			count_chr(char chr, char *str);
 
-void		check_environment_variable_expansion(t_new_list *aux, t_data *data);
-bool		condition_extract_value_env_quotes(int i, t_new_list *aux);
-void		extract_value_env_quotes(int i, t_new_list *aux, t_data *data);
-
 int			get_position_chr(char chr, char *str);
 bool		valid_string_condition_for_redirection(char *str);
 void		ajust_all_position(char ***matrix);
@@ -283,6 +279,20 @@ void		null_string(char ***matrix);
 void		execute_commands_with_pipe(int value_redirection, t_data *data);
 void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
-void	heredoc_pipe_fork(t_data *data);
+void		heredoc_pipe_fork(t_data *data);
 
+char		*invert_str(char *str);
+bool		condition_put_env_quotes(char *str, char *sub);
+bool		condition_extract_value_env_quotes(char *str, char *sub);
+bool		condition_put_env(char *str, char *sub);
+bool		condition_extract_value_env(char *str, char *sub);
+
+char		*put_env(char *str);
+char		*extract_value_env(char *str, t_data *data);
+char		*extract_value_env_quotes(char *str, char *sub, t_data *data);
+char		*put_env_quotes(char *str, char *sub);
+char		*str_quotes(char *str, char *chr);
+
+char		*extract_main_value_env(int i, char *str, t_data *data);
+void		environment_variation_expansion(char ***matrix, t_data *data);
 #endif

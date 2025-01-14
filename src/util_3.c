@@ -32,6 +32,7 @@ void	insert_data(t_data *data, char *command)
 		matrix = split_2(spliting[i], ' ');
 		matrix_space_position_adjustment(&matrix);
 		null_string(&matrix);
+		environment_variation_expansion(&matrix, data);
 		ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
 		free(spliting[i]);
 		i++;

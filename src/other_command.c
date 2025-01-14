@@ -61,17 +61,9 @@ char	*get_valid_path(t_new_list *aux, t_data *data)
 
 static int	other_case_execution(int i, t_new_list *aux, t_data *data)
 {
-	if (ft_strchr(aux->content[i], '$'))
-	{
-		check_environment_variable_expansion(aux, data);
-		return (change_environment_variables_question_mark(0, data));
-	}
-	else
-	{
-		ft_putstr_fd(aux->content[0], 2);
-		ft_putstr_fd(": command not found\n", 2);
-		return (change_environment_variables_question_mark(127, data));
-	}
+	ft_putstr_fd(aux->content[0], 2);
+	ft_putstr_fd(": command not found\n", 2);
+	return (change_environment_variables_question_mark(127, data));
 }
 
 int	other_command(int i, t_new_list *aux, t_data *data)
