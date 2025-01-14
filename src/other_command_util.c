@@ -52,8 +52,8 @@ t_index_str	*get_absolute_path(int i, t_new_list *aux, t_data *data)
 	init_index_str(index_str);
 	if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])))
 	{
-		if (aux->content[i][ft_strlen(aux->content[i]) - 1] == '/'
-			|| is_other_file(aux->content[i]))
+		if (is_other_file(aux->content[i])
+			|| is_directory_valid(aux->content[i]))
 			return (chack_path_is_directory(i, index_str, aux, data));
 		else
 		{

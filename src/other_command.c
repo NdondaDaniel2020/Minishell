@@ -37,9 +37,9 @@ static char	*read_all_path(int i, t_new_list *aux, t_data *data,
 
 char	*get_valid_path(t_new_list *aux, t_data *data)
 {
-	int				i;
-	char			*dir_path;
-	DIR				*open_dir;
+	int		i;
+	char	*dir_path;
+	DIR		*open_dir;
 
 	i = 0;
 	if (data->path == NULL)
