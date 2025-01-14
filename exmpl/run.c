@@ -99,7 +99,7 @@ char	*put_env(char *str)
 	return (aux);
 }
 
-char	*extract_value_env(int i_pos, char *str, t_data *data)
+char	*extract_value_env(char *str, t_data *data)
 {
 	int 	pos;
 	int		end;
@@ -119,10 +119,7 @@ char	*extract_value_env(int i_pos, char *str, t_data *data)
 	pos = 0;
 	while (aux[pos] && aux[pos] == '$')
 		pos++;
-	if (i_pos == 0)
-		value_env = ft_strdup(get_env(aux + pos, data));
-	else
-		value_env = get_env(aux + pos, data);
+	value_env = ft_strdup(get_env(aux + pos, data));
 	free(aux);
 	return (value_env);
 }
@@ -191,7 +188,7 @@ char	*str_quotes(char *str, char *chr)
 	return (sub_str);
 }
 
-char	*treat_string(char *sub) /// error
+char	*treat_string(char *sub) /// erro
 {
 	int i;
 
@@ -228,7 +225,7 @@ bool	all_is_quotes(char *str)
 	return (true);
 }
 
-char	*extract_main_value_env(int i, int pos, char *str, t_data *data)
+char	*extract_main_value_env(int i, char *str, t_data *data)
 {
 	char	*sub;
 	char	*result;
@@ -239,7 +236,7 @@ char	*extract_main_value_env(int i, int pos, char *str, t_data *data)
 		if (condition_put_env(str, sub))
 			result = put_env(str);
 		else if (condition_extract_value_env(str, sub))
-			result = extract_value_env(pos, str, data);
+			result = extract_value_env(str, data);
 		else if (condition_extract_value_env_quotes(str, sub))
 			result = extract_value_env_quotes(str, sub, data);
 		else if (condition_put_env_quotes(str, sub))
@@ -268,6 +265,14 @@ static int	adjust_position_variation(int pos, char *sub, char *str, t_data *data
 	return (pos);
 }
 
+static void	join_value_env(char **join, char *value_env)
+{
+	if ((*join) == NULL)
+		(*join) = ft_strdup(value_env);
+	else
+		(*join) = ft_strjoin_free((*join), value_env);
+}
+
 char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
 {
 	int		len;
@@ -281,20 +286,15 @@ char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
 	len = ft_strlen((*matrix)[i]);
 	while (pos < len)
 	{
-		value_env = extract_main_value_env(i, pos, (*matrix)[i] + pos, data);
-		sub = ft_substr(((*matrix)[i] + pos), 0, ft_strchr(((*matrix)[i] + pos), '$') - ((*matrix)[i] + pos));
+		value_env = extract_main_value_env(i, (*matrix)[i] + pos, data);
+		sub = ft_substr(((*matrix)[i] + pos), 0,
+			ft_strchr(((*matrix)[i] + pos), '$') - ((*matrix)[i] + pos));
 		if (value_env && sub && ft_strnstr(sub, value_env, ft_strlen(sub)))
 			pos += ft_strlen(sub);
 		else
 			pos = adjust_position_variation(pos, sub, (*matrix)[i], data);
-
-//////////////////////////////////////////////////////////////////////////////
-		if (join == NULL)
-			join = ft_strjoin_free(value_env, join);
-		else
-			join = ft_strjoin_free(join, value_env);
-//////////////////////////////////////////////////////////////////////////////
-
+		join_value_env(&join, value_env);
+		free(value_env);
 		free(sub);
 	}
 	return (join);
@@ -322,6 +322,7 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 		i++;
 	}
 }
+///////////
 
 int	main(void)
 {
