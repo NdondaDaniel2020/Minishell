@@ -79,118 +79,128 @@ bool	condition_extract_value_env(char *str, char *sub) // name
 ///////////
 
 ///////////
+char	*put_env(char *str, char *sub)
+{
+	int 	pos;
+	int		end;
+	char	*aux;
+	char	*value_env;
 
-char	*extract_value_env(int i, char *str, t_data *data)
+	value_env = ft_strtrim(str, "'\"");
+	pos = 0;
+	while (value_env[pos] && value_env[pos] == '$')
+		pos++;
+	end  = pos + 1;
+	while (value_env[end] && value_env[end] != '$'
+		&& value_env[end] != '\'' && value_env[end] != '"')
+		end++;
+	free(value_env);
+	aux = substring(str, 0, end);
+	free(sub);
+	return (aux);
+}
+
+char	*extract_value_env(char *str, char *sub, t_data *data)
+{
+	int 	pos;
+	int		end;
+	char	*aux;
+	char	*value_env;
+
+	value_env = ft_strtrim(str, "'\"");
+	pos = 0;
+	while (value_env[pos] && value_env[pos] == '$')
+		pos++;
+	end  = pos + 1;
+	while (value_env[end] && value_env[end] != '$'
+		&& value_env[end] != '\'' && value_env[end] != '"')
+		end++;
+	free(value_env);
+	aux = substring(str, 0, end);
+	pos = 0;
+	while (aux[pos] && aux[pos] == '$')
+		pos++;
+	value_env = ft_strdup(get_env(aux + pos, data));
+	free(aux);
+	free(sub);
+	return (value_env);
+}
+
+char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
+{
+	int 	end;
+	int 	start;
+	char	*aux;
+	char	*sub_str;
+	char	*inv_sub;
+
+	start = 0;
+	while (str[start] != '$')
+		start++;
+	end = start + 1;
+	while (ft_isalpha(str[end]))
+		end++;
+	aux = ft_strtrim(sub, "\"");
+	inv_sub = invert_str(aux);
+	free(aux);
+	sub_str = substring(str, start, end);
+	aux = ft_strdup(get_env(sub_str + 1, data));
+	free(sub_str);
+	sub_str = ft_strjoin(inv_sub, aux);
+	free(aux);
+	aux = ft_strjoin_free(sub_str, inv_sub);
+	free(inv_sub);
+	free(sub);
+	return (aux);
+}
+
+char	*put_env_quotes(char *str, char *sub)
+{
+	int 	end;
+	int 	start;
+	char	*aux;
+	char	*sub_str;
+	char	*inv_sub;
+
+	start = 0;
+	while (str[start] != '$')
+		start++;
+	end = start + 1;
+	while (ft_isalpha(str[end]))
+		end++;
+	aux = ft_strtrim(sub, "'");
+	inv_sub = invert_str(aux);
+	free(aux);
+	sub_str = substring(str, start, end);
+	aux = ft_strdup(sub_str);
+	free(sub_str);
+	sub_str = ft_strjoin(inv_sub, aux);
+	free(aux);
+	aux = ft_strjoin_free(sub_str, inv_sub);
+	free(inv_sub);
+	free(sub);
+	return (aux);
+}
+
+char	*extract_main_value_env(int i, char *str, t_data *data)
 {
 	char	*sub;
 
 	sub = ft_substr(str, 0, ft_strchr(str, '$') - str);
 	if (condition_put_env(str, sub))
-	{
-		int 	pos;
-		int		end;
-		char	*aux;
-		char	*value_env;
-
-		value_env = ft_strtrim(str, "'\"");
-		pos = 0;
-		while (value_env[pos] && value_env[pos] == '$')
-			pos++;
-		end  = pos + 1;
-		while (value_env[end] && value_env[end] != '$'
-			&& value_env[end] != '\'' && value_env[end] != '"')
-			end++;
-		free(value_env);
-		aux = substring(str, 0, end);
-		free(sub);
-		return (aux);
-	}
-	else if (condition_extract_value_env(str, sub)) // V/
-	{
-		int 	pos;
-		int		end;
-		char	*aux;
-		char	*value_env;
-
-		value_env = ft_strtrim(str, "'\"");
-		pos = 0;
-		while (value_env[pos] && value_env[pos] == '$')
-			pos++;
-		end  = pos + 1;
-		while (value_env[end] && value_env[end] != '$'
-			&& value_env[end] != '\'' && value_env[end] != '"')
-			end++;
-		free(value_env);
-		aux = substring(str, 0, end);
-		pos = 0;
-		while (aux[pos] && aux[pos] == '$')
-			pos++;
-		value_env = ft_strdup(get_env(aux + pos, data));
-		free(sub);
-		return (value_env);
-	}
+		return (put_env(str, sub));
+	else if (condition_extract_value_env(str, sub))
+		return (extract_value_env(str, sub, data));
 	else if (condition_extract_value_env_quotes(str, sub))
-	{
-		int 	end;
-		int 	start;
-		char	*aux;
-		char	*sub_str;
-		char	*inv_sub;
-
-		start = 0;
-		while (str[start] != '$')
-			start++;
-		end = start + 1;
-		while (ft_isalpha(str[end]))
-			end++;
-		aux = ft_strtrim(sub, "\"");
-		inv_sub = invert_str(aux);
-		free(aux);
-		sub_str = substring(str, start, end);
-		aux = ft_strdup(get_env(sub_str + 1, data));
-		free(sub_str);
-		sub_str = ft_strjoin(inv_sub, aux);
-		free(aux);
-		aux = ft_strjoin_free(sub_str, inv_sub);
-		free(inv_sub);
-		free(sub);
-		return (aux);
-	}
+		return (extract_value_env_quotes(str, sub, data));
 	else if (condition_put_env_quotes(str, sub))
-	{
-		int 	end;
-		int 	start;
-		char	*aux;
-		char	*sub_str;
-		char	*inv_sub;
-
-		start = 0;
-		while (str[start] != '$')
-			start++;
-		end = start + 1;
-		while (ft_isalpha(str[end]))
-			end++;
-		aux = ft_strtrim(sub, "'");
-		inv_sub = invert_str(aux);
-		free(aux);
-		sub_str = substring(str, start, end);
-		aux = ft_strdup(sub_str);
-		free(sub_str);
-		sub_str = ft_strjoin(inv_sub, aux);
-		free(aux);
-		aux = ft_strjoin_free(sub_str, inv_sub);
-		free(inv_sub);
-		free(sub);
-		return (aux);
-	}
+		return (put_env_quotes(str, sub));
+	
 	return (NULL);
+
 }
 
 ///////////
-
-
-
-
 // void	check_environment_variable_expansion(char **str, t_data *data)
 
 static int	adjust_position_variation(int pos, char *sub, char *str, t_data *data)
@@ -223,7 +233,7 @@ char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
 	len = ft_strlen((*matrix)[i]);
 	while (pos < len)
 	{
-		value_env = extract_value_env(i, (*matrix)[i] + pos, data);
+		value_env = extract_main_value_env(i, (*matrix)[i] + pos, data);
 		sub = ft_substr(((*matrix)[i] + pos), 0,
 			ft_strchr(((*matrix)[i] + pos), '$') - ((*matrix)[i] + pos));
 		pos += adjust_position_variation(pos, sub, (*matrix)[i], data);
@@ -233,7 +243,6 @@ char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
 			join = ft_strjoin_free(join, value_env);
 		free(sub);
 	}
-	free(value_env);
 	return (join);
 }
 
@@ -244,6 +253,7 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	int		new_size;
 	char	*value_env;
 
+	i = 0;
 	while ((*matrix)[i])
 	{
 		if (ft_strchr((*matrix)[i], '$'))
@@ -268,8 +278,13 @@ int	main(void)
 	i = 0;
 	init_data(&data);
 	data.envp = get_all_environment();
-	matrix = split_2("echo:'\"$USER\"''\"$HOME\"'", ':');
+	matrix = split_2("echo:'$USER'", ':');
 	environment_variation_expansion(&matrix, &data);
+	while (matrix[i])
+	{
+		printf("%s\n", matrix[i]);
+		i++;
+	}
 	free_matrix(matrix);
 	free_data(&data);
 	return (0);
