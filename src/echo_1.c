@@ -43,7 +43,7 @@ static bool	echo_is_empty(t_new_list *aux)
 
 static void	add_bar_n(t_new_list *aux)
 {
-	if (ft_strncmp(aux->content[1], "-n", 2) != 0 )
+	if (ft_strncmp(aux->content[1], "-n", 2) != 0)
 		ft_putchar_fd('\n', 1);
 }
 
