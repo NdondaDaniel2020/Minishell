@@ -16,7 +16,7 @@ static char	*extract_value_env(char *str, t_data *data)
 {
 	int		i;
 	int		len;
-	
+
 	if (!str)
 		return (NULL);
 	i = 0;
@@ -30,11 +30,11 @@ static char	*extract_value_env(char *str, t_data *data)
 	return (NULL);
 }
 
-static int adjust_position(char *str)
+static int	adjust_position(char *str)
 {
 	int		i;
 	int		len;
-	
+
 	i = 0;
 	if (!str)
 		return (0);
@@ -65,7 +65,7 @@ static void	join_values(char **join, char *value_env, int *pos, char *str)
 	if ((*join) == NULL)
 	{
 		if (ft_strlen(value_env) == 0)
-			(*pos) +=2;
+			(*pos) += 2;
 		else
 			(*pos) += adjust_position(str + (*pos));
 		(*join) = value_env;
@@ -73,7 +73,7 @@ static void	join_values(char **join, char *value_env, int *pos, char *str)
 	else
 	{
 		if (ft_strlen(value_env) == 0)
-			(*pos) +=2;
+			(*pos) += 2;
 		else
 			(*pos) += adjust_position(str + (*pos));
 		(*join) = ft_strjoin_free((*join), value_env);
@@ -81,7 +81,8 @@ static void	join_values(char **join, char *value_env, int *pos, char *str)
 	}
 }
 
-static char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
+static char	*get_environment_variation_expansion(int i, char ***matrix,
+	t_data *data)
 {
 	int		len;
 	int		pos;

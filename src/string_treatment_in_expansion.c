@@ -30,8 +30,8 @@ static char	*invert_str(char *str)
 
 char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 {
-	int 	end;
-	int 	start;
+	int		end;
+	int		start;
 	char	*aux;
 	char	*sub_str;
 	char	*inv_sub;
@@ -66,7 +66,7 @@ char	*extracting_the_value_with_single_quotes(char *str, t_data *data)
 		i++;
 	env_var = substring(str, 1, i);
 	value_env_var = ft_strdup(get_env(env_var, data));
-	return (free(env_var), value_env_var);	
+	return (free(env_var), value_env_var);
 }
 
 char	*exolate_the_content(char *str)
