@@ -69,6 +69,7 @@ FILES = adjust_file_name.c \
 		util_2.c \
 		util_3.c \
 		util_4.c \
+		util_5.c \
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)
@@ -88,6 +89,9 @@ $(LIBFT):
 
 r:
 	@cc exmpl/run.c exmpl/run_util.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
+
+rr:
+	@cc $(FLAGS) exmpl/run.c exmpl/run_util.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
 
 clean:
 	@/bin/rm -f $(OBJ)

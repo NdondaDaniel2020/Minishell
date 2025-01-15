@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signs_handler.c                                    :+:      :+:    :+:   */
+/*   util_5.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cramos-c <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 10:55:19 by cramos-c          #+#    #+#             */
-/*   Updated: 2024/12/02 11:27:20 by cramos-c         ###   ########.fr       */
+/*   Created: 2024/11/06 10:05:31 by nmatondo          #+#    #+#             */
+/*   Updated: 2024/11/06 10:05:31 by nmatondo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	handle_sigint(int sig)
+bool	all_is_space(char *str)
 {
-	(void)sig;
-	rl_clear_history();
-	rl_replace_line("", 0);
-	write(STDOUT_FILENO, "\nTeamWork> ", 12);
-}
+	int	i;
 
-void	setup_signal(void)
-{
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ')
+			return (false);
+		i++;
+	}
+	return (true);
 }

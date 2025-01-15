@@ -41,10 +41,9 @@ static bool	echo_is_empty(t_new_list *aux)
 	return (0);
 }
 
-static void	add_bar_n(int i, t_data *data)
+static void	add_bar_n(t_new_list *aux)
 {
-	if (ft_strncmp(data->list->content[i - 1], "-n",
-			ft_strlen(data->list->content[i - 1])))
+	if (ft_strncmp(aux->content[1], "-n", 2) != 0 )
 		ft_putchar_fd('\n', 1);
 }
 
@@ -73,6 +72,6 @@ int	echo(t_new_list *aux, t_data *data)
 			ft_putchar_fd(' ', 1);
 		i1++;
 	}
-	add_bar_n(i1, data);
+	add_bar_n(aux);
 	return (change_environment_variables_question_mark(0, data));
 }

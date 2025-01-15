@@ -61,7 +61,7 @@ int	main(void)
 			free_data(&data);
 			exit(0);
 		}
-		else if (input[0] != '\0')
+		else if (input[0] != '\0' && all_is_space(input) == false)
 		{
 			add_history(input);
 			master(input, &data);

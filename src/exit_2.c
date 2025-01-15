@@ -37,3 +37,11 @@ bool	check_error_exit(int i, int *ex, t_new_list *aux)
 	}
 	return (false);
 }
+
+int	numeric_argument_required(char *str)
+{
+	ft_putstr_fd("exit: ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+	return (2);
+}

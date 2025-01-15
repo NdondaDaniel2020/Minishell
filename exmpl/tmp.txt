@@ -185,567 +185,160 @@ void	master(char *command, t_data *data)
 
 
 
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-t_extract	extract_redirection_character(char *str)
-{
-	int			pos;
-	char		*str_strim;
-	t_extract	ext;
-
-	init_extract(&ext);
-	pos = get_position_chr('>', str);
-	while ((str[pos + ext.end] == ' ')
-		|| (str[pos + ext.end] == '>')
-		|| (str[pos + ext.end] == '<'))
-		ext.end++;
-	while (((pos - ext.start) >= 0)
-		&& ((str[pos + ext.start] == ' ')
-		|| (str[pos + ext.start] == '>')
-		|| (str[pos + ext.start] == '<')))
-		ext.start++;
-	ext.end++;
-	ext.start--;
-	str_strim = ft_substr(str, (pos - ext.start), ext.end);
-	ext.string = ft_strtrim(str_strim, " ");
-	free(str_strim);
-	return (ext);
-}
-
-// t_extract	**extract_all_redirection_characters(char *str)
-// {
-// 	t_extract	**mtx_extx;	
-// }
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////
-static bool	condition_extract(int i, int pos, char *str, char **list)
-{
-	int	len;
-
-	len = ft_strlen(str);
-	return ((pos != 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
-					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
-					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
-			|| (pos == 0 && ((pos + 1 < len && str[pos + 1] != list[i][0])
-					|| ((pos + 1 < len && str[pos + 1] == list[i][0])
-					&& (pos + 2 < len && str[pos + 2] != list[i][0]))))
-			|| (pos != 0));
-}
-
-static bool	condition_to_add(char *str, char **new_content)
-{
-	return (str_in_matrix(str, new_content) == false
-			&& (count_extract_redirection('<', str) == 0)
-			&& (count_extract_redirection('>', str) == 0));
-}
-
-int	new_repartision(int iter, char *str, char **new_content)
-{
-	int			i;
-	int			pos;
-	static char	*list[] = {"<>", ">>", "<<","<", ">", NULL};
-
-	i = 0;
-	while (list[i])
-	{
-		pos = ft_strnpos(str, list[i], ft_strlen(str));
-		if (ft_strncmp(str + pos, list[i], ft_strlen(list[i])) == 0
-			&& condition_extract(i, pos, str, list))
-		{
-			many_redirection(str, new_content, &iter);
-			break ;
-		}
-		else if (condition_to_add(str, new_content))
-		{
-			new_content[iter] = ft_strdup(str);
-			iter++;
-			break ;
-		}
-		i++;
-	}
-	return (iter);
-}
-/////////////
-
-char	**reset_the_array_for_redirection(char **content)
-{
-	int		i;
-	int		iter;
-	int		len_m;
-	char	**new_content;
-
-	i = 0;
-	len_m = 0;
-	len_m = len_matrix(content);
-	while (content[i])
-	{
-		len_m = str_in_list_redirection(content[i], len_m);
-		i++;
-	}
-	if (len_matrix(content) == len_m)
-		return (NULL);
-	new_content = (char **)ft_calloc(len_m + 1, sizeof(char *));
-	i = 0;
-	iter = 0;
-	while (content[i])
-	{
-		iter = new_repartision(iter, content[i], new_content);
-		i++;
-	}
-	return (new_content);
-}
-
-int	main(void)
-{
-	int		i;
-	char	**new_content;
-	char	**content;
-
-	content = (char **)ft_calloc(9, sizeof(char *));
-	content[0] = ft_strdup("echo>file");
-	content[1] = ft_strdup("test");
-	content[2] = ft_strdup("test1");
-	content[3] = ft_strdup("test2");
-	new_content = reset_the_array_for_redirection(content);
-	if (new_content)
-	{
-		i = 0;
-		while (new_content[i])
-		{
-			printf("new_content[%d] = %s\n", i, new_content[i]);
-			i++;
-		}
-		free_matrix(new_content);
-	}
-	free_matrix(content);
-	return (0);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-void	change_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux, t_data *data)
-{
-	if (aux != data->list)
-	{
-		dup2((*aux_pipefd), STDIN_FILENO);
-		close((*aux_pipefd));
-	}
-	if (aux->next != NULL)
-	{
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[1]);
-		close(pipefd[0]);
-	}
-}
-
-void	pass_the_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux)
-{
-	if ((*aux_pipefd) != -1)
-		close((*aux_pipefd));
-	if (aux->next != NULL)
-	{
-		close(pipefd[1]);
-		(*aux_pipefd) = pipefd[0];
-	}
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// echo | |
-// bash: syntax error near unexpected token `|'
-void	master(char *command, t_data *data)
-{
-	int			i;
-	t_new_list	*aux;
-	int			value_redirection;
-	pid_t		pid;
-	int			pipefd[2];
-	int			aux_pipefd;
-
-	if (simple_error(command))
-		return ;
-	value_redirection = is_redirection(command);
-	insert_data(data, command);
-	aux = data->list;
-	if (data->is_pipe == false)
-	{
-		while (aux)
-		{
-			i = 0;
-			if (ft_strlen(aux->content[i]) == 0)
-				i++;
-			if (value_redirection == 1)
-				redirection(aux, data);
-			else if (value_redirection == 0)
-				execute_command(i, aux, data);
-			aux = aux->next;
-		}
-	}
-	else
-	{
-		while (aux)
-		{
-			// ft_printf("[%s]\n", aux->content[0]);
-			if (aux->next != NULL)
-				pipe(pipefd);
-			pid = fork();
-			if (pid == 0)
-			{
-				change_fd(&aux_pipefd, pipefd, aux, data);
-				if (value_redirection == 1)
-					redirection(aux, data);
-				else if (value_redirection == 0)
-					execute_command(0, aux, data);
-				exit(0);
-			}
-			else
-			{
-				pass_the_fd(&aux_pipefd, pipefd, aux);
-				wait(NULL);
-			}
-			aux = aux->next;
-		}
-	}
-	free_all_data(data);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: cramos-c <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/09 12:04:26 by cramos-c          #+#    #+#             */
-/*   Updated: 2024/12/09 12:04:37 by cramos-c         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "run.h"
-
-char	*substring(const char *str, int start, int end)
-{
-	int 	len;
-	char	*sub;
-
-	len = strlen(str);
-	if (start > end)
-		return (NULL);
-	if (start < 0)
-		start = 0;
-	if (end > len)
-		end = len;
-	sub = (char *)malloc((end - start + 1) * sizeof(char));
-	if (!sub)
-		return (NULL);
-	ft_strlcpy(sub, str + start, end - start + 1);
-	sub[end - start] = '\0';
-	return (sub);
-}
-
-///////////
-char	*invert_str(char *str)
-{
-	int		i;
-	int		len;
-	char	*new_string;
-
-	if (!str)
-		return (NULL);
-	i = 0;
-	len = ft_strlen(str);
-	new_string = ft_calloc(len + 1, sizeof(char));
-	while (str[i])
-		new_string[len-- - 1] = str[i++];
-	return (new_string);
-}
-
-bool	condition_put_env_quotes(char *str, char *sub) // """$USER"""
-{
-	return (first_str('\'', str) && (count_chr('\'', sub) % 2 != 0)
-		&& (count_chr('"', sub) > 0));
-}
-
-bool	condition_extract_value_env_quotes(char *str, char *sub) // '''name'''
-{
-	return (first_str('"', str) && (count_chr('"', sub) % 2 != 0)
-		&& (count_chr('\'', sub) > 0));
-}
-
-bool	condition_put_env(char *str, char *sub) // $USER
-{
-	return ((count_chr('"', str) == 0 && (count_chr('\'', sub) % 2 != 0))
-		 || (first_str('"', str) && (count_chr('"', sub) % 2 == 0)
-		 		&& (count_chr('\'', sub) > 0)));
-}
-
-bool	condition_extract_value_env(char *str, char *sub) // name
-{
-	return ((count_chr('"', sub) == 0 && count_chr('\'', sub) == 0)
-		 || (count_chr('\'', sub) == 0 && (count_chr('"', sub) > 0))
-		 || (count_chr('"', sub) == 0 && (count_chr('\'', sub) % 2 == 0))
-		 || (first_str('\'', str) && (count_chr('\'', sub) % 2 == 0)
-		 	&& (count_chr('"', sub) > 0)));
-}
-///////////
-
-///////////
-char	*put_env(char *str, char *sub)
-{
-	int 	pos;
-	int		end;
-	char	*aux;
-	char	*value_env;
-
-	value_env = ft_strtrim(str, "'\"");
-	pos = 0;
-	while (value_env[pos] && value_env[pos] == '$')
-		pos++;
-	end  = pos + 1;
-	while (value_env[end] && value_env[end] != '$'
-		&& value_env[end] != '\'' && value_env[end] != '"')
-		end++;
-	free(value_env);
-	aux = substring(str, 0, end);
-	free(sub);
-	return (aux);
-}
-
-char	*extract_value_env(char *str, char *sub, t_data *data)
-{
-	int 	pos;
-	int		end;
-	char	*aux;
-	char	*value_env;
-
-	value_env = ft_strtrim(str, "'\"");
-	pos = 0;
-	while (value_env[pos] && value_env[pos] == '$')
-		pos++;
-	end  = pos + 1;
-	while (value_env[end] && value_env[end] != '$'
-		&& value_env[end] != '\'' && value_env[end] != '"')
-		end++;
-	free(value_env);
-	aux = substring(str, 0, end);
-	pos = 0;
-	while (aux[pos] && aux[pos] == '$')
-		pos++;
-	value_env = ft_strdup(get_env(aux + pos, data));
-	free(sub);
-	return (value_env);
-}
-
-char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
-{
-	int 	end;
-	int 	start;
-	char	*aux;
-	char	*sub_str;
-	char	*inv_sub;
-
-	start = 0;
-	while (str[start] != '$')
-		start++;
-	end = start + 1;
-	while (ft_isalpha(str[end]))
-		end++;
-	aux = ft_strtrim(sub, "\"");
-	inv_sub = invert_str(aux);
-	free(aux);
-	sub_str = substring(str, start, end);
-	aux = ft_strdup(get_env(sub_str + 1, data));
-	free(sub_str);
-	sub_str = ft_strjoin(inv_sub, aux);
-	free(aux);
-	aux = ft_strjoin_free(sub_str, inv_sub);
-	free(inv_sub);
-	free(sub);
-	return (aux);
-}
-
-char	*put_env_quotes(char *str, char *sub)
-{
-	int 	end;
-	int 	start;
-	char	*aux;
-	char	*sub_str;
-	char	*inv_sub;
-
-	start = 0;
-	while (str[start] != '$')
-		start++;
-	end = start + 1;
-	while (ft_isalpha(str[end]))
-		end++;
-	aux = ft_strtrim(sub, "'");
-	inv_sub = invert_str(aux);
-	free(aux);
-	sub_str = substring(str, start, end);
-	aux = ft_strdup(sub_str);
-	free(sub_str);
-	sub_str = ft_strjoin(inv_sub, aux);
-	free(aux);
-	aux = ft_strjoin_free(sub_str, inv_sub);
-	free(inv_sub);
-	free(sub);
-	return (aux);
-}
-
-char	*extract_main_value_env(int i, char *str, t_data *data)
-{
-	char	*sub;
-
-	sub = ft_substr(str, 0, ft_strchr(str, '$') - str);
-	if (condition_put_env(str, sub))
-		return (put_env(str, sub));
-	else if (condition_extract_value_env(str, sub))
-		return (extract_value_env(str, sub, data));
-	else if (condition_extract_value_env_quotes(str, sub))
-		return (extract_value_env_quotes(str, sub, data));
-	else if (condition_put_env_quotes(str, sub))
-		return (put_env_quotes(str, sub));
-	
-	return (NULL);
-
-}
-
-///////////
-// void	check_environment_variable_expansion(char **str, t_data *data)
-
-static int	adjust_position_variation(int pos, char *sub, char *str, t_data *data)
-{
-	int len;
-
-	len = ft_strlen(str);
-
-	if (pos == 0)
-		pos = ft_strlen(sub);
-	if (str[pos] == '$')
-		pos++;
-	while ((pos < len) && str[pos] != '\''
-		&& str[pos] != '"' && str[pos] != '$')
-		pos++;
-	pos += ft_strlen(sub);
-	return (pos);
-}
-
-char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
-{
-	int		len;
-	int		pos;
-	char	*sub;
-	char	*join;
-	char	*value_env;
-
-	pos = 0;
-	join = NULL;
-	len = ft_strlen((*matrix)[i]);
-	while (pos < len)
-	{
-		value_env = extract_main_value_env(i, (*matrix)[i] + pos, data);
-		sub = ft_substr(((*matrix)[i] + pos), 0,
-			ft_strchr(((*matrix)[i] + pos), '$') - ((*matrix)[i] + pos));
-		pos += adjust_position_variation(pos, sub, (*matrix)[i], data);
-		if (join == NULL)
-			join = ft_strjoin_free(value_env, join);
-		else
-			join = ft_strjoin_free(join, value_env);
-		free(sub);
-	}
-	free(value_env);
-	return (join);
-}
-
-void	environment_variation_expansion(char ***matrix, t_data *data)
-{
-	int		i;
-	int		old_size;
-	int		new_size;
-	char	*value_env;
-
-	while ((*matrix)[i])
-	{
-		if (ft_strchr((*matrix)[i], '$'))
-		{
-			value_env = get_environment_variation_expansion(i, matrix, data);
-			old_size = ft_strlen((*matrix)[i]);
-			new_size = ft_strlen(value_env);
-			(*matrix)[i] = ft_realloc((*matrix)[i], old_size, new_size + 1);
-			ft_strlcpy((*matrix)[i], value_env, new_size + 1);
-			free(value_env);
-		}
-		i++;
-	}
-}
-
-int	main(void)
-{
-	int		i;
-	t_data	data;
-	char	**matrix;
-
-	i = 0;
-	init_data(&data);
-	data.envp = get_all_environment();
-	matrix = split_2("echo:$USER", ':');
-	environment_variation_expansion(&matrix, &data);
-	free_matrix(matrix);
-	free_data(&data);
-	return (0);
-}
+336  echo "$USER"
+  338  echo "$"USER
+  339  echo edson "                             " finda
+  340  echo '$USER'
+  341  echo '$'USER
+  350  echo $DISPLAY
+  352  echo $DISPLAY
+  364  echo $OLDPWD
+  368  echo $OLDPWD
+  370  echo $HOM ASDF kljakdfjasd
+  372  echo $HOM ASDF kljakdfjasd
+  373  echo $
+  374  echo $HOM
+  375  echo $?
+  378  echo $?
+  380  echo | ls
+  381  ls | echo
+  414                  echo_1.c \
+  415                  echo_2.c \
+  416                  echo_3.c \
+  458  cat Makefile | echo
+  460  cat Makefile | echo
+  461  echo Makefile 
+  462  echo $Makefile 
+  489  echo "TEST $HOME"
+  517  echo '"$HOME"' "'$HOME'" "$HOME" TEST
+  518  echo '  "  $HOME  "   ' "'$HOME'" "$HOME" TEST
+  519  echo '"$HOME"' "'$HOME'" "$HOME" TEST   
+  520  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+  522  echo '$HOME'
+  523  echo '$HOME
+  525  echo '$HOME'
+  526  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+  528  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+  529  echo 1 '   "   $HOME   "   ' 2 "   '   $HOME   '   " 3 "   $HOME   " 4 TEST 
+  530  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+  532  echo '$HOME'
+  534  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+  535  echo 'asdfasd""'
+  536  echo "$HOME"
+  538  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+  540  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST 
+  541  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST
+  543  echo 1 '"$HOME"' 2 "'$HOME'" 3 "$HOME" 4 TEST
+  547  echo "'"$HOME"' "'$HOME'"" "'"$HOME"' "'$HOME'"" "$HOME" "$HOME"
+  549  echo "'"$HOME"' "'$HOME'"" "'"$HOME"' "'$HOME'"" "$HOME" "$HOME"
+  550  echo "'"$HOME"' "'$HOME'"" '"$HOME"' "'$HOME'" "$HOME" "$HOME"
+  552  echo "'"$HOME"' "'$HOME'"" '"$HOME"' "'$HOME'" "$HOME" "$HOME"
+  553  echo "'"$HOME"' "'$HOME'"" '"$HOME"' "'$HOME'" "$HOME" "$HOME" '$HOME'
+  555  echo "'"$HOME"' "'$HOME'"" '"$HOME"' "'$HOME'" "$HOME" "$HOME" '$HOME'
+  556  echo "'"$HOME"' "'$HOME'""
+  557  echo '"$HOME"'
+  558  echo "'$HOME'" 
+  559  echo "$HOME"
+  560  echo '$HOME'
+  562  echo "'"$HOME"' "'$HOME'""
+  563  echo '"$HOME"'
+  564  echo "'$HOME'" 
+  565  echo "$HOME"
+  566  echo '$HOME'
+  567  echo "'"   $HOME   "' "'   $HOME   '"" '"  $HOME  "' "'  $HOME  '" "$HOME" '$HOME'
+  569  echo "'"   $HOME   "' "'   $HOME   '"" '"  $HOME  "' "'  $HOME  '" "$HOME" '$HOME'
+  570  echo "'"   $HOME   "' "'   $HOME   '"" '"  $HOME  "' "'  $HOME  '" "    $HOME    " '    $HOME   '
+  572  echo " ' "   $HOME   " ' " '   $HOME   ' " " ' "  $HOME  " ' " '  $HOME  ' " "   $HOME   " '   $HOME   '
+
+\" ' \"   $HOME   \" ' \" '   $HOME   ' \" \" ' \"  $HOME  \" ' \" '  $HOME  ' \" \"   $HOME   \" '   $HOME   '
+
+  600  echo $?
+  612  echo $/
+  613  echo $?
+  616  echo $?
+  630  echo $?
+  632  echo $?
+  639  echo $?
+  646  echo $?
+  716  echo TEST de alguma coisa > as
+  717  echoTEST
+  719  echo ASDF asdf > file.txt MASSA FRESCA
+  796  echo <> file
+  797  echo < file test de algo estranho > file
+  799  echo < file.txt test de algo estranho > file2.xtx
+  800  echo < file test de algo estranho > file2.xtx
+  802  echo < file
+  804  echo < file
+  866  echo "File test de algo estranho" > file.txt
+  870  echo < file.txt 
+  872  echo < file.txt 
+  873  echo > file.txt 
+  874  echo < file.txt 
+  881  echo <file
+  882  echo < file
+  889  echo < file
+  896  echo < file1 < file11 > file12
+  897  echo < file1 > file11 > file12 < file12
+  898  echo < file1 > file11 > file12 < file2
+  905  echo "TEST" <> file90
+  932  echo TEST <> file40
+ 1009  echo | |
+ 1011  echo | |
+ 1016  echo || grep um
+ 1017  echo | | grep um
+ 1021  echo | EOF
+ 1024  echo |  EOF
+ 1026  echo |
+ 1028  echo |
+ 1030  echo | 
+ 1033  echo |
+ 1034  echo | 
+ 1036  echo "TEST de algo muito" |  wc -l
+ 1037  echo "TEST de algo muito" |  
+ 1039  echo |
+ 1041  echo | EOF
+ 1043  echo | EOF
+ 1044  echo |  EOF
+ 1047  echo |   grep
+ 1049  echo | 
+ 1051  echo | 
+ 1053  echo |
+ 1055  echo |               
+ 1064  echo ls$HOME
+ 1066  echo ls$HOME'file'
+ 1067  echo ls$HOME''file''
+ 1068  echo ls$HOME'''file'''
+ 1069  echo ls$HOME"file"
+ 1070  echo ls$HOME""file""
+ 1071  echo ls$HOME""''file''""
+ 1072  echo ls$HOME"''file''"
+ 1074  echo ls$HOME"''file''"
+ 1075  echo ls$HOME''"file"''
+ 1076  echo ls$HOME"''file''"
+ 1078  echo ls$HOME"''file''"
+ 1079  echo ls$HOME""''file''""
+ 1080  echo ls$HOME"''file''"
+ 1082  echo ls$HOME"''file''"
+ 1083  echo ls$HOME''"file"''
+ 1084  echo ls$HOME'"file"'
+ 1086  echo ''ls''$HOME'"file"'
+ 1087  echo "''ls''"$HOME'"file"'
+ 1088  echo:""''ls''""$HOME'"file"'
+
+ echo:ls$HOME\"\"''file''\"\"
+
+ 1089  echo "''ls''"$HOME'"file"'
+ 1093  echo ls$USER
+ 1094  echo ls$USERS
+ 1096  echo "''ls''"$HOME'"file"'
+ 1097  echo "''ls''"$HOME''"file"''
+ 1099  echo "''ls''"$HOME''"file"''
+ 1100  echo "''ls''"$HOME"''ls''"
+ 1102  echo "''ls''"$HOME"''ls''"
+ 1109  echo -n "test"
+ 1110  echo "test"
+ 1113  echo "test" | echo
+ 1114  echo "test" | ech
+ 1115  echo "test" | grep echo
+ 1118  history | grep echo
+ 1120  history | grep echo

@@ -61,6 +61,7 @@ static void	free_and_exit(int ex, t_data *data)
 	exit(ex);
 }
 
+
 void	exit_(t_new_list *aux, t_data *data)
 {
 	int	i;
@@ -79,7 +80,9 @@ void	exit_(t_new_list *aux, t_data *data)
 		{
 			if (check_error_exit(i, &ex, aux))
 				break ;
-			if (ex == 0 && ft_strlen(aux->content[i]))
+			if (ex == 0 && ft_strlen(aux->content[i]) > 19)
+				ex = numeric_argument_required(aux->content[i]);
+			else if (ex == 0 && ft_strlen(aux->content[i]))
 				ex = (unsigned char)ft_atoi(aux->content[i]);
 		}
 		i++;
