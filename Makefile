@@ -26,9 +26,6 @@ FILES = adjust_file_name.c \
 		env_1.c \
 		env_2.c \
 		environment_variation_expansion.c \
-		environment_variation_expansion_conditions.c \
-		environment_variation_expansion_extract.c \
-		environment_variation_expansion_extract_main.c \
 		exec_all_redirect_directions.c \
 		exec_main_redirect.c \
 		exec_redirect_directions.c \
@@ -64,6 +61,7 @@ FILES = adjust_file_name.c \
 		redirection_util_9.c \
 		signs_handler.c \
 		split_2.c \
+		string_treatment_in_expansion.c \
 		unset.c \
 		util_1.c \
 		util_2.c \

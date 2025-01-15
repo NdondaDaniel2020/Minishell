@@ -3,62 +3,107 @@
 /*                                                        :::      ::::::::   */
 /*   environment_variation_expansion.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cramos-c <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/09 12:04:26 by cramos-c          #+#    #+#             */
-/*   Updated: 2024/12/09 12:04:37 by cramos-c         ###   ########.fr       */
+/*   Created: 2024/11/06 10:05:31 by nmatondo          #+#    #+#             */
+/*   Updated: 2024/11/06 10:05:31 by nmatondo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	adjust_position_variation(int pos, char *sub, char *str)
+static char	*extract_value_env(char *str, t_data *data)
 {
-	int len;
-
+	int		i;
+	int		len;
+	
+	if (!str)
+		return (NULL);
+	i = 0;
 	len = ft_strlen(str);
-	if (pos == 0)
-		pos = ft_strlen(sub);
-	if (str[pos] == '$')
-		pos++;
-	while ((pos < len) && (ft_isalpha(str[pos])
-		|| str[pos] == '?'|| str[pos] == '_'))
-		pos++;
-	pos += ft_strlen(sub);
-	return (pos);
+	if (str[i] == '$' && (i + 1) < len)
+		return (extracting_the_value_with_single_quotes(str, data));
+	else if (str[i] == '\'')
+		return (exolate_the_content(str));
+	else if (str[i] == '\"')
+		return (exolate_the_content_with_double_quotes(str, data));
+	return (NULL);
 }
 
-static void	join_value_env(char **join, char *value_env)
+static int adjust_position(char *str)
+{
+	int		i;
+	int		len;
+	
+	i = 0;
+	if (!str)
+		return (0);
+	len = ft_strlen(str);
+	if (str[i] == '$' && (i + 1) < len)
+	{
+		i++;
+		while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
+			i++;
+	}
+	else if (str[i] == '\'')
+	{
+		i++;
+		while (str[i] && str[i] != '\'')
+			i++;
+	}
+	else if (str[i] == '\"')
+	{
+		i++;
+		while (str[i] && str[i] != '\"')
+			i++;
+	}
+	return (i);
+}
+
+static void	join_values(char **join, char *value_env, int *pos, char *str)
 {
 	if ((*join) == NULL)
-		(*join) = ft_strdup(value_env);
+	{
+		if (ft_strlen(value_env) == 0)
+			(*pos) +=2;
+		else
+			(*pos) += adjust_position(str + (*pos));
+		(*join) = value_env;
+	}
 	else
+	{
+		if (ft_strlen(value_env) == 0)
+			(*pos) +=2;
+		else
+			(*pos) += adjust_position(str + (*pos));
 		(*join) = ft_strjoin_free((*join), value_env);
+		free(value_env);
+	}
 }
 
 static char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
 {
 	int		len;
 	int		pos;
-	char	*sub;
 	char	*join;
 	char	*value_env;
 
 	pos = 0;
 	join = NULL;
 	len = ft_strlen((*matrix)[i]);
-	while (pos < len)
+	while (pos < len - 1)
 	{
-		value_env = extract_main_value_env((*matrix)[i] + pos, data);
-		sub = ft_substr(((*matrix)[i] + pos), 0,
-			ft_strchr(((*matrix)[i] + pos), '$') - ((*matrix)[i] + pos));
-		if (value_env && sub && ft_strnstr(sub, value_env, ft_strlen(sub)))
-			pos += ft_strlen(sub);
+		value_env = extract_value_env((*matrix)[i] + pos, data);
+		if (value_env)
+			join_values(&join, value_env, &pos, (*matrix)[i]);
 		else
-			pos = adjust_position_variation(pos, sub, (*matrix)[i]);
-		join_value_env(&join, value_env);
-		free(value_env);
-		free(sub);
+		{
+			if (join == NULL)
+				join = ft_charjoin(NULL, (*matrix)[i][pos]);
+			else
+				join = ft_charjoin_free(join, (*matrix)[i][pos]);
+			pos++;
+		}
 	}
 	return (join);
 }
@@ -70,10 +115,13 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	int		new_size;
 	char	*value_env;
 
+	if ((*matrix) == NULL)
+		return ;
 	i = 0;
 	while ((*matrix)[i])
 	{
-		if (ft_strchr((*matrix)[i], '$'))
+		if (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
+			|| ft_strchr((*matrix)[i], '"'))
 		{
 			value_env = get_environment_variation_expansion(i, matrix, data);
 			old_size = ft_strlen((*matrix)[i]);

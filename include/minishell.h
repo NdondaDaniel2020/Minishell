@@ -281,19 +281,10 @@ void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
 void		heredoc_pipe_fork(t_data *data);
 
-char		*invert_str(char *str);
-bool		condition_put_env_quotes(char *str, char *sub);
-bool		condition_extract_value_env_quotes(char *str, char *sub);
-bool		condition_put_env_environment(char *str, char *sub);
-bool		condition_extract_value_env(char *str, char *sub);
-
-char		*put_env_environment(char *str);
-char		*extract_value_env(char *str, t_data *data);
+char		*exolate_the_content(char *str);
 char		*extract_value_env_quotes(char *str, char *sub, t_data *data);
-char		*put_env_quotes(char *str, char *sub);
-char		*str_quotes(char *str, char *chr);
-
-char		*extract_main_value_env(char *str, t_data *data);
+char		*exolate_the_content_with_double_quotes(char *str, t_data *data);
+char		*extracting_the_value_with_single_quotes(char *str, t_data *data);
 void		environment_variation_expansion(char ***matrix, t_data *data);
 
 bool		all_is_space(char *str);
