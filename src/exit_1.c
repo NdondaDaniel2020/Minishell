@@ -21,38 +21,11 @@ void	free_data(t_data *data)
 	free_all_data(data);
 }
 
-static bool	check_too_many_arguments(t_new_list *aux, t_data *data)
+static bool	check_too_many_arguments(t_data *data)
 {
-	int	i;
-	int	len;
-
-	i = 0;
-	len = 0;
-	while (aux->content[i])
-	{
-		if (ft_strlen(aux->content[i]) == 0)
-		{
-			i++;
-			continue ;
-		}
-		i++;
-		len++;
-	}
-	if (len > 2)
-	{
-		write(2, "exit: too many arguments\n", 25);
-		change_environment_variables_question_mark(1, data);
-		return (true);
-	}
-	return (false);
-}
-
-static void	init_var(int *i, int *ex, int *len)
-{
-	*i = 0;
-	*ex = 0;
-	*len = 0;
-	ft_printf("exit\n");
+	write(2, "exit: too many arguments\n", 25);
+	change_environment_variables_question_mark(1, data);
+	return (true);
 }
 
 static void	free_and_exit(int ex, t_data *data)
@@ -61,34 +34,22 @@ static void	free_and_exit(int ex, t_data *data)
 	exit(ex);
 }
 
-
 void	exit_(t_new_list *aux, t_data *data)
 {
-	int	i;
 	int	ex;
 	int	len;
 
-	init_var(&i, &ex, &len);
-	while (aux->content[i])
-	{
-		if (ft_strlen(aux->content[i]) == 0)
-		{
-			i++;
-			continue ;
-		}
-		if (len == 1)
-		{
-			if (check_error_exit(i, &ex, aux))
-				break ;
-			if (ex == 0 && ft_strlen(aux->content[i]) > 19)
-				ex = numeric_argument_required(aux->content[i]);
-			else if (ex == 0 && ft_strlen(aux->content[i]))
-				ex = (unsigned char)ft_atoi(aux->content[i]);
-		}
-		i++;
-		len++;
-	}
-	if (check_too_many_arguments(aux, data))
+	ex = 0;
+	ft_printf("exit\n");
+	len = len_matrix(aux->content);
+	ex = check_error_exit(ex, aux);
+	if (ex != 0)
+		return ;
+	else if (len > 1 && ft_strlen(aux->content[0]) > 19)
+		free_and_exit(numeric_argument_required(aux->content[1]), data);
+	else if (len == 2 && ft_strlen(aux->content[0]))
+		free_and_exit((unsigned char)ft_atoi(aux->content[1]), data);
+	else if (len > 2 && check_too_many_arguments(data))
 		return ;
 	free_and_exit(ex, data);
 }

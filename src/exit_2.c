@@ -12,30 +12,38 @@
 
 #include "minishell.h"
 
-bool	check_error_exit(int i, int *ex, t_new_list *aux)
+static bool	is_not_number(char *str)
 {
-	int	i2;
+	int	i;
 
-	i2 = 0;
-	while (aux->content[i][i2])
+	i = 0;
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
 	{
-		if ((ft_strlen(aux->content[i]) == 1
-				&& !ft_isdigit(aux->content[i][i2]))
-			|| (ft_strlen(aux->content[i]) > 1 && i2 > 0
-			&& !ft_isdigit(aux->content[i][i2]))
-			|| (ft_strlen(aux->content[i]) > 1 && i2 == 0
-			&& (!ft_isdigit(aux->content[i][i2]) &&
-			aux->content[i][i2] != '-')))
-		{
-			*ex = 2;
-			write(2, "exit: ", 6);
-			ft_putstr_fd(aux->content[i], 2);
-			write(2, ": numeric argument required\n", 28);
+		if (ft_isdigit(str[i]) == false)
 			return (true);
-		}
-		i2++;
+		i++;
 	}
 	return (false);
+}
+
+int	check_error_exit(int ex, t_new_list *aux)
+{
+	int	len_m;
+
+	len_m = len_matrix(aux->content);
+	if (len_m > 1)
+	{
+		if (is_not_number(aux->content[1]))
+		{
+			ft_putstr_fd("exit: ", 2);
+			ft_putstr_fd(aux->content[1], 2);
+			ft_putstr_fd(": numeric argument required\n", 2);
+			return (2);
+		}
+	}
+	return (ex);
 }
 
 int	numeric_argument_required(char *str)
