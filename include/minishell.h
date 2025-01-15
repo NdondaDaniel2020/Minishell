@@ -138,7 +138,7 @@ int			trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 void		exit_(t_new_list *aux, t_data *data);
 void		free_data(t_data *data);
 int			numeric_argument_required(char *str);
-bool		check_error_exit(int i, int *ex, t_new_list *aux);
+int			check_error_exit(int ex, t_new_list *aux);
 
 
 /*builtin env*/
