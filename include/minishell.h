@@ -285,6 +285,7 @@ char		*exolate_the_content(char *str);
 char		*extract_value_env_quotes(char *str, char *sub, t_data *data);
 char		*exolate_the_content_with_double_quotes(char *str, t_data *data);
 char		*extracting_the_value_with_single_quotes(char *str, t_data *data);
+char		*get_environment_variation_expansion(char *str, t_data *data);
 void		environment_variation_expansion(char ***matrix, t_data *data);
 
 bool		all_is_space(char *str);
