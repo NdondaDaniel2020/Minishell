@@ -81,7 +81,7 @@ static void	join_values(char **join, char *value_env, int *pos, char *str)
 	}
 }
 
-static char	*get_environment_variation_expansion(char *str, t_data *data)
+char	*get_environment_variation_expansion(char *str, t_data *data)
 {
 	int		len;
 	int		pos;
