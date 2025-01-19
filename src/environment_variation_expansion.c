@@ -81,8 +81,7 @@ static void	join_values(char **join, char *value_env, int *pos, char *str)
 	}
 }
 
-static char	*get_environment_variation_expansion(int i, char ***matrix,
-	t_data *data)
+static char	*get_environment_variation_expansion(char *str, t_data *data)
 {
 	int		len;
 	int		pos;
@@ -91,18 +90,18 @@ static char	*get_environment_variation_expansion(int i, char ***matrix,
 
 	pos = 0;
 	join = NULL;
-	len = ft_strlen((*matrix)[i]);
+	len = ft_strlen(str);
 	while (pos < len - 1)
 	{
-		value_env = extract_value_env((*matrix)[i] + pos, data);
+		value_env = extract_value_env(str + pos, data);
 		if (value_env)
-			join_values(&join, value_env, &pos, (*matrix)[i]);
+			join_values(&join, value_env, &pos, str);
 		else
 		{
 			if (join == NULL)
-				join = ft_charjoin(NULL, (*matrix)[i][pos]);
+				join = ft_charjoin(NULL, str[pos]);
 			else
-				join = ft_charjoin_free(join, (*matrix)[i][pos]);
+				join = ft_charjoin_free(join, str[pos]);
 			pos++;
 		}
 	}
@@ -124,7 +123,7 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 		if (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
 			|| ft_strchr((*matrix)[i], '"'))
 		{
-			value_env = get_environment_variation_expansion(i, matrix, data);
+			value_env = get_environment_variation_expansion((*matrix)[i], data);
 			old_size = ft_strlen((*matrix)[i]);
 			new_size = ft_strlen(value_env);
 			(*matrix)[i] = ft_realloc((*matrix)[i], old_size, new_size + 1);
