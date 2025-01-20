@@ -274,6 +274,7 @@ bool		is_other_file(char *str);
 void		setup_signal(void);
 void		heredoc(t_data *data, char *delimiter);
 void		put_warning(int line, char *delimiter);
+void		environment_variation_expansion_in_heredoc(char **line, t_data *data);
 void		null_string(char ***matrix);
 
 void		execute_commands_with_pipe(int value_redirection, t_data *data);

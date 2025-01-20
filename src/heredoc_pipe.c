@@ -41,6 +41,11 @@ static char	*handle_heredoc_input(t_data *data)
 			ft_putstr_fd("exit\n", STDERR_FILENO);
 			exit(2);
 		}
+		if (line && just_space(line) == false
+			&& (ft_strchr(line, '$')
+				|| ft_strchr(line, '\'')
+				|| ft_strchr(line, '"')))
+			environment_variation_expansion_in_heredoc(&line, data);
 		if (line && just_space(line) == false)
 			return (line);
 		free(line);
