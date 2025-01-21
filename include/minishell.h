@@ -25,6 +25,8 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+extern int g_satatus;
+
 typedef struct s_new_list
 {
 	int					item;
@@ -280,7 +282,7 @@ void		null_string(char ***matrix);
 void		execute_commands_with_pipe(int value_redirection, t_data *data);
 void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
-void		heredoc_pipe_fork(t_data *data);
+bool		heredoc_pipe_fork(t_data *data);
 
 char		*exolate_the_content(char *str);
 char		*extract_value_env_quotes(char *str, char *sub, t_data *data);
@@ -290,4 +292,10 @@ char		*get_environment_variation_expansion(char *str, t_data *data);
 void		environment_variation_expansion(char ***matrix, t_data *data);
 
 bool		all_is_space(char *str);
+bool		is_pipe_heredoc(char *command);
+bool		has_unclosed_quotes(const char *str);
+char		character_of_unclosed_quotes(const char *str);
+
+bool		heredoc_quotes(t_data *data, char **command);
+
 #endif
