@@ -23,7 +23,7 @@ static char	*read_all_path(int i, t_new_list *aux, t_data *data,
 	{
 		if (!ft_strncmp(entry->d_name, aux->content[0],
 				ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
-			== ft_strlen(data->list->content[0]))
+			== ft_strlen(aux->content[0]))
 		{
 			dir_path = ft_charjoin(data->path[i], '/');
 			dir_path = ft_strjoin_free(dir_path, entry->d_name);
