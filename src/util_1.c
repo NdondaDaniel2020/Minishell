@@ -100,6 +100,11 @@ void	free_all_data(t_data *data)
 {
 	if (!data)
 		return ;
+	if (data->command)
+	{
+		free(data->command);
+		data->command = NULL;
+	}
 	if (data->list)
 	{
 		while (data->list)
