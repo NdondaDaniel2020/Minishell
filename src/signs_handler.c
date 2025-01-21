@@ -15,6 +15,7 @@
 static void	handle_sigint(int sig)
 {
 	(void)sig;
+	g_satatus = 1;
 	rl_clear_history();
 	rl_replace_line("", 0);
 	write(STDOUT_FILENO, "\nTeamWork> ", 12);
