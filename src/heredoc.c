@@ -40,7 +40,8 @@ static void	handle_heredoc_input(t_data *data, char *delimiter)
 			put_warning(data->heredoc_line_delimited, delimiter);
 		if (!line || ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
 			break ;
-		if (ft_strchr(line, '$') || ft_strchr(line, '\'') || ft_strchr(line, '"'))
+		if (ft_strchr(line, '$') || ft_strchr(line, '\'')
+			|| ft_strchr(line, '"'))
 			environment_variation_expansion_in_heredoc(&line, data);
 		write(data->write_on_the_pipe, line, ft_strlen(line));
 		write(data->write_on_the_pipe, "\n", 1);

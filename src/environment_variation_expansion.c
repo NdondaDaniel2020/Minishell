@@ -34,6 +34,7 @@ static int	adjust_position(char *str)
 {
 	int		i;
 	int		len;
+	char	chr;
 
 	i = 0;
 	if (!str)
@@ -45,16 +46,11 @@ static int	adjust_position(char *str)
 		while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
 			i++;
 	}
-	else if (str[i] == '\'')
+	else if (str[i] == '\'' || str[i] == '\"')
 	{
+		chr = str[i];
 		i++;
-		while (str[i] && str[i] != '\'')
-			i++;
-	}
-	else if (str[i] == '\"')
-	{
-		i++;
-		while (str[i] && str[i] != '\"')
+		while (str[i] && str[i] != chr)
 			i++;
 	}
 	return (i);

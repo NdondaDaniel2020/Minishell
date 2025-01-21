@@ -60,7 +60,7 @@ bool	heredoc_quotes(t_data *data, char **command)
 	char	*new_command;
 
 	new_command = handle_heredoc_input_quotes(data,
-		character_of_unclosed_quotes(*command));
+			character_of_unclosed_quotes(*command));
 	if (new_command == NULL)
 		return (false);
 	join = ft_strjoin(*command, new_command);

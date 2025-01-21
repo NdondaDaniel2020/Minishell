@@ -71,15 +71,15 @@ bool	has_unclosed_quotes(const char *str)
 
 char	character_of_unclosed_quotes(const char *str)
 {
-    int		i;
+	int		i;
 	int		save;
 	char	chr;
 
-    i = 0;
+	i = 0;
 	save = -1;
 	chr = '\0';
-    while (str[i] != '\0')
-    {
+	while (str[i] != '\0')
+	{
 		if ((str[i] == '\'' || str[i] == '\"') && chr == '\0')
 		{
 			chr = str[i];
@@ -90,7 +90,7 @@ char	character_of_unclosed_quotes(const char *str)
 			chr = '\0';
 			save = -1;
 		}
-        i++;
-    }
+		i++;
+	}
 	return (chr);
 }

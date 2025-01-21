@@ -20,7 +20,7 @@ void	master(char *command, t_data *data)
 
 	if (has_unclosed_quotes(command))
 	{
-		if (heredoc_quotes(data, &command) ==  false)
+		if (heredoc_quotes(data, &command) == false)
 			return ;
 	}
 	if (simple_error(command))
@@ -28,9 +28,9 @@ void	master(char *command, t_data *data)
 	value_redirection = is_redirection(command);
 	insert_data(data, command);
 	if (is_pipe_heredoc(command))
-	{	
+	{
 		if (heredoc_pipe_fork(data) == false)
-		return ;
+			return ;
 	}
 	if (data->is_pipe == false)
 		execute_commands_without_pipe(value_redirection, data);

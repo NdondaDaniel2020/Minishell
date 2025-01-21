@@ -81,7 +81,7 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 		pid = fork();
 		if (pid == 0)
 		{
-			if (execve(path->str, aux->content, data->envp) == -1)  /* free(path); possivel double free */
+			if (execve(path->str, aux->content, data->envp) == -1)
 				exit(EXIT_FAILURE);
 			exit(0);
 		}
