@@ -68,6 +68,7 @@ bool	heredoc_quotes(t_data *data, char **command)
 	new_size = ft_strlen(join);
 	(*command) = ft_realloc((*command), old_size, new_size + 1);
 	ft_strlcpy((*command), join, new_size + 1);
+	add_history(join);
 	free(join);
 	return (true);
 }
