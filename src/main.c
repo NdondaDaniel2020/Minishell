@@ -12,31 +12,26 @@
 
 #include "minishell.h"
 
-bool	is_pipe_heredoc(char *command)
-{
-	int	len;
-
-	len = ft_strlen(command);
-	if (command[len - 1] == '|')
-		return (true);
-	while (len > 0 && command[len - 1] == ' ' )
-		len--;
-	if (command[len - 1] == '|')
-		return (true);
-	else
-		return (false);
-}
+int	g_satatus = 0;
 
 void	master(char *command, t_data *data)
 {
-	int			value_redirection;
+	int	value_redirection;
 
+	if (has_unclosed_quotes(command))
+	{
+		if (heredoc_quotes(data, &command) ==  false)
+			return ;
+	}
 	if (simple_error(command))
 		return ;
 	value_redirection = is_redirection(command);
 	insert_data(data, command);
 	if (is_pipe_heredoc(command))
-		heredoc_pipe_fork(data);
+	{	
+		if (heredoc_pipe_fork(data) == false)
+		return ;
+	}
 	if (data->is_pipe == false)
 		execute_commands_without_pipe(value_redirection, data);
 	else
@@ -55,6 +50,7 @@ int	main(void)
 	data.path = ft_split(get_env("PATH", &data), ':');
 	while (1)
 	{
+		g_satatus = 0;
 		input = readline("TeamWork> ");
 		if (input == NULL)
 		{
@@ -65,7 +61,6 @@ int	main(void)
 		{
 			add_history(input);
 			master(input, &data);
-			free(input);
 		}
 	}
 	return (0);
