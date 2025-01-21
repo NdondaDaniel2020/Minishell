@@ -126,10 +126,5 @@ bool	simple_error(char *command)
 		ft_putstr("'\n", 2);
 		return (true);
 	}
-	if (count_chr('\'', command) % 2 != 0 || count_chr('"', command) % 2 != 0)
-	{
-		ft_putstr("unclosed quotes\n", 2);
-		return (true);
-	}
 	return (false);
 }
