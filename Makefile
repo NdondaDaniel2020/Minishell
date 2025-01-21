@@ -20,9 +20,8 @@ FILES = adjust_file_name.c \
 		adjust_file_name_util.c \
 		cd_1.c \
 		cd_2.c \
-		echo_1.c \
-		echo_2.c \
-		echo_3.c \
+		echo.c \
+		echo_util.c \
 		env_1.c \
 		env_2.c \
 		environment_variation_expansion.c \

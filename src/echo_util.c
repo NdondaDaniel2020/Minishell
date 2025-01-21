@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo_1.c                                           :+:      :+:    :+:   */
+/*   echo_util.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -22,13 +22,7 @@ int	count_word(char **words)
 	return (i);
 }
 
-void	init_valid(t_valid	*valid)
-{
-	valid->is_quota = false;
-	valid->is_transition = false;
-}
-
-static bool	echo_is_empty(t_new_list *aux)
+bool	echo_is_empty(t_new_list *aux)
 {
 	int		i;
 
@@ -41,37 +35,15 @@ static bool	echo_is_empty(t_new_list *aux)
 	return (0);
 }
 
-static void	add_bar_n(t_new_list *aux)
+void	add_bar_n(t_new_list *aux)
 {
 	if (ft_strncmp(aux->content[1], "-n", 2) != 0)
 		ft_putchar_fd('\n', 1);
 }
 
-int	echo(t_new_list *aux, t_data *data)
+void	traverse_n(int *i, t_data *data)
 {
-	int		i1;
-	int		i2;
-	t_valid	valid;
-
-	init_valid(&valid);
-	if (echo_is_empty(aux))
-		return (change_environment_variables_question_mark(0, data));
-	i1 = 0;
-	while (!ft_strncmp(aux->content[i1], "echo", ft_strlen(aux->content[i1])))
-		i1++;
-	traverse_n(&i1, data);
-	while (aux->content[i1])
-	{
-		i2 = 0;
-		while (aux->content[i1][i2])
-		{
-			i2 = traverse_the_array(i1, i2, &valid, data);
-			i2 = trasition_master_master(i1, i2, &valid, data);
-		}
-		if (aux->content[i1 + 1] && data->space)
-			ft_putchar_fd(' ', 1);
-		i1++;
-	}
-	add_bar_n(aux);
-	return (change_environment_variables_question_mark(0, data));
+	while (data->list->content[*i] && ft_strnstr(data->list->content[*i],
+			"-n", ft_strlen(data->list->content[*i])))
+		(*i)++;
 }

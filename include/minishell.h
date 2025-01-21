@@ -51,12 +51,6 @@ typedef struct s_data
 	t_new_list	*list;
 }				t_data;
 
-typedef struct s_valid
-{
-	bool	is_quota;
-	bool	is_transition;
-}			t_valid;
-
 typedef struct s_split
 {
 	int		len;
@@ -127,13 +121,10 @@ int			pwd(t_new_list *aux, t_data *data);
 
 /*builtin echo*/
 int			echo(t_new_list *aux, t_data *data);
-void		init_valid(t_valid	*valid);
+void		add_bar_n(t_new_list *aux);
 void		traverse_n(int *i, t_data *data);
-
+bool		echo_is_empty(t_new_list *aux);
 int			count_word(char **words);
-int			put_environment(int i1, int i2, t_valid	*valid, t_data *data);
-int			traverse_the_array(int i1, int i2, t_valid	*valid, t_data *data);
-int			trasition_master_master(int i1, int i2, t_valid	*valid, t_data *data);
 
 
 /*builtin exit*/
