@@ -9,7 +9,7 @@
 /*   Updated: 2024/11/06 10:05:31 by nmatondo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+/* modificado*/
 #include "minishell.h"
 
 int	echo(t_new_list *aux, t_data *data)
