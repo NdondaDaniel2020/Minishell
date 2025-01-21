@@ -11,81 +11,64 @@
 /* ************************************************************************** */
 
 #include "run.h"
+#include <stdbool.h>
+#include <stdio.h>
 
-char	*ft_charjoin_free(char *s1, char c)
+bool	has_unclosed_quotes(const char *str)
 {
-	char	*join;
-	int		l1;
 	int		i;
+	int		save;
+	char	chr;
 
-	if (!s1 && !c)
-		return (NULL);
 	i = 0;
-	l1 = ft_strlen(s1);
-	join = malloc((l1 + 2) * sizeof(char));
-	if (!join)
-		return (NULL);
-	while (i < (l1 + 1))
+	save = -1;
+	chr = '\0';
+	while (str[i] != '\0')
 	{
-		if (i < l1)
-			join[i] = s1[i];
-		else
-			join[i] = c;
+		if ((str[i] == '\'' || str[i] == '\"') && chr == '\0')
+		{
+			chr = str[i];
+			save = i;
+		}
+		else if (chr != '\0' && str[i] == chr && save != i)
+		{
+			chr = '\0';
+			save = -1;
+		}
 		i++;
 	}
-	join[i] = '\0';
-	free(s1);
-	return (join);
+	if (chr != '\0')
+		return (true);
+	return (false);
 }
 
-char	*substring(const char *str, int start, int end)
+char	character_of_unclosed_quotes(const char *str)
 {
-	int 	len;
-	char	*sub;
+    int		i;
+	int		save;
+	char	chr;
 
-	len = strlen(str);
-	if (start > end)
-		return (NULL);
-	if (start < 0)
-		start = 0;
-	if (end > len)
-		end = len;
-	sub = (char *)malloc((end - start + 1) * sizeof(char));
-	if (!sub)
-		return (NULL);
-	ft_strlcpy(sub, str + start, end - start + 1);
-	sub[end - start] = '\0';
-	return (sub);
+    i = 0;
+	save = -1;
+	chr = '\0';
+    while (str[i] != '\0')
+    {
+		if ((str[i] == '\'' || str[i] == '\"') && chr == '\0')
+		{
+			chr = str[i];
+			save = i;
+		}
+		else if (chr != '\0' && str[i] == chr && save != i)
+		{
+			chr = '\0';
+			save = -1;
+		}
+        i++;
+    }
+	return (chr);
 }
-
-/////////// 
-
-////////////
-
-/////////// 
-
-///////////
 
 int	main(void)
 {
-	int		i; // ->nao usas
-	t_data	data;
-	char	**matrix;
-
-	i = 0;  // ->nao usas removidos
-	matrix = NULL;
-	init_data(&data);
-	data.envp = get_all_environment();
-	matrix = split_2("echo:\" ' \"   $HOME   \" ' \" '   $HOME   ' \" \" ' \"  $HOME  \" ' \" '  $HOME  ' \" \"   $HOME   \" '   $HOME   '", ':');
-	// 
-	environment_variation_expansion(&matrix, &data);
-	printf("\n\n\n");
-	while (matrix[i])
-	{
-		printf("(%s)\n", matrix[i]);
-		i++;
-	}
-	free_matrix(matrix);
-	free_data(&data);
-	return (0);
+    return (0);
 }

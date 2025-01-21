@@ -102,15 +102,13 @@ char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 	return (aux);
 }
 
-
-
 char	*extract_value_env(char *str, t_data *data)
 {
 	int		i;
 	int		len;
 	char	*env_var;
 	char	*value_env_var;
-	
+
 	if (!str)
 		return (NULL);
 	i = 0;
