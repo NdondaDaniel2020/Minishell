@@ -185,3 +185,6 @@ void	master(char *command, t_data *data)
 
 
 
+ls -l | grep c > file1.txt
+cat Makefile | grep .c >> file2.txt
+sort < Makefile | uniq > file3.txt

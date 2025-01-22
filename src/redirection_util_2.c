@@ -19,27 +19,6 @@ static bool	condition_add_more_one(int i, char ***matrix)
 			|| all_char_equal_char((*matrix)[i], '\'')));
 }
 
-static void	special_adjust(char ***start)
-{
-	int		s;
-	int		len_m;
-	char	*aux;
-
-	if (start == NULL || *start == NULL)
-		return ;
-	s = 0;
-	len_m = len_matrix((*start));
-	if (len_m <= 1)
-		return ;
-	aux = (*start)[0];
-	while (s < len_m - 1)
-	{
-		(*start)[s] = (*start)[s + 1];
-		s++;
-	}
-	(*start)[s] = aux;
-}
-
 static void	last_adjust(int len, char **end, char **start, char ***matrix)
 {
 	int	i;
@@ -58,7 +37,6 @@ static void	last_adjust(int len, char **end, char **start, char ***matrix)
 		else
 			(*matrix)[i++] = end[e++];
 	}
-	special_adjust(matrix);
 	free(end);
 	free(start);
 }

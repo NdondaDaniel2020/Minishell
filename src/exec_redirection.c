@@ -37,7 +37,6 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 {
 	int			i;
 	t_red_fd	*red_fd;
-
 	i = 0;
 	red_fd = (t_red_fd *)ft_calloc(1, sizeof(t_red_fd));
 	init_red_fd(red_fd);
