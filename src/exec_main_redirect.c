@@ -40,12 +40,10 @@ static int	double_redirect_exec(int fd, int first_fd, t_data *data,
 	setup_redir(first_fd, STDIN_FILENO);
 	cpy_fd = dup(STDOUT_FILENO);
 	setup_redir(fd, STDOUT_FILENO);
-
 	if (ft_strlen(aux->content[0]) == 0)
 		status = execute_command(1, aux, data);
 	else
 		status = execute_command(0, aux, data);
-
 	dup2(cpy_fd, STDOUT_FILENO);
 	close(cpy_fd);
 	dup2(first_cpy_fd, STDIN_FILENO);
