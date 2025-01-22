@@ -39,6 +39,11 @@ typedef struct s_data
 	int			write_on_the_pipe;
 	int			read_in_the_pipe;
 	int			heredoc_line_delimited;
+	int			write_pipe_operation;
+	int			read_pipe_operation;
+	int			cpy_read_pipe_operation;
+	int			cpy_write_operation;
+	int			cpy_read_operation;
 	bool		is_pipe;
 	bool		space;
 	bool		automatic_input;

@@ -12,30 +12,29 @@
 
 #include "minishell.h"
 
-static void	change_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux,
-	t_data *data)
+static void	change_fd(t_new_list *aux, t_data *data)
 {
 	if (aux != data->list)
 	{
-		dup2((*aux_pipefd), STDIN_FILENO);
-		close((*aux_pipefd));
+		dup2(data->cpy_read_pipe_operation, STDIN_FILENO);
+		close(data->cpy_read_pipe_operation);
 	}
 	if (aux->next != NULL)
 	{
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[1]);
-		close(pipefd[0]);
+		dup2(data->write_pipe_operation, STDOUT_FILENO);
+		close(data->write_pipe_operation);
+		close(data->read_pipe_operation);
 	}
 }
 
-static void	pass_the_fd(int *aux_pipefd, int pipefd[2], t_new_list *aux)
+static void	pass_the_fd(t_new_list *aux, t_data *data)
 {
-	if ((*aux_pipefd) != -1)
-		close((*aux_pipefd));
+	if (data->cpy_read_pipe_operation != -1)
+		close(data->cpy_read_pipe_operation);
 	if (aux->next != NULL)
 	{
-		close(pipefd[1]);
-		(*aux_pipefd) = pipefd[0];
+		close(data->write_pipe_operation);
+		data->cpy_read_pipe_operation = data->read_pipe_operation;
 	}
 }
 
@@ -48,41 +47,53 @@ static void	execute_commands(int value_redirection, t_new_list *aux,
 		execute_command(0, aux, data);
 }
 
-static void	close_fds(int pipefd[2], int aux_pipefd)
+static void	close_fds(t_data *data)
 {
-	if (pipefd[0] != -1)
-		close(pipefd[0]);
-	if (pipefd[1] != -1)
-		close(pipefd[1]);
-	if (aux_pipefd != -1)
-		close(aux_pipefd);
+	if (data->write_pipe_operation != -1)
+		close(data->write_pipe_operation);
+	if (data->read_pipe_operation != -1)
+		close(data->read_pipe_operation);
+	if (data->cpy_read_pipe_operation != -1)
+		close(data->cpy_read_pipe_operation);
 }
 
 void	execute_commands_with_pipe(int value_redirection, t_data *data)
 {
 	pid_t		pid;
 	int			pipefd[2];
-	int			aux_pipefd;
 	t_new_list	*aux;
 
+	data->cpy_read_operation = dup(STDIN_FILENO);
+	data->cpy_write_operation = dup(STDOUT_FILENO);
 	aux = data->list;
 	while (aux)
 	{
 		if (aux->next != NULL)
+		{	
 			pipe(pipefd);
+			data->write_pipe_operation = pipefd[1];
+			data->read_pipe_operation = pipefd[0];
+		}
 		pid = fork();
 		if (pid == 0)
 		{
-			change_fd(&aux_pipefd, pipefd, aux, data);
+			change_fd(aux, data);
+
 			execute_commands(value_redirection, aux, data);
+
+			dup2(data->cpy_write_operation, STDOUT_FILENO);
+			close(data->cpy_write_operation);
+			dup2(data->cpy_read_operation, STDIN_FILENO);
+			close(data->cpy_read_operation);
+			
 			exit(0);
 		}
 		else
 		{
-			pass_the_fd(&aux_pipefd, pipefd, aux);
+			pass_the_fd(aux, data);
 			wait(NULL);
 		}
 		aux = aux->next;
 	}
-	close_fds(pipefd, aux_pipefd);
+	close_fds(data);
 }
