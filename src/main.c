@@ -35,7 +35,7 @@ void	master(char *command, t_data *data)
 	if (data->is_pipe == false)
 		execute_commands_without_pipe(value_redirection, data);
 	else
-		execute_commands_with_pipe(value_redirection, data);
+		execute_commands_with_pipe(data);
 	free_all_data(data);
 }
 

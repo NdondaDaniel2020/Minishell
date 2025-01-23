@@ -43,12 +43,11 @@ static void	pass_the_fd(t_new_list *aux, t_data *data)
 	}
 }
 
-static void	execute_commands(int value_redirection, t_new_list *aux,
-	t_data *data)
+static void	execute_commands(int value_redir, t_new_list *aux, t_data *data)
 {
-	if (value_redirection == 1)
+	if (value_redir == 1)
 		redirection(aux, data);
-	else if (value_redirection == 0)
+	else if (value_redir == 0)
 		execute_command(0, aux, data);
 }
 
@@ -62,28 +61,21 @@ static void	close_fds(t_data *data)
 		close(data->cpy_read_pipe_operation);
 }
 
-void	execute_commands_with_pipe(int value_redirection, t_data *data)
+void	execute_commands_with_pipe(t_data *data)
 {
 	pid_t		pid;
-	int			pipefd[2];
 	t_new_list	*aux;
 
-	data->cpy_read_operation = dup(STDIN_FILENO);
-	data->cpy_write_operation = dup(STDOUT_FILENO);
 	aux = data->list;
 	while (aux)
 	{
 		if (aux->next != NULL)
-		{
-			pipe(pipefd);
-			data->write_pipe_operation = pipefd[1];
-			data->read_pipe_operation = pipefd[0];
-		}
+			create_pipe(data);
 		pid = fork();
 		if (pid == 0)
 		{
 			change_fd(aux, data);
-			execute_commands(value_redirection, aux, data);
+			execute_commands(new_is_redirection(aux->content), aux, data);
 			exit(0);
 		}
 		else

@@ -20,10 +20,7 @@ static int	simple_redirect_exec(int fd, int fd_target, t_data *data,
 
 	cpy_fd = dup(fd_target);
 	setup_redir(fd, fd_target);
-	if (ft_strlen(aux->content[0]) == 0)
-		status = execute_command(1, aux, data);
-	else
-		status = execute_command(0, aux, data);
+	status = execute_command(0, aux, data);
 	dup2(cpy_fd, fd_target);
 	close(cpy_fd);
 	return (status);
@@ -40,10 +37,7 @@ static int	double_redirect_exec(int fd, int first_fd, t_data *data,
 	setup_redir(first_fd, STDIN_FILENO);
 	cpy_fd = dup(STDOUT_FILENO);
 	setup_redir(fd, STDOUT_FILENO);
-	if (ft_strlen(aux->content[0]) == 0)
-		status = execute_command(1, aux, data);
-	else
-		status = execute_command(0, aux, data);
+	status = execute_command(0, aux, data);
 	dup2(cpy_fd, STDOUT_FILENO);
 	close(cpy_fd);
 	dup2(first_cpy_fd, STDIN_FILENO);
