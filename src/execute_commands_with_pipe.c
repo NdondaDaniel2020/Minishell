@@ -25,11 +25,6 @@ static void	change_fd(t_new_list *aux, t_data *data)
 		close(data->write_pipe_operation);
 		close(data->read_pipe_operation);
 	}
-	if (aux->next == NULL)
-	{
-		dup2(data->cpy_write_operation, STDOUT_FILENO);
-		close(data->cpy_write_operation);
-	}
 }
 
 static void	pass_the_fd(t_new_list *aux, t_data *data)
@@ -66,6 +61,8 @@ void	execute_commands_with_pipe(t_data *data)
 	pid_t		pid;
 	t_new_list	*aux;
 
+	data->cpy_read_operation = dup(STDIN_FILENO);
+	data->cpy_write_operation = dup(STDOUT_FILENO);
 	aux = data->list;
 	while (aux)
 	{
@@ -85,5 +82,6 @@ void	execute_commands_with_pipe(t_data *data)
 		}
 		aux = aux->next;
 	}
+	restore_fd(data);
 	close_fds(data);
 }
