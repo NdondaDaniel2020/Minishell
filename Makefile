@@ -31,6 +31,7 @@ FILES = adjust_file_name.c \
 		exec_redirection.c \
 		exec_redirection_util.c \
 		execute_commands_without_pipe.c \
+		execute_commands_with_pipe_util.c \
 		execute_commands_with_pipe.c \
 		exit_1.c \
 		exit_2.c \
