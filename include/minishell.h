@@ -44,6 +44,7 @@ typedef struct s_data
 	int			cpy_read_pipe_operation;
 	int			cpy_write_operation;
 	int			cpy_read_operation;
+	int			heredoc_fd;
 	bool		is_pipe;
 	bool		space;
 	bool		automatic_input;
@@ -274,6 +275,9 @@ void		heredoc(t_data *data, char *delimiter);
 void		put_warning(int line, char *delimiter);
 void		environment_variation_expansion_in_heredoc(char **line, t_data *data);
 void		null_string(char ***matrix);
+bool 		is_heredoc_redirection(t_data *data);
+int			count_heredoc_redirection(t_data *data);
+void		get_name_for_heredoc_redirection(t_data *data);
 
 void		execute_commands_with_pipe(t_data *data);
 bool		new_is_redirection(char **matix);

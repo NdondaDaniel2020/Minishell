@@ -72,6 +72,7 @@ void	init_data(t_data *data)
 	data->command = NULL;
 	data->put_amb = NULL;
 	data->is_pipe = false;
+	data->heredoc_fd = -1;
 	data->automatic_input = false;
 	data->read_in_the_pipe = -1;
 	data->write_on_the_pipe = -1;

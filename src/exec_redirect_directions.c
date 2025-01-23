@@ -41,7 +41,6 @@ int	double_left_redirect(int i, t_data *data, t_red_fd *red_fd)
 	len_m = len_matrix(data->redirection_matrix);
 	if ((i + 2) < len_m)
 	{
-		heredoc(data, data->redirection_matrix[i + 1]);
 		if (red_fd->first_fd != -1)
 			close(red_fd->first_fd);
 		red_fd->first_fd = dup(data->read_in_the_pipe);
@@ -51,7 +50,6 @@ int	double_left_redirect(int i, t_data *data, t_red_fd *red_fd)
 	}
 	else
 	{
-		heredoc(data, data->redirection_matrix[i + 1]);
 		fd = dup(data->read_in_the_pipe);
 		close(data->read_in_the_pipe);
 		close(data->write_on_the_pipe);

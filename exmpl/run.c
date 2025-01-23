@@ -14,61 +14,23 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool	has_unclosed_quotes(const char *str)
+bool is_heredoc_redirection(char *str)
 {
-	int		i;
-	int		save;
-	char	chr;
-
-	i = 0;
-	save = -1;
-	chr = '\0';
-	while (str[i] != '\0')
+	int i = 0;
+	while (str[i])
 	{
-		if ((str[i] == '\'' || str[i] == '\"') && chr == '\0')
-		{
-			chr = str[i];
-			save = i;
-		}
-		else if (chr != '\0' && str[i] == chr && save != i)
-		{
-			chr = '\0';
-			save = -1;
-		}
+		if ((str[i] == '<' && str[i + 1] == '<')
+			&& (str[i - 1] != '>' && str[i - 1] != '<')
+			&& (str[i + 2] != '>' && str[i + 2] != '<' && str[i + 2] != '\0')
+			&& (str[i + 2] == ' ' && str[i + 3] != ' ' && str[i + 3] != '\0'))
+			return (true);
 		i++;
 	}
-	if (chr != '\0')
-		return (true);
 	return (false);
-}
-
-char	character_of_unclosed_quotes(const char *str)
-{
-    int		i;
-	int		save;
-	char	chr;
-
-    i = 0;
-	save = -1;
-	chr = '\0';
-    while (str[i] != '\0')
-    {
-		if ((str[i] == '\'' || str[i] == '\"') && chr == '\0')
-		{
-			chr = str[i];
-			save = i;
-		}
-		else if (chr != '\0' && str[i] == chr && save != i)
-		{
-			chr = '\0';
-			save = -1;
-		}
-        i++;
-    }
-	return (chr);
 }
 
 int	main(void)
 {
+	ft_printf("{{%i}}\n", is_heredoc_redirection("ls <<a"));
     return (0);
 }

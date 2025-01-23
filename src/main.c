@@ -32,6 +32,8 @@ void	master(char *command, t_data *data)
 		if (heredoc_pipe_fork(data) == false)
 			return ;
 	}
+	if (is_heredoc_redirection(data))
+		get_name_for_heredoc_redirection(data);
 	if (data->is_pipe == false)
 		execute_commands_without_pipe(value_redirection, data);
 	else
