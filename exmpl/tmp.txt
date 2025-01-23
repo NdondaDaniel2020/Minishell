@@ -1,189 +1,122 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_commands_with_pipe.c                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/06 10:05:31 by nmatondo          #+#    #+#             */
+/*   Updated: 2024/11/06 10:05:31 by nmatondo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/*  v1 */
-void	master(char *command, t_data *data)
+#include "minishell.h"
+
+static void	change_fd(t_new_list *aux, t_data *data)
 {
-	int		i;
-	int		pipefd[2];
-	t_data	*cpy_data;
-
-	cpy_data = data;
-	insert_data(data, command);
-
-	pipe(pipefd);
-	data->copy_fd = dup(STDOUT_FILENO_1);
-	while (data->btree)
+	if (aux != data->list)
 	{
-		//////////////////////////////////////////////////////////////////////////
-
-		i = 0;
-		if (ft_strlen_1(data->btree->content[i]) == 0)
-			i++;
-		
-		//////////////////////////////////////////////////////////////////////////
-
-		if (data->is_pipe && data->btree->right)
-		{
-			data->write_on_the_pipe = -1;
-			data->read_in_the_pipe = pipefd[0];
-			dup2(data->write_on_the_pipe, STDOUT_FILENO_1);
-		}
-		else if (data->is_pipe && !data->btree->right)
-		{
-			data->write_on_the_pipe = pipefd[1];
-			data->read_in_the_pipe = -1;
-			dup2(data->copy_fd, STDOUT_FILENO_1);
-		}
-		
-		//////////////////////////////////////////////////////////////////////////
-
-		ft_printf("[%s]\n", data->btree->content[i]);
-
-		//////////////////////////////////////////////////////////////////////////
-
-		if (!ft_strncmp(data->btree->content[i], "exit", ft_strlen_1(data->btree->content[i])))
-			exit_(data);
-		else if (!ft_strncmp(data->btree->content[i], "pwd", ft_strlen_1(data->btree->content[i])))
-			pwd(data);
-		else if (!ft_strncmp(data->btree->content[i], "cd", ft_strlen_1(data->btree->content[i])))
-			cd(data);
-		else if (!ft_strncmp(data->btree->content[i], "echo", ft_strlen_1(data->btree->content[i])))
-			echo(data);
-		else if (!ft_strncmp(data->btree->content[i], "env", ft_strlen_1(data->btree->content[i])))
-			env(data);
-		else if (!ft_strncmp(data->btree->content[i], "export", ft_strlen_1(data->btree->content[i])))
-			export(data);
-		else if (!ft_strncmp(data->btree->content[i], "unset", ft_strlen_1(data->btree->content[i])))
-			unset(data);
-		else
-			other_command(data);
-		
-		/////////////////////////////////////////////////////////////////////////
-		
-		data->btree = data->btree->right;
+		dup2(data->cpy_read_pipe_operation, STDIN_FILENO);
+		close(data->cpy_read_pipe_operation);
 	}
-
-	free_all_data(cpy_data);
+	if (aux->next != NULL)
+	{
+		dup2(data->write_pipe_operation, STDOUT_FILENO);
+		close(data->write_pipe_operation);
+		close(data->read_pipe_operation);
+	}
+	// if (aux->next == NULL)
+	// {
+	// 	dup2(data->cpy_write_operation, STDOUT_FILENO);
+	// 	close(data->cpy_write_operation);
+	// }
 }
 
-
-
-
-
-/* v2 */
-
-void	master(char *command, t_data *data)
+static void	pass_the_fd(t_new_list *aux, t_data *data)
 {
-	int		i;
-	int		pid;
-	char	*path;
-	t_btree	*aux;
+	if (data->cpy_read_pipe_operation != -1)
+		close(data->cpy_read_pipe_operation);
+	if (aux->next != NULL)
+	{
+		close(data->write_pipe_operation);
+		data->cpy_read_pipe_operation = data->read_pipe_operation;
+	}
+}
 
-	insert_data(data, command);
-	aux = data->btree;
-	path = NULL;
+static void	execute_commands(int value_redirection, t_new_list *aux,
+	t_data *data)
+{
+	if (value_redirection == 1)
+	{
+		dprintf(2, "value_redirection (%s)", aux->content[0]);
+		redirection(aux, data);
+	}
+	else if (value_redirection == 0)
+	{
+		dprintf(2, "(%s)\n", aux->content[0]);
+		execute_command(0, aux, data);
+	}
+}
+
+static void	close_fds(t_data *data)
+{
+	if (data->write_pipe_operation != -1)
+		close(data->write_pipe_operation);
+	if (data->read_pipe_operation != -1)
+		close(data->read_pipe_operation);
+	if (data->cpy_read_pipe_operation != -1)
+		close(data->cpy_read_pipe_operation);
+}
+
+void	execute_commands_with_pipe(int value_redirection, t_data *data)
+{
+	pid_t		pid;
+	int			pipefd[2];
+	// char		buffer[9000];
+	t_new_list	*aux;
+
+	data->cpy_read_operation = dup(STDIN_FILENO);
+	data->cpy_write_operation = dup(STDOUT_FILENO);
+	aux = data->list;
+
+	// ft_show_lstnew(aux);
+	// ft_printf("\n\n\n");
+
 	while (aux)
 	{
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		i = 0;
-		if (ft_strlen_1(aux->content[i]) == 0)
-			i++;
-		
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		if (ft_strnstr(aux->content[i], "/", ft_strlen_1(aux->content[i])) ||
-			list_builtins(aux->content[i]))
-			path = ft_strdup(aux->content[i]);
-		else
-			path = get_valid_path(data);
-
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		if (aux->next != NULL)
+		{
+			pipe(pipefd);
+			data->write_pipe_operation = pipefd[1];
+			data->read_pipe_operation = pipefd[0];
+		}
 		pid = fork();
 		if (pid == 0)
 		{
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (path == NULL)
-			{
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				change_environment_variables_question_mark(127, data);
-				write(2, "command not found: \n", 20);
-				ft_putstr_fd(aux->content[i], 2);
+			change_fd(aux, data);
+			
 
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				if (data->path)
-					free_mtx(data->path);
-				if (data->envp)
-					free_mtx(data->envp);
-				free_all_data(data);
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				
-				exit(127);
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			}
-			else if (!ft_strncmp(aux->content[i], "exit", ft_strlen_1(aux->content[i])))
-			{
-				free(path);
-				exit_(data);
-			}
-			else if (!ft_strncmp(aux->content[i], "pwd", ft_strlen_1(aux->content[i])))
-				pwd(data);
-			else if (!ft_strncmp(aux->content[i], "cd", ft_strlen_1(aux->content[i])))
-				cd(data);
-			else if (!ft_strncmp(aux->content[i], "echo", ft_strlen_1(aux->content[i])))
-				echo(data);
-			else if (!ft_strncmp(aux->content[i], "env", ft_strlen_1(aux->content[i])))
-				env(data);
-			else if (!ft_strncmp(aux->content[i], "export", ft_strlen_1(aux->content[i])))
-				export(data);
-			else if (!ft_strncmp(aux->content[i], "unset", ft_strlen_1(aux->content[i])))
-				unset(data);
-			else
-				execve(path, aux->content, data->envp);
+			// if (aux->next == NULL)
+			// {
+			// 	read(STDIN_FILENO, buffer, 9000);
+			// 	ft_printf("[%s]\n", buffer);
+			// 	if (isatty(STDIN_FILENO)) {printf("Entrada padrão é um terminal.\n");} else {printf("Entrada padrão não é um terminal.\n");}
+			// 	if (isatty(STDOUT_FILENO)) {printf("Saída padrão é um terminal.\n");} else {printf("Saída padrão não é um terminal.\n");}
+			// }
+			// else
+			execute_commands(value_redirection, aux, data);
 
-			change_environment_variables_question_mark(0, data);
-			
-			if (data->path)
-				free_mtx(data->path);
-			if (data->envp)
-				free_mtx(data->envp);
-			
-			free_all_data(data);
-			
-			free(path);
-			
 			exit(0);
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 		else
 		{
+			pass_the_fd(aux, data);
 			wait(NULL);
-			free(path);
-			aux = aux->right;
 		}
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		aux = aux->next;
 	}
-	// ft_printf("|\n\n\n\n\n\n\n\n\n\n\n|");
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// if (!ft_strncmp(aux->content[i], "exit", ft_strlen_1(aux->content[i])))
-	// {
-	// 	if (data->path)
-	// 	{
-	// 		free_mtx(data->path);
-	// 		data->path = NULL;
-	// 	}
-	// 	if (data->envp)
-	// 	{
-	// 		free_mtx(data->envp);
-	// 		data->envp = NULL;
-	// 	}
-	// }
-	// free_all_data(data);
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	close_fds(data);
 }
-
-
-
-
 
 ls -l | grep c > file1.txt
 cat Makefile | grep .c >> file2.txt

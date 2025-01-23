@@ -82,6 +82,5 @@ void	execute_commands_with_pipe(t_data *data)
 		}
 		aux = aux->next;
 	}
-	restore_fd(data);
 	close_fds(data);
 }

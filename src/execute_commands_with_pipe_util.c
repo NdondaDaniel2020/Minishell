@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 bool	new_is_redirection(char **matix)
 {
 	int		i;
