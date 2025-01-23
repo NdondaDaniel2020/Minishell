@@ -275,7 +275,9 @@ void		put_warning(int line, char *delimiter);
 void		environment_variation_expansion_in_heredoc(char **line, t_data *data);
 void		null_string(char ***matrix);
 
-void		execute_commands_with_pipe(int value_redirection, t_data *data);
+void		execute_commands_with_pipe(t_data *data);
+bool		new_is_redirection(char **matix);
+void		create_pipe(t_data *data);
 void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
 bool		heredoc_pipe_fork(t_data *data);
