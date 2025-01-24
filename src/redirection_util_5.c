@@ -93,7 +93,7 @@ bool	check_valid_redirection(int pos, char *str)
 		pos++;
 	}
 	pos = aux_value;
-	while (str[pos])
+	while (pos > -1 && str[pos])
 	{
 		if (str[pos] == '\'' || str[pos] == '"')
 			i2 = false;

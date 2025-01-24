@@ -82,7 +82,10 @@ void	null_string(char ***matrix)
 	while ((*matrix)[i])
 	{
 		if (ft_strlen((*matrix)[i]) == 0)
+		{
+			free((*matrix)[i]);
 			(*matrix)[i] = NULL;
+		}
 		i++;
 	}
 }
