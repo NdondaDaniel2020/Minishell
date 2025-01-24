@@ -16,7 +16,7 @@ static bool	change_value_in_adjust_filename(int i, bool *valid, t_new_list *aux)
 {
 	char	*aux_aux;
 
-	aux_aux = ft_strdup(aux->content[i]);
+	aux_aux = aux->content[i];
 	aux->content[i] = adjust_file_name(aux->content[i]);
 	if (aux->content[i] == NULL)
 	{
@@ -82,7 +82,10 @@ void	null_string(char ***matrix)
 	while ((*matrix)[i])
 	{
 		if (ft_strlen((*matrix)[i]) == 0)
+		{
+			free((*matrix)[i]);
 			(*matrix)[i] = NULL;
+		}
 		i++;
 	}
 }

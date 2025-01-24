@@ -17,13 +17,13 @@ static void	change_fd(t_new_list *aux, t_data *data)
 	if (aux != data->list)
 	{
 		dup2(data->cpy_read_pipe_operation, STDIN_FILENO);
-		close(data->cpy_read_pipe_operation);
+		close_fd(&data->cpy_read_pipe_operation);
 	}
 	if (aux->next != NULL)
 	{
 		dup2(data->write_pipe_operation, STDOUT_FILENO);
-		close(data->write_pipe_operation);
-		close(data->read_pipe_operation);
+		close_fd(&data->write_pipe_operation);
+		close_fd(&data->read_pipe_operation);
 	}
 }
 
@@ -48,12 +48,11 @@ static void	execute_commands(int value_redir, t_new_list *aux, t_data *data)
 
 static void	close_fds(t_data *data)
 {
-	if (data->write_pipe_operation != -1)
-		close(data->write_pipe_operation);
-	if (data->read_pipe_operation != -1)
-		close(data->read_pipe_operation);
-	if (data->cpy_read_pipe_operation != -1)
-		close(data->cpy_read_pipe_operation);
+	close_fd(&data->write_pipe_operation);
+	close_fd(&data->read_pipe_operation);
+	close_fd(&data->cpy_read_pipe_operation);
+	close_fd(&data->cpy_read_operation);
+	close_fd(&data->cpy_write_operation);
 }
 
 void	execute_commands_with_pipe(t_data *data)
@@ -73,14 +72,12 @@ void	execute_commands_with_pipe(t_data *data)
 		{
 			change_fd(aux, data);
 			execute_commands(new_is_redirection(aux->content), aux, data);
-			exit(0);
+			exit(EXIT_SUCCESS);
 		}
 		else
-		{
 			pass_the_fd(aux, data);
-			wait(NULL);
-		}
 		aux = aux->next;
 	}
+	wait_for_children();
 	close_fds(data);
 }

@@ -14,7 +14,7 @@
 
 bool	new_is_redirection(char **matix)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (matix[i])
@@ -28,9 +28,49 @@ bool	new_is_redirection(char **matix)
 
 void	create_pipe(t_data *data)
 {
-	int		pipefd[2];
+	int	pipefd[2];
 
-	pipe(pipefd);
+	if (pipe(pipefd) == -1)
+	{
+		perror("Failed to create pipe");
+		exit(EXIT_FAILURE);
+	}
 	data->write_pipe_operation = pipefd[1];
 	data->read_pipe_operation = pipefd[0];
+}
+
+void	close_fd(int *fd)
+{
+	if (*fd != -1)
+	{
+		close(*fd);
+		*fd = -1;
+	}
+}
+
+void	wait_for_children(void)
+{
+	int		status;
+	pid_t	pid;
+
+	pid = wait(&status);
+	while ((pid) > 0)
+	{
+		if (WIFEXITED(status))
+		{
+			if (WEXITSTATUS(status) != 0)
+			{
+				ft_putstr_fd("Error", 2);
+				ft_putnbr_fd(WEXITSTATUS(status), 2);
+				ft_putstr_fd("\n", 2);
+			}
+		}
+		else if (WIFSIGNALED(status))
+		{
+			ft_putstr_fd("Child", 2);
+			ft_putnbr_fd(WEXITSTATUS(status), 2);
+			ft_putstr_fd("\n", 2);
+		}
+		pid = wait(&status);
+	}
 }

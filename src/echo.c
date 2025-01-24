@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int echo(t_new_list *aux, t_data *data)
+int	echo(t_new_list *aux, t_data *data)
 {
 	int	i1;
 	int	i2;
