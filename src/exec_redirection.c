@@ -12,10 +12,23 @@
 
 #include "minishell.h"
 
-static void	free_redirection_matrix(t_data *data)
+static void	free_redirection_matrix(int status, t_data *data)
 {
+	int	i;
+
 	if (data->redirection_matrix != NULL)
 	{
+		if (status != 0)
+		{
+			i = 0;
+			while (data->redirection_matrix[i])
+			{
+				if (!valid_string_condition_for_redirection(
+						data->redirection_matrix[i]))
+					unlink(data->redirection_matrix[i]);
+				i++;
+			}
+		}
 		free_matrix(data->redirection_matrix);
 		data->redirection_matrix = NULL;
 	}
@@ -42,7 +55,7 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 		i++;
 	}
 	redirect_main_execution(red_fd, data, aux);
-	free_redirection_matrix(data);
+	free_redirection_matrix(red_fd->status, data);
 	free(red_fd);
 }
 
