@@ -100,5 +100,11 @@ char	*exolate_the_content_with_double_quotes(char *str, t_data *data)
 		free(sub);
 		return (value_env_var);
 	}
+	else if (ft_strchr(env_var, '$'))
+	{
+		sub = ft_strdup(get_env(env_var + 1, data));
+		free(env_var);
+		return (sub);
+	}
 	return (env_var);
 }
