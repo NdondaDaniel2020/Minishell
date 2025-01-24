@@ -14,8 +14,6 @@
 
 static void	free_redirection_matrix(t_data *data)
 {
-	int	i;
-
 	if (data->redirection_matrix != NULL)
 	{
 		free_matrix(data->redirection_matrix);
