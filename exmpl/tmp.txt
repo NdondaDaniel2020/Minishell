@@ -152,3 +152,6 @@ ls -l | grep c > file1.txt
 cat Makefile | grep .c >> file2.txt
 sort < Makefile | uniq > file3.txt
 
+
+
+cria uma funcao que verifica se tem < e > para pode add stdin no f

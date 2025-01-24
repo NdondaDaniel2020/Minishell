@@ -79,12 +79,12 @@ int	left_redirect(int i, t_data *data, int mode, t_red_fd *red_fd)
 	fd = open_file(data->redirection_matrix[i + 1], mode);
 	if (fd == -1)
 		return (fd);
-	if (red_fd->first_fd == STDIN_FILENO && (i + 2) < len_m
+	if ((i + 2) < len_m
 		&& ft_strncmp(data->redirection_matrix[i + 2], "<", 1) != 0)
 	{
 		if (red_fd->first_fd != -1)
 			close(red_fd->first_fd);
-		red_fd->first_fd = dup(fd);
+		red_fd->first_fd = fd;
 	}
 	else if (i + 2 < len_m)
 		close(fd);

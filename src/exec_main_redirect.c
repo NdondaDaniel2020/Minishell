@@ -12,6 +12,16 @@
 
 #include "minishell.h"
 
+#include <unistd.h>
+#include <fcntl.h>
+
+
+#include <errno.h>
+int is_valid_fd(int fd)
+{
+    return fcntl(fd, F_GETFD) != -1 || errno != EBADF;
+}
+
 static int	simple_redirect_exec(int fd, int fd_target, t_data *data,
 	t_new_list *aux)
 {

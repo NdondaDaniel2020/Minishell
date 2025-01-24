@@ -24,12 +24,15 @@ int	pos_redirection(const char *big, const char *little, size_t len, int index)
 	while (i < len)
 	{
 		if (l_lit == 1 && big[i] == little[0]
-			&& (big[i - 1] != '>' && big[i - 1] != '<')
-			&& (big[i + 1] != '>' && big[i + 1] != '<') && --index == 0)
+			&& (i == 0 || (big[i - 1] != '>' && big[i - 1] != '<'))
+			&& (i == len - 1 || (big[i + 1] != '>' && big[i + 1] != '<'))
+			&& --index == 0)
 			return (i);
-		else if (l_lit == 2 && big[i] == little[0] && big[i + 1] == little[1]
-			&& (big[i - 1] != '>' && big[i - 1] != '<')
-			&& (big[i + 2] != '>' && big[i + 2] != '<') && --index == 0)
+		else if (l_lit == 2 && i < len - 1 && big[i] == little[0]
+			&& big[i + 1] == little[1]
+			&& (i == 0 || (big[i - 1] != '>' && big[i - 1] != '<'))
+			&& (i >= len - 2 || (big[i + 2] != '>' && big[i + 2] != '<'))
+			&& --index == 0)
 			return (i);
 		i++;
 	}
