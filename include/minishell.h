@@ -279,9 +279,11 @@ bool 		is_heredoc_redirection(t_data *data);
 int			count_heredoc_redirection(t_data *data);
 void		get_name_for_heredoc_redirection(t_data *data);
 
-void		execute_commands_with_pipe(t_data *data);
-bool		new_is_redirection(char **matix);
+void		close_fd(int *fd);
+void		wait_for_children(void);
 void		create_pipe(t_data *data);
+bool		new_is_redirection(char **matix);
+void		execute_commands_with_pipe(t_data *data);
 void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
 bool		heredoc_pipe_fork(t_data *data);
