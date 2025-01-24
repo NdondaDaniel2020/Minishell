@@ -30,6 +30,7 @@ static void	free_redirection_matrix(int status, t_data *data)
 			}
 		}
 		free_matrix(data->redirection_matrix);
+		data->redirection_matrix = NULL;
 	}
 }
 
