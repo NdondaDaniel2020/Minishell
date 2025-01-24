@@ -36,6 +36,7 @@ executado mais recentemente.
 	◦ echo com opção -n
 	◦ cd com apenas um caminho relativo ou absoluto
 	◦ pwd sem opções
+
 	◦ export sem opções
 	◦ unset sem opções
 	◦ env sem opções ou argumentos
