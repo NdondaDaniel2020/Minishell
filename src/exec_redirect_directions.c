@@ -17,7 +17,6 @@ int	left_right_redirection(int i, t_data *data, int mode)
 	int	fd;
 
 	fd = open_file(data->redirection_matrix[i + 1], mode);
-	close(fd);
 	fd = dup(STDOUT_FILENO);
 	return (fd);
 }

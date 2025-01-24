@@ -86,7 +86,6 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 			exit(0);
 		}
 		wait(&ret);
-		free(path->str);
 		free(path);
 		return (change_environment_variables_question_mark(ret, data));
 	}

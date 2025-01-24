@@ -81,7 +81,7 @@ static bool	ignorr_case(char *str, int len, int *pos)
 {
 	if ((str[*pos] == '"' && (*pos + 1 < len) && ft_isalpha(str[*pos + 1])))
 	{
-		(*pos)++;
+		(*pos)++;	
 		return (true);
 	}
 	return (false);
