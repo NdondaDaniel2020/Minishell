@@ -70,25 +70,6 @@ static char	*increment_shlv(char *shlvl_str)
 	return (new_shlvl_str);
 }
 
-static char	**list_environment(void)
-{
-	static char	*env[] = {"SYSTEMD_EXEC_PID", "SSH_AUTH_SOCK",
-		"SESSION_MANAGER", "GNOME_TERMINAL_SCREEN", "LANG",
-		"XDG_CURRENT_DESKTOP", "XDG_GREETER_DATA_DIR", "LIBVIRT_DEFAULT_URI",
-		"GPG_AGENT_INFO", "DESKTOP_SESSION", "QT_IM_MODULE", "XDG_MENU_PREFIX",
-		"XDG_SESSION_PATH", "USER", "DBUS_SESSION_BUS_ADDRESS", "DOCKER_HOST",
-		"SSH_AGENT_LAUNCHER", "GTK_MODULES", "XDG_CONFIG_DIRS",
-		"GTK_IM_MODULE", "XDG_SESSION_DESKTOP", "QT_ACCESSIBILITY",
-		"GNOME_DESKTOP_SESSION_ID", "KRB5CCNAME", "LOGNAME",
-		"GNOME_TERMINAL_SERVICE", "VTE_VERSION", "PATH", "XDG_RUNTIME_DIR",
-		"XDG_DATA_DIRS", "XDG_SEAT_PATH", "SHELL", "XMODIFIERS",
-		"XDG_SESSION_TYPE", "HOME", "COLORTERM", "XAUTHORITY", "PWD",
-		"XDG_SESSION_CLASS", "TERM", "GDMSESSION", "DISPLAY", "SHLVL",
-		"OLDPWD", "_", "?=0", NULL};
-
-	return (env);
-}
-
 char	**get_all_environment(char **envp)
 {
 	int		i;
@@ -113,7 +94,7 @@ int main(int ac, char **av, char **env)
 {
 	char **new_env;
 
-	new_env = get_all_environment(envp);
+	new_env = get_all_environment(env);
 	while (*new_env)
 	{
 		ft_printf("[%s]\n", *new_env);
