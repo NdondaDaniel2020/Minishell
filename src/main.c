@@ -41,14 +41,16 @@ void	master(char *command, t_data *data)
 	free_all_data(data);
 }
 
-int	main(void)
+int	main(int ac, char **av, char **envp)
 {
 	t_data	data;
 	char	*input;
 
+	(void)ac;
+	(void)av;
 	setup_signal();
 	init_data(&data);
-	data.envp = get_all_environment();
+	data.envp = get_all_environment(envp);
 	data.path = ft_split(get_env("PATH", &data), ':');
 	while (1)
 	{

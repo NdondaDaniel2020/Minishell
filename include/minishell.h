@@ -144,7 +144,7 @@ int			check_error_exit(int ex, t_new_list *aux);
 int			env(t_new_list *aux, t_data *data);
 
 char		*get_env(char *env, t_data *data);
-char		**get_all_environment(void);
+char		**get_all_environment(char **envp);
 
 
 /*builtin export*/

@@ -121,7 +121,7 @@ void		ft_lstnew_free(char **matrix, t_new_list *removed);
 void		ft_lstnew_delfront(t_new_list **list);
 void		ft_lstnew_delback(t_new_list **list);
 void		ft_show_lstnew(t_new_list *list);
-char		**get_all_environment(void);
+char		**get_all_environment(char **envp);
 void		insert_data(t_data *data, char *command);
 char		*get_env(char *env, t_data *data);
 void		free_data(t_data *data);

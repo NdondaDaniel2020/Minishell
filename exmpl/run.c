@@ -12,277 +12,111 @@
 
 #include "run.h"
 
-char	*ft_charjoin_free(char *s1, char c)
-{
-	char	*join;
-	int		l1;
-	int		i;
 
-	if (!s1 && !c)
-		return (NULL);
-	i = 0;
-	l1 = ft_strlen(s1);
-	join = malloc((l1 + 2) * sizeof(char));
-	if (!join)
-		return (NULL);
-	while (i < (l1 + 1))
+static int	get_shlvl_value(const char *shlvl_str)
+{
+	size_t	prefix_len;
+
+	prefix_len = 6;
+	if (strncmp(shlvl_str, "SHLVL=", prefix_len) != 0)
+		return (-1);
+	return (atoi(shlvl_str + prefix_len));
+}
+
+static void	int_to_str(int num, char *buffer)
+{
+	int	len;
+	int	temp;
+
+	len = 0;
+	temp = num;
+	while (temp > 0)
 	{
-		if (i < l1)
-			join[i] = s1[i];
-		else
-			join[i] = c;
-		i++;
+		len++;
+		temp /= 10;
 	}
-	join[i] = '\0';
-	free(s1);
-	return (join);
+	if (num == 0)
+		len = 1;
+	buffer[len] = '\0';
+	while (len > 0)
+	{
+		buffer[--len] = (num % 10) + '0';
+		num /= 10;
+	}
 }
 
-char	*substring(const char *str, int start, int end)
+static char	*increment_shlv(char *shlvl_str)
 {
-	int 	len;
-	char	*sub;
+	int		shlvl;
+	char	*new_shlvl_str;
+	char	shlvl_str_value[12];
+	size_t	prefix_len;
+	size_t	new_str_len;
 
-	len = strlen(str);
-	if (start > end)
+	prefix_len = 6;
+	shlvl = get_shlvl_value(shlvl_str);
+	if (shlvl == -1)
 		return (NULL);
-	if (start < 0)
-		start = 0;
-	if (end > len)
-		end = len;
-	sub = (char *)malloc((end - start + 1) * sizeof(char));
-	if (!sub)
+	shlvl++;
+	int_to_str(shlvl, shlvl_str_value);
+	new_str_len = prefix_len + strlen(shlvl_str_value) + 1;
+	new_shlvl_str = (char *)malloc(new_str_len);
+	if (new_shlvl_str == NULL)
 		return (NULL);
-	ft_strlcpy(sub, str + start, end - start + 1);
-	sub[end - start] = '\0';
-	return (sub);
+	ft_strlcpy(new_shlvl_str, "SHLVL=", 7);
+	ft_strlcat(new_shlvl_str, shlvl_str_value,
+		ft_strlen(new_shlvl_str) + ft_strlen(new_shlvl_str) + 1);
+	free(shlvl_str);
+	return (new_shlvl_str);
 }
 
-///////////
-char	*invert_str(char *str)
+static char	**list_environment(void)
 {
-	int		i;
-	int		len;
-	char	*new_string;
+	static char	*env[] = {"SYSTEMD_EXEC_PID", "SSH_AUTH_SOCK",
+		"SESSION_MANAGER", "GNOME_TERMINAL_SCREEN", "LANG",
+		"XDG_CURRENT_DESKTOP", "XDG_GREETER_DATA_DIR", "LIBVIRT_DEFAULT_URI",
+		"GPG_AGENT_INFO", "DESKTOP_SESSION", "QT_IM_MODULE", "XDG_MENU_PREFIX",
+		"XDG_SESSION_PATH", "USER", "DBUS_SESSION_BUS_ADDRESS", "DOCKER_HOST",
+		"SSH_AGENT_LAUNCHER", "GTK_MODULES", "XDG_CONFIG_DIRS",
+		"GTK_IM_MODULE", "XDG_SESSION_DESKTOP", "QT_ACCESSIBILITY",
+		"GNOME_DESKTOP_SESSION_ID", "KRB5CCNAME", "LOGNAME",
+		"GNOME_TERMINAL_SERVICE", "VTE_VERSION", "PATH", "XDG_RUNTIME_DIR",
+		"XDG_DATA_DIRS", "XDG_SEAT_PATH", "SHELL", "XMODIFIERS",
+		"XDG_SESSION_TYPE", "HOME", "COLORTERM", "XAUTHORITY", "PWD",
+		"XDG_SESSION_CLASS", "TERM", "GDMSESSION", "DISPLAY", "SHLVL",
+		"OLDPWD", "_", "?=0", NULL};
 
-	if (!str)
-		return (NULL);
-	i = 0;
-	len = ft_strlen(str);
-	new_string = ft_calloc(len + 1, sizeof(char));
-	while (str[i])
-		new_string[len-- - 1] = str[i++];
-	return (new_string);
+	return (env);
 }
 
-char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
-{
-	int 	end;
-	int 	start;
-	char	*aux;
-	char	*sub_str;
-	char	*inv_sub;
-
-	start = 0;
-	while (str[start] != '$')
-		start++;
-	end = start + 1;
-	while (ft_isalpha(str[end]))
-		end++;
-	aux = ft_strtrim(sub, "\"");
-	inv_sub = invert_str(aux);
-	free(aux);
-	sub_str = substring(str, start, end);
-	aux = ft_strdup(get_env(sub_str + 1, data));
-	free(sub_str);
-	sub_str = ft_strjoin(inv_sub, aux);
-	free(aux);
-	aux = ft_strjoin_free(sub_str, inv_sub);
-	free(inv_sub);
-	return (aux);
-}
-
-char	*extract_value_env(char *str, t_data *data)
+char	**get_all_environment(char **envp)
 {
 	int		i;
-	int		len;
-	char	*env_var;
-	char	*value_env_var;
+	char	*env;
+	char	**new_env;
 
-	if (!str)
-		return (NULL);
+	i = len_matrix(envp);
+	new_env = ft_calloc(i + 1, sizeof(char *));
 	i = 0;
-	len = ft_strlen(str);
-	if (str[i] == '$' && (i + 1) < len)
+	while (envp[i])
 	{
+		env = ft_strdup(envp[i]);
+		if (!ft_strncmp(env, "SHLVL", ft_strlen(env) - 2))
+			env = increment_shlv(env);
+		new_env[i] = env;
 		i++;
-		while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
-			i++;
-		env_var = substring(str, 1, i);
-		value_env_var = ft_strdup(get_env(env_var, data));
-		return (free(env_var), value_env_var);
 	}
-	else if (str[i] == '\'')
-	{
-		i++;
-		while (str[i] && str[i] != '\'')
-			i++;
-		env_var = substring(str, 1, i);
-		return (env_var);
-	}
-	else if (str[i] == '\"')
-	{
-		char	*sub;
-	
-		i++;
-		while (str[i] && str[i] != '\"')
-			i++;
-		env_var = substring(str, 1, i);
-		if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
-		{
-			sub = ft_substr(env_var, 0, ft_strchr(env_var, '$') - env_var);
-			value_env_var = extract_value_env_quotes(env_var, sub, data);
-			free(env_var);
-			free(sub);
-			return (value_env_var);
-		}
-		else if (ft_strchr(env_var, '$'))
-		{
-			sub = ft_strdup(get_env(env_var + 1, data));
-			free(env_var);
-			return (sub);
-		}
-		return (env_var);
-	}
-	return (NULL);
+	return (new_env);
 }
 
-static int adjust_position(char *str)
+int main(int ac, char **av, char **env)
 {
-	int		i;
-	int		len;
-	
-	i = 0;
-	if (!str)
-		return (0);
-	len = ft_strlen(str);
-	if (str[i] == '$' && (i + 1) < len)
+	char **new_env;
+
+	new_env = get_all_environment(envp);
+	while (*new_env)
 	{
-		i++;
-		while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
-			i++;
+		ft_printf("[%s]\n", *new_env);
+		new_env++;
 	}
-	else if (str[i] == '\'')
-	{
-		i++;
-		while (str[i] && str[i] != '\'')
-			i++;
-	}
-	else if (str[i] == '\"')
-	{
-		i++;
-		while (str[i] && str[i] != '\"')
-			i++;
-	}
-	return (i);
-}
-
-char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
-{
-	int		len;
-	int		pos;
-	char	*join;
-	char	*value_env;
-
-	pos = 0;
-	join = NULL;
-	len = ft_strlen((*matrix)[i]);
-	while (pos < len - 1)
-	{
-		value_env = extract_value_env((*matrix)[i] + pos, data);
-		if (value_env)
-		{
-			if (join == NULL)
-			{
-				if (ft_strlen(value_env) == 0)
-					pos +=2 ;
-				else
-					pos += adjust_position((*matrix)[i] + pos);
-				join = value_env;
-			}
-			else
-			{
-				if (ft_strlen(value_env) == 0)
-					pos+=2;
-				else
-					pos += adjust_position((*matrix)[i] + pos);
-				join = ft_strjoin_free(join, value_env);
-				free(value_env);
-			}
-		}
-		else
-		{
-			if (((*matrix)[i][pos] == '"' && ft_isalpha((*matrix)[i][pos + 1])))
-			{
-				pos++;
-				continue ;
-			}
-			if (join == NULL)
-				join = ft_charjoin(NULL, (*matrix)[i][pos]);
-			else
-				join = ft_charjoin_free(join, (*matrix)[i][pos]);
-			pos++;
-		}
-	}
-	return (join);
-}
-
-void	environment_variation_expansion(char ***matrix, t_data *data)
-{
-	int		i;
-	int		old_size;
-	int		new_size;
-	char	*value_env;
-
-	if ((*matrix) == NULL)
-		return ;
-	i = 0;
-	while ((*matrix)[i])
-	{
-		if (i > 0 && ft_strchr((*matrix)[i], '$'))
-		{
-			value_env = get_environment_variation_expansion(i, matrix, data);
-			old_size = ft_strlen((*matrix)[i]);
-			new_size = ft_strlen(value_env);
-			(*matrix)[i] = ft_realloc((*matrix)[i], old_size, new_size + 1);
-			ft_strlcpy((*matrix)[i], value_env, new_size + 1);
-			free(value_env);
-		}
-		i++;
-	}
-}
-
-///////////
-
-int	main(void)
-{
-	int		i; // ->nao usas
-	t_data	data;
-	char	**matrix;
-
-	i = 0;  // ->nao usas
-	matrix = NULL;
-	init_data(&data);
-	data.envp = get_all_environment();
-	matrix = split_2("echo:\"teste de algo estranho $HOME\"", ':');
-	environment_variation_expansion(&matrix, &data);
-	// printf("\n\n\n");
-	while (matrix[i])
-	{
-		printf("(%s)\n", matrix[i]);
-		i++;
-	}
-	free_matrix(matrix);
-	free_data(&data);
-	return (0);
 }
