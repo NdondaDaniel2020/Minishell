@@ -76,7 +76,7 @@ char	**get_all_environment(char **envp)
 	char	**new_env;
 
 	i = len_matrix(envp);
-	new_env = ft_calloc(i + 1, sizeof(char *));
+	new_env = ft_calloc(i + 2, sizeof(char *));
 	i = 0;
 	while (envp[i])
 	{
@@ -86,5 +86,6 @@ char	**get_all_environment(char **envp)
 		new_env[i] = env;
 		i++;
 	}
+	new_env[i] = ft_strdup("?=0");
 	return (new_env);
 }

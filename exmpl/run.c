@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+/* usa o tipo index para fazer o ++ e add no index*/
+
 #include "run.h"
 
 char	*ft_charjoin_free(char *s1, char c)
@@ -148,7 +150,16 @@ char	*extract_value_env(char *str, t_data *data)
 		}
 		else if (ft_strchr(env_var, '$'))
 		{
-			sub = ft_strdup(get_env(env_var + 1, data));
+			if (env_var[0] == '$')
+			{
+				sub = ft_strdup(get_env(env_var + 1, data));
+				free(env_var);
+				return (sub);
+			}
+			i = 0;
+			while (env_var[i] && env_var[i] != '$')
+				i++;
+			sub = substring(env_var, 0, i);
 			free(env_var);
 			return (sub);
 		}
@@ -222,11 +233,6 @@ char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
 		}
 		else
 		{
-			if (((*matrix)[i][pos] == '"' && ft_isalpha((*matrix)[i][pos + 1])))
-			{
-				pos++;
-				continue ;
-			}
 			if (join == NULL)
 				join = ft_charjoin(NULL, (*matrix)[i][pos]);
 			else
@@ -264,7 +270,7 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 
 ///////////
 
-int	main(void)
+int	main(int ac, char **av, char **envp)
 {
 	int		i; // ->nao usas
 	t_data	data;
@@ -273,7 +279,7 @@ int	main(void)
 	i = 0;  // ->nao usas
 	matrix = NULL;
 	init_data(&data);
-	data.envp = get_all_environment();
+	data.envp = get_all_environment(envp);
 	matrix = split_2("echo:\"teste de algo estranho $HOME\"", ':');
 	environment_variation_expansion(&matrix, &data);
 	// printf("\n\n\n");
