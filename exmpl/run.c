@@ -60,7 +60,8 @@ char	*substring(const char *str, int start, int end)
 	return (sub);
 }
 
-///////////
+/////////////////////////////////
+
 char	*invert_str(char *str)
 {
 	int		i;
@@ -104,9 +105,94 @@ char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 	return (aux);
 }
 
+/////////////////////////////////
+
+t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *index, t_data *data)
+{
+	char	*env_var;
+	char	*value_env_var;
+
+	index->index++;
+	while (str[index->index] && (ft_isalnum(str[index->index])
+		|| str[index->index] == '_' || str[index->index] == '?'))
+		index->index++;
+	env_var = substring(str, 1, index->index);
+	value_env_var = ft_strdup(get_env(env_var, data));
+	index->str = value_env_var;
+	return (free(env_var), index);
+}
+
+t_index_str	*exolate_the_content(char *str, t_index_str *index)
+{
+	char	*env_var;
+
+	index->index++;
+	while (str[index->index] && str[index->index] != '\'')
+		index->index++;
+	env_var = substring(str, 1, index->index);
+	index->str = env_var;
+	return (index);
+}
+
+t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str *index, t_data *data)
+{
+	char	*sub;
+	char	*value_env_var;
+
+	sub = ft_substr(env_var, 0, ft_strchr(env_var, '$') - env_var);
+	value_env_var = extract_value_env_quotes(env_var, sub, data);
+	index->index = ft_strchr(env_var, '$') - env_var;
+	index->str = value_env_var;
+	free(env_var);
+	free(sub);
+	return (index);
+}
+
+t_index_str	*exude_content_without_double_quotes(char *str, char *env_var, t_index_str *index, t_data *data)
+{
+	int i = 0;
+	char	*sub;
+
+	if (env_var[0] == '$')
+	{
+		sub = ft_strdup(get_env(env_var + 1, data));
+		index->index = ft_strlen(env_var);
+		index->str = sub;
+		free(env_var);
+		return (index);
+	}
+	index->index = 0;
+	while (env_var[index->index] && env_var[index->index] != '$')
+		index->index++;
+	sub = substring(env_var, 0, index->index);
+	while (str[i] && str[i] == '"')
+		i++;
+	index->index += i;
+	index->str = sub;
+	free(env_var);
+	return (index);
+}
+
+t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data)
+{
+	char	*sub;
+	char	*env_var;
+	char	*value_env_var;
+
+	index->index++;
+	while (str[index->index] && str[index->index] != '\"')
+		index->index++;
+	env_var = substring(str, 1, index->index);
+	if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
+		return (exolate_double_and_single_quotes(env_var, index, data));
+	else if (ft_strchr(env_var, '$'))
+		return (exude_content_without_double_quotes(str, env_var, index, data));
+	index->str = env_var;
+	return (index);
+}
+
 t_index_str	*extract_value_env(char *str, t_data *data)
 {
-	int		i;
 	int		len;
 	char	*env_var;
 	char	*value_env_var;
@@ -114,154 +200,68 @@ t_index_str	*extract_value_env(char *str, t_data *data)
 
 	if (!str)
 		return (NULL);
-
 	index = ft_calloc(1, sizeof(t_index_str));
 	index->index = 0;
 	index->str = NULL;
-
-	i = 0;
 	len = ft_strlen(str);
 	if (str[index->index] == '$' && (index->index + 1) < len)
-	{
-		index->index++;
-		while (str[index->index] && (ft_isalnum(str[index->index])
-			|| str[index->index] == '_' || str[index->index] == '?'))
-			index->index++;
-		env_var = substring(str, 1, index->index);
-		value_env_var = ft_strdup(get_env(env_var, data));
-		index->str = value_env_var;
-		return (free(env_var), index);
-	}
+		return (extracting_the_value_with_single_quotes(str, index, data));
 	else if (str[index->index] == '\'')
-	{
-		index->index++;
-		while (str[index->index] && str[index->index] != '\'')
-			index->index++;
-		env_var = substring(str, 1, index->index);
-		index->str = env_var;
-		return (index);
-	}
-	else if (str[i] == '\"')
-	{
-		char	*sub;
-	
-		index->index++;
-		while (str[index->index] && str[index->index] != '\"')
-			index->index++;
-		env_var = substring(str, 1, index->index);
-
-		
-		if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
-		{
-			sub = ft_substr(env_var, 0, ft_strchr(env_var, '$') - env_var);
-			value_env_var = extract_value_env_quotes(env_var, sub, data);
-			index->index = ft_strchr(env_var, '$') - env_var;
-			index->str = value_env_var;
-			free(env_var);
-			free(sub);
-			return (index);
-		}
-		else if (ft_strchr(env_var, '$'))
-		{
-			int i = 0;
-	
-			if (env_var[0] == '$')
-			{
-				sub = ft_strdup(get_env(env_var + 1, data));
-				index->index = ft_strlen(env_var);
-				index->str = sub;
-				free(env_var);
-				return (index);
-			}
-			index->index = 0;
-			while (env_var[index->index] && env_var[index->index] != '$')
-				index->index++;
-			sub = substring(env_var, 0, index->index);
-			while (str[i] && str[i] == '"')
-				i++;
-			index->index += i;
-			index->str = sub;
-			free(env_var);
-			return (index);
-		}
-		index->str = env_var;
-		return (index);
-	}
+		return (exolate_the_content(str, index));
+	else if (str[index->index] == '\"')
+		return (exolate_the_content_with_double_quotes(str, index, data));
 	return (index);
 }
 
-static int adjust_position(char *str)
+/////////////////////////////////
+
+void	join_value_env(t_index_str *value_env, char **join, int *pos)
 {
-	int		i;
-	int		len;
-	
-	i = 0;
-	if (!str)
-		return (0);
-	len = ft_strlen(str);
-	if (str[i] == '$' && (i + 1) < len)
+	if ((*join) == NULL)
 	{
-		i++;
-		while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
-			i++;
+		(*pos) += value_env->index;
+		(*join) = value_env->str;
 	}
-	else if (str[i] == '\'')
+	else
 	{
-		i++;
-		while (str[i] && str[i] != '\'')
-			i++;
+		(*pos) += value_env->index;
+		if (ft_strlen(value_env->str) == 0)
+			(*join) = ft_charjoin_free((*join), 1);
+		else
+			(*join) = ft_strjoin_free((*join), value_env->str);
+		free(value_env->str);
 	}
-	else if (str[i] == '\"')
-	{
-		i++;
-		while (str[i] && str[i] != '\"')
-			i++;
-	}
-	return (i);
 }
 
-char	*get_environment_variation_expansion(int i, char ***matrix, t_data *data)
+char	*get_environment_variation_expansion(char *str, t_data *data)
 {
-	int		len;
-	int		pos;
-	char	*join;
+	int			len;
+	int			pos;
+	char		*join;
 	t_index_str	*value_env;
 
 	pos = 0;
 	join = NULL;
-	len = ft_strlen((*matrix)[i]);
+	len = ft_strlen(str);
 	while (pos < len - 1)
 	{
-
-		value_env = extract_value_env((*matrix)[i] + pos, data);	
+		value_env = extract_value_env(str + pos, data);
 		if (value_env->str)
-		{
-			// ft_printf("[%s] (%i %i) (%i)\n", value_env->str, value_env->index, ft_strlen(value_env->str), value_env->str[0]);
-			if (join == NULL)
-			{
-				pos += value_env->index;
-				join = value_env->str;
-			}
-			else
-			{
-				pos += value_env->index;
-				join = ft_strjoin_free(join, value_env->str);
-				free(value_env->str);
-			}
-		}
+			join_value_env(value_env, &join, &pos);
 		else
 		{
 			if (join == NULL)
-				join = ft_charjoin(NULL, (*matrix)[i][pos]);
+				join = ft_charjoin(NULL, str[pos]);
 			else
-				join = ft_charjoin_free(join, (*matrix)[i][pos]);
+				join = ft_charjoin_free(join, str[pos]);
 			pos++;
 		}
+		free(value_env);
 	}
-	// free(value_env->str);
-	free(value_env);
 	return (join);
 }
+
+/////////////////////////////////
 
 void	environment_variation_expansion(char ***matrix, t_data *data)
 {
@@ -275,9 +275,9 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	i = 0;
 	while ((*matrix)[i])
 	{
-		if (i > 0 && ft_strchr((*matrix)[i], '$'))
+		if (i > 0 && (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'') || ft_strchr((*matrix)[i], '\"')))
 		{
-			value_env = get_environment_variation_expansion(i, matrix, data);
+			value_env = get_environment_variation_expansion((*matrix)[i], data);
 			old_size = ft_strlen((*matrix)[i]);
 			new_size = ft_strlen(value_env);
 			(*matrix)[i] = ft_realloc((*matrix)[i], old_size, new_size + 1);
@@ -301,8 +301,7 @@ int	main(int ac, char **av, char **envp)
 	init_data(&data);
 
 	data.envp = get_all_environment(envp);
-	ft_printf("envp: %s\n", get_env("?", &data));
-	matrix = split_2("echo:\"\"\"teste de \"algo\" $? + $? estranho $HOME\"\"\"", ':');
+	matrix = split_2("echo:grep um << ''", ':');
 	environment_variation_expansion(&matrix, &data);
 	// printf("\n\n\n");
 	while (matrix[i])
