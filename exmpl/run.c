@@ -124,17 +124,24 @@ t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *ind
 
 t_index_str	*exolate_the_content(char *str, t_index_str *index)
 {
+	int 	i;
 	char	*env_var;
 
+	i = 0;
 	index->index++;
 	while (str[index->index] && str[index->index] != '\'')
 		index->index++;
 	env_var = substring(str, 1, index->index);
+	while (str[i] && str[i] == '\'')
+		i++;
+	index->index += i;
 	index->str = env_var;
 	return (index);
 }
 
-t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str *index, t_data *data)
+////////////////////////////////
+
+static t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str *index, t_data *data)
 {
 	char	*sub;
 	char	*value_env_var;
@@ -142,17 +149,18 @@ t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str *index,
 	sub = ft_substr(env_var, 0, ft_strchr(env_var, '$') - env_var);
 	value_env_var = extract_value_env_quotes(env_var, sub, data);
 	index->index = ft_strchr(env_var, '$') - env_var;
-	index->str = value_env_var;
+	index->str = value_env_var;	
 	free(env_var);
 	free(sub);
 	return (index);
 }
 
-t_index_str	*exude_content_without_double_quotes(char *str, char *env_var, t_index_str *index, t_data *data)
+static t_index_str	*exude_content_without_double_quotes(char *str, char *env_var, t_index_str *index, t_data *data)
 {
-	int i = 0;
+	int 	i;
 	char	*sub;
 
+	i = 0;
 	if (env_var[0] == '$')
 	{
 		sub = ft_strdup(get_env(env_var + 1, data));
@@ -175,10 +183,12 @@ t_index_str	*exude_content_without_double_quotes(char *str, char *env_var, t_ind
 
 t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data)
 {
+	int 	i;
 	char	*sub;
 	char	*env_var;
 	char	*value_env_var;
 
+	i = 0;
 	index->index++;
 	while (str[index->index] && str[index->index] != '\"')
 		index->index++;
@@ -188,8 +198,14 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *inde
 	else if (ft_strchr(env_var, '$'))
 		return (exude_content_without_double_quotes(str, env_var, index, data));
 	index->str = env_var;
+	while (str[i] && str[i] == '"')
+		i++;
+	index->index += i;
 	return (index);
 }
+
+////////////////////////////////
+
 
 t_index_str	*extract_value_env(char *str, t_data *data)
 {
@@ -213,9 +229,10 @@ t_index_str	*extract_value_env(char *str, t_data *data)
 	return (index);
 }
 
+
 /////////////////////////////////
 
-void	join_value_env(t_index_str *value_env, char **join, int *pos)
+static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 {
 	if ((*join) == NULL)
 	{
@@ -243,8 +260,10 @@ char	*get_environment_variation_expansion(char *str, t_data *data)
 	pos = 0;
 	join = NULL;
 	len = ft_strlen(str);
+	ft_printf("%i\n", len);
 	while (pos < len - 1)
 	{
+		ft_printf("[%s] [%s] (%i)", str, str + pos, pos);
 		value_env = extract_value_env(str + pos, data);
 		if (value_env->str)
 			join_value_env(value_env, &join, &pos);
@@ -257,11 +276,10 @@ char	*get_environment_variation_expansion(char *str, t_data *data)
 			pos++;
 		}
 		free(value_env);
+		ft_printf(" == [[%i]]\n", pos);
 	}
 	return (join);
 }
-
-/////////////////////////////////
 
 void	environment_variation_expansion(char ***matrix, t_data *data)
 {
@@ -288,7 +306,10 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	}
 }
 
+/////////////////////////////////
+
 ///////////
+
 
 int	main(int ac, char **av, char **envp)
 {
@@ -301,9 +322,9 @@ int	main(int ac, char **av, char **envp)
 	init_data(&data);
 
 	data.envp = get_all_environment(envp);
-	matrix = split_2("echo:grep um << ''", ':');
+	matrix = split_2("echo:echo edson\"finda\"\"efinda\"42''", ':');
 	environment_variation_expansion(&matrix, &data);
-	// printf("\n\n\n");
+	printf("\n\n\n");
 	while (matrix[i])
 	{
 		printf("(%s)\n", matrix[i]);
@@ -313,3 +334,4 @@ int	main(int ac, char **av, char **envp)
 	free_data(&data);
 	return (0);
 }
+

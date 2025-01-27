@@ -23,14 +23,15 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
         '"echo"'
         'echo '
         " echo"
-        echo edson finda
+		echo edson finda
         echo 'edson              "           ' finda
         echo "                 edson   '                      " finda
         echo '       edson             ' finda "
-        echo "       edson             " finda '
+		echo "       edson             " finda '
         echo edson'finda'
         echo edson'finda'"efinda"luanda
         echo edson"finda""efinda"42''
+
         echo edson'finda'"efinda"'                   '42
         echo -n
         echo -

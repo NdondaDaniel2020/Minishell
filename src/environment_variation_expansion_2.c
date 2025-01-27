@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   string_treatment_in_expansion.c                    :+:      :+:    :+:   */
+/*   environment_variation_expansion_2.c                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*invert_str(char *str)
+char	*invert_str(char *str)
 {
 	int		i;
 	int		len;
@@ -30,8 +30,8 @@ static char	*invert_str(char *str)
 
 char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 {
-	int		end;
-	int		start;
+	int 	end;
+	int 	start;
 	char	*aux;
 	char	*sub_str;
 	char	*inv_sub;
@@ -55,56 +55,68 @@ char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 	return (aux);
 }
 
-char	*extracting_the_value_with_single_quotes(char *str, t_data *data)
+static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 {
-	int		i;
-	char	*env_var;
-	char	*value_env_var;
-
-	i = 1;
-	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
-		i++;
-	env_var = substring(str, 1, i);
-	value_env_var = ft_strdup(get_env(env_var, data));
-	return (free(env_var), value_env_var);
+	if ((*join) == NULL)
+	{
+		(*pos) += value_env->index;
+		(*join) = value_env->str;
+	}
+	else
+	{
+		(*pos) += value_env->index;
+		if (ft_strlen(value_env->str) == 0)
+			(*join) = ft_charjoin_free((*join), 1);
+		else
+			(*join) = ft_strjoin_free((*join), value_env->str);
+		free(value_env->str);
+	}
 }
 
-char	*exolate_the_content(char *str)
+char	*get_environment_variation_expansion(char *str, t_data *data)
 {
-	int		i;
-	char	*env_var;
+	int			len;
+	int			pos;
+	char		*join;
+	t_index_str	*value_env;
 
-	i = 1;
-	while (str[i] && str[i] != '\'')
-		i++;
-	env_var = substring(str, 1, i);
-	return (env_var);
+	pos = 0;
+	join = NULL;
+	len = ft_strlen(str);
+	while (pos < len - 1)
+	{
+		value_env = extract_value_env(str + pos, data);
+		if (value_env->str)
+			join_value_env(value_env, &join, &pos);
+		else
+		{
+			if (join == NULL)
+				join = ft_charjoin(NULL, str[pos]);
+			else
+				join = ft_charjoin_free(join, str[pos]);
+			pos++;
+		}
+		free(value_env);
+	}
+	return (join);
 }
 
-char	*exolate_the_content_with_double_quotes(char *str, t_data *data)
+t_index_str	*extract_value_env(char *str, t_data *data)
 {
-	int		i;
-	char	*sub;
-	char	*env_var;
-	char	*value_env_var;
+	int			len;
+	t_index_str	*index;
 
-	i = 1;
-	while (str[i] && str[i] != '\"')
-		i++;
-	env_var = substring(str, 1, i);
-	if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
-	{
-		sub = ft_substr(env_var, 0, ft_strchr(env_var, '$') - env_var);
-		value_env_var = extract_value_env_quotes(env_var, sub, data);
-		free(env_var);
-		free(sub);
-		return (value_env_var);
-	}
-	else if (ft_strchr(env_var, '$'))
-	{
-		sub = ft_strdup(get_env(env_var + 1, data));
-		free(env_var);
-		return (sub);
-	}
-	return (env_var);
+	if (!str)
+		return (NULL);
+	index = ft_calloc(1, sizeof(t_index_str));
+	index->index = 0;
+	index->str = NULL;
+	len = ft_strlen(str);
+	if (str[index->index] == '$' && (index->index + 1) < len)
+		return (extracting_the_value_with_single_quotes(str, index, data));
+	else if (str[index->index] == '\'')
+		return (exolate_the_content(str, index));
+	else if (str[index->index] == '\"')
+		return (exolate_the_content_with_double_quotes(str, index, data));
+	return (index);
 }
