@@ -154,4 +154,6 @@ sort < Makefile | uniq > file3.txt
 
 
 
-cria uma funcao que verifica se tem < e > para pode add stdin no f
+
+
+
