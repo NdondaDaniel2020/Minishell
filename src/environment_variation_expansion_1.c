@@ -12,6 +12,32 @@
 
 #include "minishell.h"
 
+bool	valid_extract(char *str, int index)
+{
+	int		i;
+	char	*str_aux;
+
+	str_aux = ft_substr(str, 0, index + 1);
+	i = count_chr('$', str_aux);
+	if (i > 1)
+		return (free(str_aux), false);
+	return (free(str_aux), true);
+}
+
+char	*adjustment_in_the_extraction_string(char *str, t_data *data)
+{
+	char	*aux;
+	char	*void_str;
+
+	aux = get_env(str, data);
+	if (aux == NULL)
+	{
+		void_str = ft_calloc(1, sizeof(char));
+		return (void_str);
+	}
+	return (ft_strdup(aux));
+}
+
 void	environment_variation_expansion(char ***matrix, t_data *data)
 {
 	int		i;

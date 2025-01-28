@@ -288,14 +288,16 @@ void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
 bool		heredoc_pipe_fork(t_data *data);
 
-char			*invert_str(char *str);
-char			*extract_value_env_quotes(char *str, char *sub, t_data *data);
-char			*get_environment_variation_expansion(char *str, t_data *data);
-t_index_str		*extracting_the_value_with_single_quotes(char *str, t_index_str *index, t_data *data);
-t_index_str		*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data);
-t_index_str		*exolate_the_content(char *str, t_index_str *index);
-t_index_str		*extract_value_env(char *str, t_data *data);
-void			environment_variation_expansion(char ***matrix, t_data *data);
+char		*invert_str(char *str);
+bool		valid_extract(char *str, int index);
+char		*extract_value_env_quotes(char *str, char *sub, t_data *data);
+char		*get_environment_variation_expansion(char *str, t_data *data);
+char		*adjustment_in_the_extraction_string(char *str, t_data *data);
+void		environment_variation_expansion(char ***matrix, t_data *data);
+t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *index, t_data *data);
+t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data);
+t_index_str	*exolate_the_content(char *str, t_index_str *index);
+t_index_str	*extract_value_env(char *str, t_data *data);
 
 bool		all_is_space(char *str);
 bool		is_pipe_heredoc(char *command);

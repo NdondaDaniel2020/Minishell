@@ -39,9 +39,12 @@ static t_index_str	*exude_content_without_double_quotes(char *str,
 	i = 0;
 	if (env_var[0] == '$')
 	{
-		sub = ft_strdup(get_env(env_var + 1, data));
+		sub = adjustment_in_the_extraction_string(env_var + 1, data);
 		index->index = ft_strlen(env_var);
 		index->str = sub;
+		while (str[i] && str[i] == '"')
+			i++;
+		index->index += i;
 		free(env_var);
 		return (index);
 	}
@@ -66,14 +69,14 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str,
 
 	i = 0;
 	index->index++;
-	while (str[index->index] && str[index->index] != '\"')
+	while (str[index->index] && str[index->index] != '\"'
+		&& str[index->index] != ' ' && valid_extract(str, index->index))
 		index->index++;
 	env_var = substring(str, 1, index->index);
 	if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
 		return (exolate_double_and_single_quotes(env_var, index, data));
 	else if (ft_strchr(env_var, '$'))
 		return (exude_content_without_double_quotes(str, env_var, index, data));
-	index->str = env_var;
 	index->str = env_var;
 	while (str[i] && str[i] == '"')
 		i++;
@@ -93,7 +96,7 @@ t_index_str	*extracting_the_value_with_single_quotes(char *str,
 			|| str[index->index] == '_' || str[index->index] == '?'))
 		index->index++;
 	env_var = substring(str, 1, index->index);
-	value_env_var = ft_strdup(get_env(env_var, data));
+	value_env_var = adjustment_in_the_extraction_string(env_var, data);
 	index->str = value_env_var;
 	return (free(env_var), index);
 }

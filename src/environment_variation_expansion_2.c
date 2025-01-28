@@ -46,7 +46,7 @@ char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 	inv_sub = invert_str(aux);
 	free(aux);
 	sub_str = substring(str, start, end);
-	aux = ft_strdup(get_env(sub_str + 1, data));
+	aux = adjustment_in_the_extraction_string(sub_str + 1, data);
 	free(sub_str);
 	sub_str = ft_strjoin(inv_sub, aux);
 	free(aux);
@@ -83,7 +83,7 @@ char	*get_environment_variation_expansion(char *str, t_data *data)
 	pos = 0;
 	join = NULL;
 	len = ft_strlen(str);
-	while (pos < len - 1)
+	while (pos < len)
 	{
 		value_env = extract_value_env(str + pos, data);
 		if (value_env->str)

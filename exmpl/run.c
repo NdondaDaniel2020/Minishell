@@ -62,6 +62,22 @@ char	*substring(const char *str, int start, int end)
 
 /////////////////////////////////
 
+char	*adjustment_in_the_extraction_string(char *str, t_data *data)
+{
+	char	*aux;
+	char	*void_str;
+
+	aux = get_env(str, data);
+	if (aux == NULL)
+	{
+		void_str = ft_calloc(1, sizeof(char));
+		return (void_str);
+	}
+	return (ft_strdup(aux));
+}
+
+/////////////////////////////////
+
 char	*invert_str(char *str)
 {
 	int		i;
@@ -96,7 +112,8 @@ char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 	inv_sub = invert_str(aux);
 	free(aux);
 	sub_str = substring(str, start, end);
-	aux = ft_strdup(get_env(sub_str + 1, data));
+	// aux = ft_strdup(get_env(sub_str + 1, data));
+	aux = adjustment_in_the_extraction_string(sub_str + 1, data);
 	free(sub_str);
 	sub_str = ft_strjoin(inv_sub, aux);
 	free(aux);
@@ -109,15 +126,18 @@ char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 
 t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *index, t_data *data)
 {
+	int 	i;
 	char	*env_var;
 	char	*value_env_var;
 
+	i = 0;
 	index->index++;
 	while (str[index->index] && (ft_isalnum(str[index->index])
 		|| str[index->index] == '_' || str[index->index] == '?'))
 		index->index++;
 	env_var = substring(str, 1, index->index);
-	value_env_var = ft_strdup(get_env(env_var, data));
+	// value_env_var = ft_strdup(get_env(env_var, data));
+	value_env_var = adjustment_in_the_extraction_string(env_var, data);
 	index->str = value_env_var;
 	return (free(env_var), index);
 }
@@ -149,7 +169,7 @@ static t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str 
 	sub = ft_substr(env_var, 0, ft_strchr(env_var, '$') - env_var);
 	value_env_var = extract_value_env_quotes(env_var, sub, data);
 	index->index = ft_strchr(env_var, '$') - env_var;
-	index->str = value_env_var;	
+	index->str = value_env_var;
 	free(env_var);
 	free(sub);
 	return (index);
@@ -163,9 +183,13 @@ static t_index_str	*exude_content_without_double_quotes(char *str, char *env_var
 	i = 0;
 	if (env_var[0] == '$')
 	{
-		sub = ft_strdup(get_env(env_var + 1, data));
+		// sub = ft_strdup(get_env(env_var + 1, data));
+		sub = adjustment_in_the_extraction_string(env_var + 1, data);
 		index->index = ft_strlen(env_var);
 		index->str = sub;
+		while (str[i] && str[i] == '"')
+			i++;
+		index->index += i;
 		free(env_var);
 		return (index);
 	}
@@ -181,6 +205,18 @@ static t_index_str	*exude_content_without_double_quotes(char *str, char *env_var
 	return (index);
 }
 
+bool	valid_extract(char *str, int index)
+{
+	int		i;
+	char	*str_aux;
+
+	str_aux = ft_substr(str, 0, index + 1);
+	i = count_chr('$', str_aux);
+	if (i > 1)
+		return (free(str_aux), false);
+	return (free(str_aux), true);
+}
+
 t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data)
 {
 	int 	i;
@@ -190,7 +226,8 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *inde
 
 	i = 0;
 	index->index++;
-	while (str[index->index] && str[index->index] != '\"')
+	while (str[index->index] && str[index->index] != '\"'
+		&& str[index->index] != ' ' && valid_extract(str, index->index))
 		index->index++;
 	env_var = substring(str, 1, index->index);
 	if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
@@ -205,7 +242,6 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *inde
 }
 
 ////////////////////////////////
-
 
 t_index_str	*extract_value_env(char *str, t_data *data)
 {
@@ -228,7 +264,6 @@ t_index_str	*extract_value_env(char *str, t_data *data)
 		return (exolate_the_content_with_double_quotes(str, index, data));
 	return (index);
 }
-
 
 /////////////////////////////////
 
@@ -261,7 +296,7 @@ char	*get_environment_variation_expansion(char *str, t_data *data)
 	join = NULL;
 	len = ft_strlen(str);
 	ft_printf("%i\n", len);
-	while (pos < len - 1)
+	while (pos < len)
 	{
 		ft_printf("[%s] [%s] (%i)", str, str + pos, pos);
 		value_env = extract_value_env(str + pos, data);
@@ -293,7 +328,8 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	i = 0;
 	while ((*matrix)[i])
 	{
-		if (i > 0 && (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'') || ft_strchr((*matrix)[i], '\"')))
+		if (i > 0 && (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
+		|| ft_strchr((*matrix)[i], '\"')))
 		{
 			value_env = get_environment_variation_expansion((*matrix)[i], data);
 			old_size = ft_strlen((*matrix)[i]);
@@ -308,9 +344,6 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 
 /////////////////////////////////
 
-///////////
-
-
 int	main(int ac, char **av, char **envp)
 {
 	int		i; // ->nao usas
@@ -322,7 +355,7 @@ int	main(int ac, char **av, char **envp)
 	init_data(&data);
 
 	data.envp = get_all_environment(envp);
-	matrix = split_2("echo:echo edson\"finda\"\"efinda\"42''", ':');
+	matrix = split_2("echo:\"$USER \"", ':');
 	environment_variation_expansion(&matrix, &data);
 	printf("\n\n\n");
 	while (matrix[i])
@@ -334,4 +367,3 @@ int	main(int ac, char **av, char **envp)
 	free_data(&data);
 	return (0);
 }
-
