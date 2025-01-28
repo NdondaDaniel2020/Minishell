@@ -30,8 +30,8 @@ char	*invert_str(char *str)
 
 char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
 {
-	int 	end;
-	int 	start;
+	int		end;
+	int		start;
 	char	*aux;
 	char	*sub_str;
 	char	*inv_sub;

@@ -12,7 +12,9 @@
 
 #include "minishell.h"
 
-static t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str *index, t_data *data)
+static t_index_str	*exolate_double_and_single_quotes(char *env_var,
+	t_index_str *index,
+	t_data *data)
 {
 	char	*sub;
 	char	*value_env_var;
@@ -26,11 +28,15 @@ static t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str 
 	return (index);
 }
 
-static t_index_str	*exude_content_without_double_quotes(char *str, char *env_var, t_index_str *index, t_data *data)
+static t_index_str	*exude_content_without_double_quotes(char *str,
+	char *env_var,
+	t_index_str *index,
+	t_data *data)
 {
-	int i = 0;
+	int		i;
 	char	*sub;
 
+	i = 0;
 	if (env_var[0] == '$')
 	{
 		sub = ft_strdup(get_env(env_var + 1, data));
@@ -51,9 +57,11 @@ static t_index_str	*exude_content_without_double_quotes(char *str, char *env_var
 	return (index);
 }
 
-t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data)
+t_index_str	*exolate_the_content_with_double_quotes(char *str,
+	t_index_str *index,
+	t_data *data)
 {
-	int	i;
+	int		i;
 	char	*env_var;
 
 	i = 0;
@@ -73,14 +81,16 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *inde
 	return (index);
 }
 
-t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *index, t_data *data)
+t_index_str	*extracting_the_value_with_single_quotes(char *str,
+	t_index_str *index,
+	t_data *data)
 {
 	char	*env_var;
 	char	*value_env_var;
 
 	index->index++;
 	while (str[index->index] && (ft_isalnum(str[index->index])
-		|| str[index->index] == '_' || str[index->index] == '?'))
+			|| str[index->index] == '_' || str[index->index] == '?'))
 		index->index++;
 	env_var = substring(str, 1, index->index);
 	value_env_var = ft_strdup(get_env(env_var, data));
@@ -90,7 +100,7 @@ t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *ind
 
 t_index_str	*exolate_the_content(char *str, t_index_str *index)
 {
-	int 	i;
+	int		i;
 	char	*env_var;
 
 	i = 0;
