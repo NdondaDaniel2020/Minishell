@@ -13,8 +13,7 @@
 #include "minishell.h"
 
 static t_index_str	*exolate_double_and_single_quotes(char *env_var,
-	t_index_str *index,
-	t_data *data)
+	t_index_str *index, t_data *data)
 {
 	char	*sub;
 	char	*value_env_var;
@@ -29,9 +28,7 @@ static t_index_str	*exolate_double_and_single_quotes(char *env_var,
 }
 
 static t_index_str	*exude_content_without_double_quotes(char *str,
-	char *env_var,
-	t_index_str *index,
-	t_data *data)
+	char *env_var, t_index_str *index, t_data *data)
 {
 	int		i;
 	char	*sub;
@@ -61,8 +58,7 @@ static t_index_str	*exude_content_without_double_quotes(char *str,
 }
 
 t_index_str	*exolate_the_content_with_double_quotes(char *str,
-	t_index_str *index,
-	t_data *data)
+	t_index_str *index, t_data *data)
 {
 	int		i;
 	char	*env_var;
@@ -70,7 +66,7 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str,
 	i = 0;
 	index->index++;
 	while (str[index->index] && str[index->index] != '\"'
-		&& str[index->index] != ' ' && valid_extract(str, index->index))
+		&& valid_extract(str, index->index))
 		index->index++;
 	env_var = substring(str, 1, index->index);
 	if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
@@ -85,8 +81,7 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str,
 }
 
 t_index_str	*extracting_the_value_with_single_quotes(char *str,
-	t_index_str *index,
-	t_data *data)
+	t_index_str *index, t_data *data)
 {
 	char	*env_var;
 	char	*value_env_var;

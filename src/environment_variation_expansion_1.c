@@ -19,7 +19,7 @@ bool	valid_extract(char *str, int index)
 
 	str_aux = ft_substr(str, 0, index + 1);
 	i = count_chr('$', str_aux);
-	if (i > 1)
+	if (i == 1 && str[index] == ' ')
 		return (free(str_aux), false);
 	return (free(str_aux), true);
 }
@@ -50,8 +50,8 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	i = 0;
 	while ((*matrix)[i])
 	{
-		if (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
-			|| ft_strchr((*matrix)[i], '\"'))
+		if (i > 0 && (ft_strchr((*matrix)[i], '$')
+			|| ft_strchr((*matrix)[i], '\'') || ft_strchr((*matrix)[i], '\"')))
 		{
 			value_env = get_environment_variation_expansion((*matrix)[i], data);
 			old_size = ft_strlen((*matrix)[i]);
