@@ -64,7 +64,6 @@ static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 		{
 			(*join) = ft_charjoin(NULL, 1);
 			(*join) = ft_charjoin_free((*join), 1);
-			(*join) = ft_charjoin_free((*join), 1);
 		}
 		else
 			(*join) = value_env->str;
@@ -74,7 +73,6 @@ static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 		(*pos) += value_env->index;
 		if (ft_strlen(value_env->str) == 0)
 		{
-			(*join) = ft_charjoin_free((*join), 1);
 			(*join) = ft_charjoin_free((*join), 1);
 			(*join) = ft_charjoin_free((*join), 1);
 		}
