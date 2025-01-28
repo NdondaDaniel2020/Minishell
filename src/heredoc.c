@@ -38,7 +38,8 @@ static void	handle_heredoc_input(t_data *data, char *delimiter)
 		line = readline("> ");
 		if (line == NULL)
 			put_warning(data->heredoc_line_delimited, delimiter);
-		if (!line || ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
+		if (!line || ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
+			|| (delimiter[0] == 1 && line[0] == 0))
 			break ;
 		if (ft_strchr(line, '$') || ft_strchr(line, '\'')
 			|| ft_strchr(line, '"'))

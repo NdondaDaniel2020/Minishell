@@ -71,6 +71,7 @@ char	*adjustment_in_the_extraction_string(char *str, t_data *data)
 	if (aux == NULL)
 	{
 		void_str = ft_calloc(1, sizeof(char));
+		void_str[0] = '\0';
 		return (void_str);
 	}
 	return (ft_strdup(aux));
@@ -263,13 +264,24 @@ static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 	if ((*join) == NULL)
 	{
 		(*pos) += value_env->index;
-		(*join) = value_env->str;
+		if (ft_strlen(value_env->str) == 0)
+		{
+			(*join) = ft_charjoin(NULL, 1);
+			(*join) = ft_charjoin_free((*join), 1);
+			(*join) = ft_charjoin_free((*join), 1);
+		}
+		else
+			(*join) = value_env->str;
 	}
 	else
 	{
 		(*pos) += value_env->index;
 		if (ft_strlen(value_env->str) == 0)
+		{
 			(*join) = ft_charjoin_free((*join), 1);
+			(*join) = ft_charjoin_free((*join), 1);
+			(*join) = ft_charjoin_free((*join), 1);
+		}
 		else
 			(*join) = ft_strjoin_free((*join), value_env->str);
 		free(value_env->str);
@@ -286,10 +298,10 @@ char	*get_environment_variation_expansion(char *str, t_data *data)
 	pos = 0;
 	join = NULL;
 	len = ft_strlen(str);
-	ft_printf("%i\n", len);
+	// ft_printf("%i\n", len);
 	while (pos < len)
 	{
-		ft_printf("[%s] [%s] (%i)", str, str + pos, pos);
+		// ft_printf("[%s] [%s] (%i)", str, str + pos, pos);
 		value_env = extract_value_env(str + pos, data);
 		if (value_env->str)
 			join_value_env(value_env, &join, &pos);
@@ -302,7 +314,7 @@ char	*get_environment_variation_expansion(char *str, t_data *data)
 			pos++;
 		}
 		free(value_env);
-		ft_printf(" == [[%i]]\n", pos);
+		// ft_printf(" == [[%i]]\n", pos);
 	}
 	return (join);
 }
@@ -319,7 +331,7 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	i = 0;
 	while ((*matrix)[i])
 	{
-		if (i > 0 && (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
+		if ((ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
 			|| ft_strchr((*matrix)[i], '\"')))
 		{
 			value_env = get_environment_variation_expansion((*matrix)[i], data);
@@ -343,15 +355,23 @@ int	main(int ac, char **av, char **envp)
 
 	i = 0;  // ->nao usas
 	matrix = NULL;
+	ft_printf("{{{%c{%i}}}}\n", 1, 1);
 	init_data(&data);
-
 	data.envp = get_all_environment(envp);
-	matrix = split_2("echo:A=\"ls -l\"'ls'", ':');
+	matrix = split_2("ls:''", ':');
 	environment_variation_expansion(&matrix, &data);
 	printf("\n\n\n");
 	while (matrix[i])
 	{
-		printf("(%s)\n", matrix[i]);
+		printf("[%s]\n", matrix[i]);
+		// int j = 0;
+		// while (matrix[i][j])
+		// {
+		// 	if (matrix[i][j] == 1)
+		// 		printf("Delimitador 1 ");
+		// 	printf("[%c][%i]\n", matrix[i][j], matrix[i][j]);
+		// 	j++;
+		// }
 		i++;
 	}
 	free_matrix(matrix);

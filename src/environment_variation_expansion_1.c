@@ -50,8 +50,8 @@ void	environment_variation_expansion(char ***matrix, t_data *data)
 	i = 0;
 	while ((*matrix)[i])
 	{
-		if (i > 0 && (ft_strchr((*matrix)[i], '$')
-			|| ft_strchr((*matrix)[i], '\'') || ft_strchr((*matrix)[i], '\"')))
+		if (ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
+			|| ft_strchr((*matrix)[i], '\"'))
 		{
 			value_env = get_environment_variation_expansion((*matrix)[i], data);
 			old_size = ft_strlen((*matrix)[i]);

@@ -60,9 +60,9 @@ void	execute_commands_with_pipe(t_data *data)
 	pid_t		pid;
 	t_new_list	*aux;
 
+	aux = data->list;
 	data->cpy_read_operation = dup(STDIN_FILENO);
 	data->cpy_write_operation = dup(STDOUT_FILENO);
-	aux = data->list;
 	while (aux)
 	{
 		if (aux->next != NULL)

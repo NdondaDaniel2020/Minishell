@@ -46,25 +46,25 @@ int	main(int ac, char **av, char **envp)
 	t_data	data;
 	char	*input;
 
-	(void)ac;
-	(void)av;
-	setup_signal();
-	init_data(&data);
+	(void)ac, (void)av, setup_signal(), init_data(&data);
 	data.envp = get_all_environment(envp);
 	data.path = ft_split(get_env("PATH", &data), ':');
 	while (1)
 	{
 		g_satatus = 0;
 		input = readline("TeamWork> ");
+		if (g_satatus == 2)
+			change_environment_variables_question_mark(130, &data);
 		if (input == NULL)
 		{
 			free_data(&data);
 			exit(0);
 		}
-		else if (input[0] != '\0' && all_is_space(input) == false)
+		else if (input[0] != '\0')
 		{
 			add_history(input);
-			master(input, &data);
+			if (all_is_space(input) == false)
+				master(input, &data);
 		}
 	}
 	return (0);

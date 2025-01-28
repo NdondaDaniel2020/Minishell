@@ -19,7 +19,7 @@ static char	*handle_heredoc_input(t_data *data)
 	while (1)
 	{
 		line = readline("> ");
-		if (g_satatus == 1)
+		if (g_satatus == 2)
 			return (free_all_data(data), free(line), NULL);
 		if (line == NULL)
 		{

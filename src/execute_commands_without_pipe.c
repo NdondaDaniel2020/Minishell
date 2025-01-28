@@ -18,6 +18,9 @@ void	execute_commands_without_pipe(int value_redirection, t_data *data)
 	t_new_list	*aux;
 
 	aux = data->list;
+	if (ft_strlen(data->list->content[0]) == 0
+		&& len_matrix(data->list->content) == 1)
+		return ;
 	while (aux)
 	{
 		i = 0;

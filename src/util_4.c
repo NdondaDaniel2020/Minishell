@@ -96,7 +96,7 @@ void	matrix_space_position_adjustment(char ***matrix)
 	int		len_m;
 	char	*aux;
 
-	if (ft_strlen((*matrix)[0]) == 0)
+	if (ft_strlen((*matrix)[0]) == 0 && len_matrix(*matrix) > 1)
 	{
 		i = 0;
 		len_m = len_matrix(*matrix);

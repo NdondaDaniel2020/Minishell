@@ -32,7 +32,7 @@ char	*handle_heredoc_input_quotes(t_data *data, char delimiter)
 	while (1)
 	{
 		line = readline("> ");
-		if (g_satatus == 1)
+		if (g_satatus == 2)
 			return (free(line), NULL);
 		if (line == NULL)
 		{
