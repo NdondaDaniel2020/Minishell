@@ -20,6 +20,7 @@ FILES = adjust_file_name.c \
 		adjust_file_name_util.c \
 		cd_1.c \
 		cd_2.c \
+		cd_3.c \
 		echo.c \
 		echo_util.c \
 		env_1.c \

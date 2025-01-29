@@ -17,17 +17,15 @@ make re && make clean && clear && ./minishell
 git clone --branch builtins --single-branch git@github.com:NdondaDaniel2020/Minishell.git
 
 
-1 - retificar oerro do heredoc do pipi
-> ls |
-> asdf |
->
+
 
 2 - erro em pasta sem permocao para entrar
 
 3 - cria uma funcao que recebe duas matrizes $A ou "ls -l"
-
 $A ou "ls -l"
 cria uma nova matriz
 se o valor $A tiver espaco como "ls -l" -> "ls" -ls
 
 
+
+S2020@gmailcoM

@@ -15,6 +15,7 @@
 
 #include "libft.h"
 #include <fcntl.h>
+#include <errno.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -114,7 +115,7 @@ int			cd(t_new_list *aux, t_data *data);
 void		update_pwd(t_data *data);
 void		update_oldwpd(t_data *data);
 void		add_in_list(char *value_env, t_new_list *aux, t_data *data);
-
+void		chdir_(char *str);
 int			is_directory_valid(const char *path);
 
 bool		add_expanded_variable(t_new_list *aux, t_data *data);

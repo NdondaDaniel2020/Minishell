@@ -55,7 +55,7 @@ static void	change_dir(char *dir, t_data *data)
 
 	home = get_env("HOME", data);
 	dir = ft_strjoin(home, dir + 1);
-	chdir(dir);
+	chdir_(dir);
 	free(dir);
 }
 
@@ -71,11 +71,11 @@ int	cd(t_new_list *aux, t_data *data)
 	update_oldwpd(data);
 	dir = aux->content[get_last_position(aux)];
 	if (is_directory_valid(dir))
-		chdir(dir);
+		chdir_(dir);
 	else if (condition_home(dir))
 	{
 		home = get_env("HOME", data);
-		chdir(home);
+		chdir_(home);
 	}
 	else if (ft_strnstr(dir, "~/", ft_strlen(dir)))
 		change_dir(dir, data);

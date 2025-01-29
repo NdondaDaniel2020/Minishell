@@ -14,28 +14,29 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool check_pipe_valid(char *command)
+int main()
 {
-    int i;
-	int len_pipe;
+    const char *dirPath = "test";
+    DIR *dir = opendir(dirPath);
 
-	i = 0;
-	len_pipe = 0;
-	while (command[i])
-	{
-		if (command[i] == '|')
-			len_pipe++;
-		if (command[i] != '|' && command[i] != ' ')
-			len_pipe = 0;
-		if (len_pipe > 1)
-			return (true);
-		i++;
-	}
-	return (false);
-}
+    if (dir == NULL) {
+		printf("Erro ao abrir o arquivo: %s\n", strerror(errno));
+        perror("Erro ao abrir diretório");
+        return EXIT_FAILURE;
+    }
 
-int	main(void)
-{
-	ft_printf("{{%i}}\n", check_pipe_valid("ls | wc |"));
-    return (0);
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        // Ignorar entradas '.' e '..'
+        if (entry->d_name[0] != '.') {
+            printf("%s\n", entry->d_name);
+        }
+    }
+
+    if (closedir(dir) == -1) {
+        perror("Erro ao fechar diretório");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
