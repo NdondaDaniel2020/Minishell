@@ -12,27 +12,28 @@
 
 #include "minishell.h"
 
-int	count_word(char **words)
+bool	echo_is_empty(t_new_list *aux)
+{
+	if (len_matrix(aux->content) == 1)
+	{
+		ft_putchar_fd('\n', 1);
+		return (true);
+	}
+	return (false);
+}
+
+bool	only_valid_n(const char *str)
 {
 	int	i;
 
-	i = 0;
-	while (words[i])
-		i++;
-	return (i);
-}
-
-bool	echo_is_empty(t_new_list *aux)
-{
-	int		i;
-
-	i = count_word(aux->content);
-	if (i == 1)
+	i = 2;
+	while (str[i])
 	{
-		ft_putchar_fd('\n', 1);
-		return (1);
+		if (str[i] != 'n')
+			return (false);
+		i++;
 	}
-	return (0);
+	return (true);
 }
 
 void	add_bar_n(t_new_list *aux)

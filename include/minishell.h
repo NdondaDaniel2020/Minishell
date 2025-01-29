@@ -127,10 +127,11 @@ int			pwd(t_new_list *aux, t_data *data);
 
 /*builtin echo*/
 int			echo(t_new_list *aux, t_data *data);
+int			count_word(char **words);
 void		add_bar_n(t_new_list *aux);
 void		traverse_n(int *i, t_data *data);
 bool		echo_is_empty(t_new_list *aux);
-int			count_word(char **words);
+bool		only_valid_n(const char *str);
 
 
 /*builtin exit*/
@@ -286,7 +287,7 @@ bool		new_is_redirection(char **matix);
 void		execute_commands_with_pipe(t_data *data);
 void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
-bool		heredoc_pipe_fork(t_data *data);
+bool		heredoc_pipe(t_data *data);
 
 char		*invert_str(char *str);
 bool		valid_extract(char *str, int index);

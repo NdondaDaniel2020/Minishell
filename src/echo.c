@@ -14,29 +14,28 @@
 
 int	echo(t_new_list *aux, t_data *data)
 {
-	int	i1;
-	int	i2;
-	int	len;
+	bool	no_newline;
+	int		i;
+	int		len;
 
 	if (echo_is_empty(aux))
 		return (change_environment_variables_question_mark(0, data));
-	i1 = 0;
-	while (!ft_strncmp(aux->content[i1], "echo", ft_strlen(aux->content[i1])))
-		i1++;
+	no_newline = false;
+	i = 1;
 	len = len_matrix(aux->content);
-	traverse_n(&i1, data);
-	while (aux->content[i1])
+	while (i < len && ft_strncmp(aux->content[i], "-n", 2) == 0 && \
+	only_valid_n(aux->content[i]))
 	{
-		i2 = 0;
-		while (aux->content[i1][i2])
-		{
-			ft_putchar_fd(aux->content[i1][i2], 1);
-			i2++;
-		}
-		if (i1 < len)
-			ft_putchar_fd(' ', 1);
-		i1++;
+		no_newline = true;
+		i++;
 	}
-	add_bar_n(aux);
+	while (i < len)
+	{
+		ft_putstr_fd(aux->content[i], 1);
+		if (++i < len)
+			ft_putchar_fd(' ', 1);
+	}
+	if (!no_newline)
+		ft_putchar_fd('\n', 1);
 	return (change_environment_variables_question_mark(0, data));
 }
