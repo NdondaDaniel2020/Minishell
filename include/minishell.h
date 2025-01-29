@@ -268,7 +268,6 @@ int			double_left_redirect(int i, t_data *data, t_red_fd *red_fd);
 int			right_redirect(int i, t_data *data, int mode);
 int			left_redirect(int i, t_data *data, int mode, t_red_fd *red_fd);
 void		all_redirect_directions_are_handled_here(int i, t_red_fd *red_fd, t_data *data);
-void		no_such_file_or_directory(int i, t_data *data);
 void		redirect_main_execution(t_red_fd *red_fd, t_data *data, t_new_list *aux);
 
 bool		is_other_file(char *str);

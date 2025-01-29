@@ -35,10 +35,7 @@ static void	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 		all_redirect_directions_are_handled_here(i, red_fd, data);
 		if (ft_strncmp(data->redirection_matrix[i], "<", 1) == 0
 			&& ft_strlen(data->redirection_matrix[i]) == 1 && red_fd->fd == -1)
-		{
-			no_such_file_or_directory(i, data);
 			return ;
-		}
 		i++;
 	}
 	redirect_main_execution(red_fd, data, aux);

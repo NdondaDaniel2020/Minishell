@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-void	no_such_file_or_directory(int i, t_data *data)
-{
-	ft_putstr_fd(data->redirection_matrix[i + 1], 2);
-	ft_putstr_fd(": No such file or directory\n", 2);
-	change_environment_variables_question_mark(1, data);
-}
-
 void	all_redirect_directions_are_handled_here(int i, t_red_fd *red_fd,
 	t_data *data)
 {

@@ -17,6 +17,13 @@ int	open_file(const char *file, int mode)
 	int	fd;
 
 	fd = open(file, mode, 0644);
+	if (fd == -1)
+	{
+		ft_putstr_fd((char *)file, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
+	}
 	return (fd);
 }
 
