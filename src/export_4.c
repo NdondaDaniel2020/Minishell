@@ -14,23 +14,20 @@
 
 static void	print_env_order(t_data *data)
 {
-	int		i;
 	int		j;
 	char	alpha;
 
-	i = 0;
-	alpha = 'a';
-	while (i < 26)
+	alpha = 64;
+	while (alpha < 125)
 	{
 		j = 0;
 		while (data->envp[j])
 		{
-			if (data->envp[j][0] == alpha || data->envp[j][0] == alpha - 32)
+			if (data->envp[j][0] == alpha)
 				ft_printf("declare -x %s\n", data->envp[j]);
 			j++;
 		}
 		alpha++;
-		i++;
 	}
 	j = 0;
 	while (data->envp[j])
