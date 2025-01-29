@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	pwd(t_new_list *aux, t_data *data)
+int	pwd(t_data *data)
 {
 	char	*cwd;
 

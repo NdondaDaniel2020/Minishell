@@ -123,7 +123,7 @@ bool		check_many_arguments(t_new_list *aux);
 
 
 /*builtin pwd*/
-int			pwd(t_new_list *aux, t_data *data);
+int			pwd(t_data *data);
 
 
 /*builtin echo*/
