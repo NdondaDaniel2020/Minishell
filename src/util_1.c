@@ -68,7 +68,7 @@ void	init_data(t_data *data)
 	data->path = NULL;
 	data->list = NULL;
 	data->space = false;
-	data->output = NULL;
+	data->value_output = 0;
 	data->command = NULL;
 	data->put_amb = NULL;
 	data->is_pipe = false;

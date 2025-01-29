@@ -14,6 +14,13 @@
 
 int	g_satatus = 0;
 
+void	ctrl_d(t_data *data)
+{
+	data->value_output = ft_atoi(get_env("?", data));
+	free_data(data);
+	exit(data->value_output);
+}
+
 void	master(char *command, t_data *data)
 {
 	int	value_redirection;
@@ -56,10 +63,7 @@ int	main(int ac, char **av, char **envp)
 		if (g_satatus == 2)
 			change_environment_variables_question_mark(130, &data);
 		if (input == NULL)
-		{
-			free_data(&data);
-			exit(0);
-		}
+			ctrl_d(&data);
 		else if (input[0] != '\0')
 		{
 			add_history(input);
