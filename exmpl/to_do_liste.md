@@ -16,12 +16,14 @@ change_environment_variables_question_mark(126, data);
 make re && make clean && clear && ./minishell
 git clone --branch builtins --single-branch git@github.com:NdondaDaniel2020/Minishell.git
 
+
+
 retifique o cd  deve mostrar sms de erro
-
 erro em pasta sem permocao para entrar
-
 cria uma funcao que recebe duas matrizes $A ou "ls -l"
 
 $A ou "ls -l"
 cria uma nova matriz
 se o valor $A tiver espaco como "ls -l" -> "ls" -ls
+
+

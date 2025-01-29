@@ -16,7 +16,6 @@ static int	condition_home(char *dir)
 {
 	if ((ft_strnstr(dir, "~", ft_strlen(dir))
 			&& !ft_strnstr(dir, "~/", ft_strlen(dir)))
-		|| ft_strnstr(dir, "cd", ft_strlen(dir))
 		|| ft_strnstr(dir, " ", ft_strlen(dir)))
 		return (1);
 	return (0);

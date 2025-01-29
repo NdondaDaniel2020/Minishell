@@ -91,9 +91,12 @@ bool	check_many_arguments(t_new_list *aux)
 		i++;
 		len++;
 	}
-	if (len > 2)
+	if (len > 2 || len == 1)
 	{
-		ft_putstr_fd("cd: too many arguments\n", 2);
+		if (len == 1)
+			ft_putstr_fd("cd: too few arguments\n", 2);
+		else
+			ft_putstr_fd("cd: too many arguments\n", 2);
 		return (true);
 	}
 	return (false);
