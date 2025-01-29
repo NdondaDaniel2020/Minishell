@@ -19,8 +19,6 @@ git clone --branch builtins --single-branch git@github.com:NdondaDaniel2020/Mini
 
 
 
-2 - erro em pasta sem permocao para entrar
-
 3 - cria uma funcao que recebe duas matrizes $A ou "ls -l"
 $A ou "ls -l"
 cria uma nova matriz
