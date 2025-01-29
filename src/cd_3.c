@@ -14,7 +14,7 @@
 
 void	chdir_(char *dir)
 {
-	int status;
+	int	status;
 
 	status = chdir(dir);
 	if (status != 0)

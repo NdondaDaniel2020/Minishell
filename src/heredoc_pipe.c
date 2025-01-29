@@ -41,7 +41,7 @@ static char	*handle_heredoc_input(t_data *data)
 		if (line == NULL)
 			syntax_error_unexpected(line, join, data);
 		if (first_pipe(join, line, data))
-			return	(NULL);
+			return (NULL);
 		if (line && all_is_space(line) == false && (ft_strchr(line, '$')
 				|| ft_strchr(line, '\'') || ft_strchr(line, '"')))
 			environment_variation_expansion_in_heredoc(&line, data);
