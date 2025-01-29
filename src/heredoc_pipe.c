@@ -12,10 +12,41 @@
 
 #include "minishell.h"
 
+static void	join_lines_pipe(char **join, char *line)
+{
+	if ((*join) == NULL)
+	{
+		(*join) = ft_strdup(line);
+		free(line);
+	}
+	else
+	{
+		(*join) = ft_strjoin_free((*join), line);
+		free(line);
+	}
+}
+
+static bool	last_pipe(char *line)
+{
+	int	len;
+	
+	len = ft_strlen(line) - 1;
+	while (len > -1 && line[len] && (line[len] == ' ' || line[len] == '|'))
+	{
+		if (line[len] == '|')
+			return (true);
+		len--;
+	}
+	return (false);
+}
+
 static char	*handle_heredoc_input(t_data *data)
 {
 	char	*line;
+	char	*join;
+	bool	las_pipe;
 
+	join = NULL;
 	while (1)
 	{
 		line = readline("> ");
@@ -29,14 +60,13 @@ static char	*handle_heredoc_input(t_data *data)
 			ft_putstr_fd("exit\n", STDERR_FILENO);
 			exit(2);
 		}
-		if (line && all_is_space(line) == false
-			&& (ft_strchr(line, '$')
-				|| ft_strchr(line, '\'')
-				|| ft_strchr(line, '"')))
+		if (line && all_is_space(line) == false && (ft_strchr(line, '$')
+			|| ft_strchr(line, '\'') || ft_strchr(line, '"')))
 			environment_variation_expansion_in_heredoc(&line, data);
-		if (line && all_is_space(line) == false)
-			return (line);
-		free(line);
+		las_pipe = last_pipe(line);
+		join_lines_pipe(&join, line);
+		if (join && las_pipe == false && all_is_space(join) == false)
+			return (join);
 	}
 }
 
@@ -58,22 +88,31 @@ static void	add_matrix_in_newlist(t_data *data, char **matrix)
 	ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
 }
 
-bool	heredoc_pipe_fork(t_data *data)
+bool	heredoc_pipe(t_data *data)
 {
+	int 		i;
 	char		*new_line;
 	char		*aux_chr;
 	char		**matrix;
+	char		**matrix_pipe;
 
 	new_line = handle_heredoc_input(data);
 	if (new_line == NULL)
-		return (false);
+		return (free_all_data(data), false);
 	aux_chr = ft_strjoin(data->command, new_line);
 	add_history(aux_chr);
-	matrix = split_2(new_line, ' ');
-	matrix_space_position_adjustment(&matrix);
-	null_string(&matrix);
-	free(new_line);
-	free(aux_chr);
-	add_matrix_in_newlist(data, matrix);
+	if (simple_error(aux_chr))
+		return (free(aux_chr), free_all_data(data), false);
+	matrix_pipe = split_2(new_line, '|');
+	i = 0;
+	while (matrix_pipe[i])
+	{
+		matrix = split_2(matrix_pipe[i], ' ');
+		matrix_space_position_adjustment(&matrix);
+		null_string(&matrix);
+		add_matrix_in_newlist(data, matrix);
+		i++;
+	}
+	free(aux_chr), free_matrix(matrix_pipe);
 	return (true);
 }

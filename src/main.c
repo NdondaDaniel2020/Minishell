@@ -36,7 +36,7 @@ void	master(char *command, t_data *data)
 	insert_data(data, command);
 	if (is_pipe_heredoc(command))
 	{
-		if (heredoc_pipe_fork(data) == false)
+		if (heredoc_pipe(data) == false)
 			return ;
 	}
 	if (is_heredoc_redirection(data))

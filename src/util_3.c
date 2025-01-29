@@ -97,24 +97,21 @@ bool	valid_redirection_syntax(t_new_list *aux)
 
 static bool	check_pipe_valid(char *command)
 {
-	int		i;
-	char	**spliting;
+    int i;
+	int len_pipe;
 
 	i = 0;
-	spliting = split_2(command, ' ');
-	if (spliting == NULL)
-		return (false);
-	while (spliting[i])
+	len_pipe = 0;
+	while (command[i])
 	{
-		if (i > 0 && ft_strncmp(spliting[i], "|", 1) == 0
-			&& ft_strncmp(spliting[i - 1], "|", 1) == 0)
-		{
-			free_matrix(spliting);
+		if (command[i] == '|')
+			len_pipe++;
+		if (command[i] != '|' && command[i] != ' ')
+			len_pipe = 0;
+		if (len_pipe > 1)
 			return (true);
-		}
 		i++;
 	}
-	free_matrix(spliting);
 	return (false);
 }
 
