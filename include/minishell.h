@@ -288,6 +288,13 @@ void		execute_commands_with_pipe(t_data *data);
 void		execute_commands_without_pipe(int value_redirection, t_data *data);
 
 bool		heredoc_pipe(t_data *data);
+bool		last_pipe(char *line);
+bool		first_pipe(char *join, char *line, t_data *data);
+void		join_lines_pipe(char **join, char *line);
+void		add_matrix_in_newlist(t_data *data, char **matrix);
+void		syntax_error_unexpected(char *line, char *join, t_data *data);
+char		*ctrl_c_heredoc_pipe(char *join, char *line, t_data *data);
+
 
 char		*invert_str(char *str);
 bool		valid_extract(char *str, int index);

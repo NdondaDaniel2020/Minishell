@@ -14,15 +14,20 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool is_heredoc_redirection(char *str)
+bool check_pipe_valid(char *command)
 {
-	int i = 0;
-	while (str[i])
+    int i;
+	int len_pipe;
+
+	i = 0;
+	len_pipe = 0;
+	while (command[i])
 	{
-		if ((str[i] == '<' && str[i + 1] == '<')
-			&& (str[i - 1] != '>' && str[i - 1] != '<')
-			&& (str[i + 2] != '>' && str[i + 2] != '<' && str[i + 2] != '\0')
-			&& (str[i + 2] == ' ' && str[i + 3] != ' ' && str[i + 3] != '\0'))
+		if (command[i] == '|')
+			len_pipe++;
+		if (command[i] != '|' && command[i] != ' ')
+			len_pipe = 0;
+		if (len_pipe > 1)
 			return (true);
 		i++;
 	}
@@ -31,6 +36,6 @@ bool is_heredoc_redirection(char *str)
 
 int	main(void)
 {
-	ft_printf("{{%i}}\n", is_heredoc_redirection("ls <<a"));
+	ft_printf("{{%i}}\n", check_pipe_valid("ls | wc |"));
     return (0);
 }

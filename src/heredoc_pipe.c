@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	join_lines_pipe(char **join, char *line)
+void	join_lines_pipe(char **join, char *line)
 {
 	if ((*join) == NULL)
 	{
@@ -26,20 +26,6 @@ static void	join_lines_pipe(char **join, char *line)
 	}
 }
 
-static bool	last_pipe(char *line)
-{
-	int	len;
-	
-	len = ft_strlen(line) - 1;
-	while (len > -1 && line[len] && (line[len] == ' ' || line[len] == '|'))
-	{
-		if (line[len] == '|')
-			return (true);
-		len--;
-	}
-	return (false);
-}
-
 static char	*handle_heredoc_input(t_data *data)
 {
 	char	*line;
@@ -51,17 +37,13 @@ static char	*handle_heredoc_input(t_data *data)
 	{
 		line = readline("> ");
 		if (g_satatus == 2)
-			return (free_all_data(data), free(line), NULL);
+			return (ctrl_c_heredoc_pipe(join, line, data));
 		if (line == NULL)
-		{
-			ft_putstr_fd("syntax error: unexpected end of file\n",
-				STDERR_FILENO);
-			free_data(data);
-			ft_putstr_fd("exit\n", STDERR_FILENO);
-			exit(2);
-		}
+			syntax_error_unexpected(line, join, data);
+		if (first_pipe(join, line, data))
+			return	(NULL);
 		if (line && all_is_space(line) == false && (ft_strchr(line, '$')
-			|| ft_strchr(line, '\'') || ft_strchr(line, '"')))
+				|| ft_strchr(line, '\'') || ft_strchr(line, '"')))
 			environment_variation_expansion_in_heredoc(&line, data);
 		las_pipe = last_pipe(line);
 		join_lines_pipe(&join, line);
@@ -70,27 +52,9 @@ static char	*handle_heredoc_input(t_data *data)
 	}
 }
 
-static void	add_matrix_in_newlist(t_data *data, char **matrix)
-{
-	t_new_list	*aux;
-
-	aux = data->list;
-	while (aux)
-	{
-		if (len_matrix(aux->content) == 0)
-		{
-			free_matrix(aux->content);
-			aux->content = matrix;
-			return ;
-		}
-		aux = aux->next;
-	}
-	ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
-}
-
 bool	heredoc_pipe(t_data *data)
 {
-	int 		i;
+	int			i;
 	char		*new_line;
 	char		*aux_chr;
 	char		**matrix;
@@ -113,6 +77,5 @@ bool	heredoc_pipe(t_data *data)
 		add_matrix_in_newlist(data, matrix);
 		i++;
 	}
-	free(aux_chr), free_matrix(matrix_pipe);
-	return (true);
+	return (free(aux_chr), free_matrix(matrix_pipe), true);
 }

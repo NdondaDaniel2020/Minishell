@@ -97,8 +97,8 @@ bool	valid_redirection_syntax(t_new_list *aux)
 
 static bool	check_pipe_valid(char *command)
 {
-    int i;
-	int len_pipe;
+	int	i;
+	int	len_pipe;
 
 	i = 0;
 	len_pipe = 0;
