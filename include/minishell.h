@@ -49,7 +49,7 @@ typedef struct s_data
 	bool		space;
 	bool		automatic_input;
 	char		*command;
-	char		*output;
+	int			value_output;
 	char		*put_amb;
 	char		**path;
 	char		**envp;
