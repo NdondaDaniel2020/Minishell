@@ -28,6 +28,7 @@ void	master(char *command, t_data *data)
 	if (has_unclosed_quotes(command))
 	{
 		ft_putstr_fd("syntax error: unclosed quotes\n", 2);
+		free_all_data(data); /* testar pode dar vazamento ou bug*/
 		return ;
 	}
 	if (simple_error(command))
@@ -37,6 +38,7 @@ void	master(char *command, t_data *data)
 	if (is_pipe_heredoc(command))
 	{
 		ft_putstr_fd("syntax error: unclosed pipe\n", 2);
+		free_all_data(data);  /* testar pode dar vazamento ou bug */
 		return ;
 	}
 	if (is_heredoc_redirection(data))
