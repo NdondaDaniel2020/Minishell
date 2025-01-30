@@ -27,3 +27,4 @@ se o valor $A tiver espaco como "ls -l" -> "ls" -ls
 
 
 S2020@gmailcoM
+
