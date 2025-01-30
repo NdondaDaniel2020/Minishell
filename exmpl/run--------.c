@@ -336,7 +336,7 @@ int	main(void)
 	i = 0;
 	init_data(&data);
 	data.envp = get_all_environment();
-	matrix = split_2("echo: \"''$HOME''\" ", ':');
+	matrix = split_2("echo:$LS", ':');
 	environment_variation_expansion(&matrix, &data);
 	while (matrix[i])
 	{
