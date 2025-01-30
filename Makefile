@@ -45,7 +45,6 @@ FILES = adjust_file_name.c \
 		heredoc.c \
 		heredoc_pipe.c \
 		heredoc_pipe_util.c \
-		heredoc_quotes.c \
 		heredoc_util.c \
 		lstnew_util_1.c \
 		lstnew_util_2.c \
