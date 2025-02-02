@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 /* ajuste no caso especial de expancao $HOME == "ls -l" -> 'ls -l'*/
+/* 'ls -l'$LS ->>  LS=="ls -l" ==> ls -lls, -l -> quebrar onde tem ,*/
 
 #include "run.h"
 
