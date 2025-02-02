@@ -28,3 +28,55 @@ se o valor $A tiver espaco como "ls -l" -> "ls" -ls
 
 S2020@gmailcoM
 
+
+ab  cdef  gh
+
+while (matrix[i1])
+{
+	if (ft_strchr(matrix[i1], '$'))
+	{
+		int	index;
+		int start;
+
+		index = 0;
+		start = 0;
+		break_point = 0;
+		while (break_point != -1)
+		{
+			break_point = get_the_string_break_position(index, matrix[i1], matrix_exp[i1], data);
+			if (index == 0 && break_point == -1)
+			{
+				new_matrix[i2++] = ft_strdup(matrix_exp[i1++]);
+				break ;
+			}
+			else
+			{
+				while (matrix_exp[i1][start] == ' ')
+					start++;
+				if (break_point == -1)
+				{
+					new_matrix[i2++] = substring(matrix_exp[i1++], start, ft_strlen(matrix_exp[i1]));
+					break ;
+				}
+				else
+				{
+					new_matrix[i2++] = substring(matrix_exp[i1], start, break_point);
+					start = break_point;
+				}
+			}
+			index++;
+		}
+	}
+	else
+		new_matrix[i2++] = ft_strdup(matrix_exp[i1++]);
+}
+
+typedef struct s_split_env
+{
+	int		i1;
+	int		i2;
+	int		len;
+	int		index;
+	int		break_point;
+	char	**new_matrix;
+}			t_split_env;

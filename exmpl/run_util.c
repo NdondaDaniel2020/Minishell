@@ -338,8 +338,8 @@ char	**get_all_environment(char **envp)
 		new_env[i] = env;
 		i++;
 	}
-	new_env[i++] = ft_strdup("?=0");
-	new_env[i] = ft_strdup("LS=ls -l");
+	new_env[i++] = ft_strdup("A=ab  cd");
+	new_env[i] = ft_strdup("B=ef  gh");
 	return (new_env);
 }
 
@@ -667,6 +667,34 @@ int	ft_strnpos(const char *big, const char *little, size_t len)
 		i++;
 	}
 	return (0);
+}
+
+int	ft_strnpos2(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+	size_t	c;
+	size_t	l_lit;
+
+	i = 0;
+	l_lit = ft_strlen(little);
+	if (len == 0 && !little)
+		return (-1);
+	if (big == little || l_lit == 0)
+		return (-1);
+	while (*big && i < len)
+	{
+		c = 0;
+		if (*big == little[0])
+		{
+			while (little[c] == big[c] && little[c] && big[c] && i + c < len)
+				c++;
+		}
+		if (c == l_lit)
+			return (i);
+		++big;
+		i++;
+	}
+	return (-1);
 }
 
 void	*ft_realloc(void *ptr, size_t original_size, size_t new_size)

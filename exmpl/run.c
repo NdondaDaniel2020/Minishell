@@ -10,9 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/* usa o tipo index para fazer o ++ e add no index*/
+/* ajuste no caso especial de expancao $HOME == "ls -l" -> 'ls -l'*/
 
 #include "run.h"
+
+typedef struct s_split_env
+{
+	int		i1;
+	int		i2;
+	int		len;
+	int		start;
+	int		index;
+	int		break_point;
+	char	**new_matrix;
+}			t_split_env;
+
+////////////////////////////////////////////////////////////////////////////////
 
 char	*ft_charjoin_free(char *s1, char c)
 {
@@ -60,321 +73,196 @@ char	*substring(const char *str, int start, int end)
 	return (sub);
 }
 
-/////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-char	*adjustment_in_the_extraction_string(char *str, t_data *data)
+void	init_split_env(t_split_env *split_env)
 {
-	char	*aux;
-	char	*void_str;
+	split_env->i1 = 0;
+	split_env->i2 = 0;
+	split_env->len = 0;
+	split_env->start = 0;
+	split_env->index = 0;
+	split_env->break_point = 0;
+	split_env->new_matrix = NULL;
+}
 
-	aux = get_env(str, data);
-	if (aux == NULL)
+static int	get_break_position(int *index, char *env_var, char *string_exp, t_data *data)
+{
+	int 	f;
+	char	*env_var_value;
+
+	env_var_value = get_env(env_var + 1, data);
+	if (ft_strchr(env_var_value, ' '))
 	{
-		void_str = ft_calloc(1, sizeof(char));
-		void_str[0] = '\0';
-		return (void_str);
-	}
-	return (ft_strdup(aux));
-}
-
-/////////////////////////////////
-
-char	*invert_str(char *str)
-{
-	int		i;
-	int		len;
-	char	*new_string;
-
-	if (!str)
-		return (NULL);
-	i = 0;
-	len = ft_strlen(str);
-	new_string = ft_calloc(len + 1, sizeof(char));
-	while (str[i])
-		new_string[len-- - 1] = str[i++];
-	return (new_string);
-}
-
-char	*extract_value_env_quotes(char *str, char *sub, t_data *data)
-{
-	int 	end;
-	int 	start;
-	char	*aux;
-	char	*sub_str;
-	char	*inv_sub;
-
-	start = 0;
-	while (str[start] != '$')
-		start++;
-	end = start + 1;
-	while (ft_isalpha(str[end]))
-		end++;
-	aux = ft_strtrim(sub, "\"");
-	inv_sub = invert_str(aux);
-	free(aux);
-	sub_str = substring(str, start, end);
-	aux = adjustment_in_the_extraction_string(sub_str + 1, data);
-	free(sub_str);
-	sub_str = ft_strjoin(inv_sub, aux);
-	free(aux);
-	aux = ft_strjoin_free(sub_str, inv_sub);
-	free(inv_sub);
-	return (aux);
-}
-
-/////////////////////////////////
-
-t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *index, t_data *data)
-{
-	char	*env_var;
-	char	*value_env_var;
-
-	index->index++;
-	while (str[index->index] && (ft_isalnum(str[index->index])
-		|| str[index->index] == '_' || str[index->index] == '?'))
-		index->index++;
-	env_var = substring(str, 1, index->index);
-	value_env_var = adjustment_in_the_extraction_string(env_var, data);
-	index->str = value_env_var;
-	return (free(env_var), index);
-}
-
-t_index_str	*exolate_the_content(char *str, t_index_str *index)
-{
-	int 	i;
-	char	*env_var;
-
-	i = 0;
-	index->index++;
-	while (str[index->index] && str[index->index] != '\'')
-		index->index++;
-	env_var = substring(str, 1, index->index);
-	while (str[i] && str[i] == '\'')
-		i++;
-	index->index += i;
-	index->str = env_var;
-	return (index);
-}
-
-////////////////////////////////
-
-static t_index_str	*exolate_double_and_single_quotes(char *env_var, t_index_str *index, t_data *data)
-{
-	char	*sub;
-	char	*value_env_var;
-
-	sub = ft_substr(env_var, 0, ft_strchr(env_var, '$') - env_var);
-	value_env_var = extract_value_env_quotes(env_var, sub, data);
-	index->index = ft_strchr(env_var, '$') - env_var;
-	index->str = value_env_var;
-	free(env_var);
-	free(sub);
-	return (index);
-}
-
-static t_index_str	*exude_content_without_double_quotes(char *str, char *env_var, t_index_str *index, t_data *data)
-{
-	int 	i;
-	char	*sub;
-
-	i = 0;
-	if (env_var[0] == '$')
-	{
-		sub = adjustment_in_the_extraction_string(env_var + 1, data);
-		index->index = ft_strlen(env_var);
-		index->str = sub;
-		while (str[i] && str[i] == '"')
-			i++;
-		index->index += i;
-		free(env_var);
-		return (index);
-	}
-	index->index = 0;
-	while (env_var[index->index] && env_var[index->index] != '$')
-		index->index++;
-	sub = substring(env_var, 0, index->index);
-	while (str[i] && str[i] == '"')
-		i++;
-	index->index += i;
-	index->str = sub;
-	free(env_var);
-	return (index);
-}
-
-bool	valid_extract(char *str, int index)
-{
-	int		i;
-	char	*str_aux;
-
-	str_aux = ft_substr(str, 0, index + 1);
-	i = count_chr('$', str_aux);
-	if (i == 1 && str[index] == ' ')
-		return (free(str_aux), false);
-	return (free(str_aux), true);
-}
-
-t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data)
-{
-	int 	i;
-	char	*env_var;
-
-	i = 0;
-	index->index++;
-	while (str[index->index] && str[index->index] != '\"'
-		 && valid_extract(str, index->index))
-		index->index++;
-	env_var = substring(str, 1, index->index);
-	if (ft_strchr(env_var, '\'') && ft_strchr(env_var, '$'))
-		return (exolate_double_and_single_quotes(env_var, index, data));
-	else if (ft_strchr(env_var, '$'))
-		return (exude_content_without_double_quotes(str, env_var, index, data));
-	index->str = env_var;
-	while (str[i] && str[i] == '"')
-		i++;
-	index->index += i;
-	return (index);
-}
-
-////////////////////////////////
-
-t_index_str	*extract_value_env(char *str, t_data *data)
-{
-	int			len;
-	t_index_str	*index;
-
-	if (!str)
-		return (NULL);
-	index = ft_calloc(1, sizeof(t_index_str));
-	index->index = 0;
-	index->str = NULL;
-	len = ft_strlen(str);
-	if (str[index->index] == '$' && (index->index + 1) < len)
-		return (extracting_the_value_with_single_quotes(str, index, data));
-	else if (str[index->index] == '\'')
-		return (exolate_the_content(str, index));
-	else if (str[index->index] == '\"')
-		return (exolate_the_content_with_double_quotes(str, index, data));
-	return (index);
-}
-
-/////////////////////////////////
-
-static void	join_value_env(t_index_str *value_env, char **join, int *pos)
-{
-	if ((*join) == NULL)
-	{
-		(*pos) += value_env->index;
-		if (ft_strlen(value_env->str) == 0)
+		f = 0;
+		while (env_var_value[f])
 		{
-			(*join) = ft_charjoin(NULL, 1);
-			(*join) = ft_charjoin_free((*join), 1);
+			while (env_var_value[f] ==  ' ')
+				f++;
+			while (env_var_value[f] && env_var_value[f] != ' ')
+				f++;
+			if (env_var_value[f] ==  ' ')
+			{
+				if (*index == 0)
+					return (ft_strnpos2(string_exp, env_var_value,
+						ft_strlen(string_exp)) + f);
+				(*index)--;
+			}
 		}
+	}
+	return (-1);
+}
+
+int	get_the_string_break_position(int index, char *string, char *string_exp, t_data *data)
+{
+	int		i;
+	int		end;
+	int		value;
+	char	*env_var;
+
+	i = 0;
+	while (string[i])
+	{
+		if (string[i] == '$')
+		{
+			end = i + 1;
+			while (ft_isalpha(string[end]) || string[end] == '_')
+				end++;
+			env_var = substring(string, i, end);
+			value = get_break_position(&index, env_var, string_exp, data);
+			if (value != -1)
+				return (free(env_var), value);
+			free(env_var);
+			i = end - 1;
+		}
+		i++;
+	}
+	return (-1);
+}
+
+///
+static void	get_len_break_position(char **matrix, char **matrix_exp, t_split_env *s_e, t_data *data)
+{
+	s_e->index = 0;
+	s_e->break_point = 0;
+	while (s_e->break_point != -1)
+	{
+		s_e->break_point = get_the_string_break_position(s_e->index,
+			matrix[s_e->i1], matrix_exp[s_e->i1], data);
+		if (s_e->index == 0 && s_e->break_point == -1)
+			s_e->i2++, s_e->i1++;
 		else
-			(*join) = value_env->str;
+		{
+			if (s_e->break_point == -1)
+				s_e->i2++, s_e->i1++;
+			else
+				s_e->i2++;
+		}
+		s_e->index++;
+	}
+}
+
+int	len_env_var_with_space(char **matrix, char **matrix_exp, t_data *data)
+{
+	int 		i;
+	t_split_env	*s_e;
+
+	s_e = (t_split_env *)ft_calloc(1, sizeof(t_split));
+	init_split_env(s_e);
+	while (matrix[s_e->i1])
+	{
+		if (ft_strchr(matrix[s_e->i1], '$'))
+			get_len_break_position(matrix, matrix_exp, s_e, data);
+		else
+			s_e->i2++, s_e->i1++;
+	}
+	i = s_e->i2;
+	free(s_e);
+	return (i);
+}
+/////
+
+/////
+static void	split_env_var_in_space(char **matrix, char **matrix_exp, t_split_env *s_e, t_data *data)
+{
+	while (matrix_exp[s_e->i1][s_e->start] == ' ')
+		s_e->start++;
+	if (s_e->break_point == -1)
+	{
+		s_e->new_matrix[s_e->i2++] = substring(matrix_exp[s_e->i1++],
+			s_e->start, ft_strlen(matrix_exp[s_e->i1]));
 	}
 	else
 	{
-		(*pos) += value_env->index;
-		if (ft_strlen(value_env->str) == 0)
+		s_e->new_matrix[s_e->i2++] = substring(matrix_exp[s_e->i1],
+			s_e->start, s_e->break_point);
+		s_e->start = s_e->break_point;
+	}
+}
+
+static void	env_var_with_space(char **matrix, char **matrix_exp, t_split_env *s_e, t_data *data)
+{
+	s_e->index = 0;
+	s_e->start = 0;
+	s_e->break_point = 0;
+	while (s_e->break_point != -1)
+	{
+		s_e->break_point = get_the_string_break_position(s_e->index,
+			matrix[s_e->i1], matrix_exp[s_e->i1], data);
+		if (s_e->index == 0 && s_e->break_point == -1)
 		{
-			(*join) = ft_charjoin_free((*join), 1);
-			(*join) = ft_charjoin_free((*join), 1);
+			s_e->new_matrix[s_e->i2++] = ft_strdup(matrix_exp[s_e->i1++]);
+			break ;
 		}
 		else
-			(*join) = ft_strjoin_free((*join), value_env->str);
-		free(value_env->str);
+			split_env_var_in_space(matrix, matrix_exp, s_e, data);
+		s_e->index++;
 	}
 }
 
-char	*get_environment_variation_expansion(char *str, t_data *data)
+char	**split_env_var_with_space(char **matrix, char **matrix_exp, t_data *data)
 {
-	int			len;
-	int			pos;
-	char		*join;
-	t_index_str	*value_env;
+	t_split_env	*s_e;
+	char		**new_matrix;
 
-	pos = 0;
-	join = NULL;
-	len = ft_strlen(str);
-	// ft_printf("%i\n", len);
-	while (pos < len)
+	s_e = (t_split_env *)ft_calloc(1, sizeof(t_split));
+	init_split_env(s_e);
+	s_e->len = len_env_var_with_space(matrix, matrix_exp, data);
+	s_e->new_matrix = (char **)ft_calloc(s_e->len + 1, sizeof(char *));
+	while (matrix[s_e->i1])
 	{
-		// ft_printf("[%s] [%s] (%i)", str, str + pos, pos);
-		value_env = extract_value_env(str + pos, data);
-		if (value_env->str)
-			join_value_env(value_env, &join, &pos);
+		if (ft_strchr(matrix[s_e->i1], '$'))
+			env_var_with_space(matrix, matrix_exp, s_e, data);
 		else
-		{
-			if (join == NULL)
-				join = ft_charjoin(NULL, str[pos]);
-			else
-				join = ft_charjoin_free(join, str[pos]);
-			pos++;
-		}
-		free(value_env);
-		// ft_printf(" == [[%i]]\n", pos);
+			s_e->new_matrix[s_e->i2++] = ft_strdup(matrix_exp[s_e->i1++]);
 	}
-	return (join);
+	new_matrix = s_e->new_matrix;
+	free_matrix(matrix_exp);
+	free_matrix(matrix);
+	free(s_e);
+	return (new_matrix);
 }
-
-void	environment_variation_expansion(char ***matrix, t_data *data)
-{
-	int		i;
-	int		old_size;
-	int		new_size;
-	char	*value_env;
-
-	if ((*matrix) == NULL)
-		return ;
-	i = 0;
-	while ((*matrix)[i])
-	{
-		if ((ft_strchr((*matrix)[i], '$') || ft_strchr((*matrix)[i], '\'')
-			|| ft_strchr((*matrix)[i], '\"')))
-		{
-			value_env = get_environment_variation_expansion((*matrix)[i], data);
-			old_size = ft_strlen((*matrix)[i]);
-			new_size = ft_strlen(value_env);
-			(*matrix)[i] = ft_realloc((*matrix)[i], old_size, new_size + 1);
-			ft_strlcpy((*matrix)[i], value_env, new_size + 1);
-			free(value_env);
-		}
-		i++;
-	}
-}
-
-/////////////////////////////////
+/////
 
 int	main(int ac, char **av, char **envp)
 {
-	int		i; // ->nao usas
-	t_data	data;
 	char	**matrix;
+	char	**matrix_exp;
+	char	**new_matrix;
+	t_data	data;
 
-	i = 0;  // ->nao usas
-	matrix = NULL;
-	ft_printf("{{{%c{%i}}}}\n", 1, 1);
 	init_data(&data);
 	data.envp = get_all_environment(envp);
-	matrix = split_2("ls:$LS", ':');
-	environment_variation_expansion(&matrix, &data);
-	printf("\n\n\n");
-	while (matrix[i])
+	matrix = split_2("export:$A$B:$A'---'$B", ':'); // 
+	matrix_exp = split_2("export:ab  cdef  gh:ab  cd---ef  gh", ':'); // 
+	new_matrix = split_env_var_with_space(matrix, matrix_exp, &data);
+	ft_printf("[%i]\n", len_matrix(new_matrix));
+	int i = 0;
+	while (new_matrix[i])
 	{
-		printf("[%s]\n", matrix[i]);
-		// int j = 0;
-		// while (matrix[i][j])
-		// {
-		// 	if (matrix[i][j] == 1)
-		// 		printf("Delimitador 1 ");
-		// 	printf("[%c][%i]\n", matrix[i][j], matrix[i][j]);
-		// 	j++;
-		// }
-		i++;
+		ft_printf("[%s]\n", new_matrix[i++]);
 	}
-	free_matrix(matrix);
+	free_matrix(new_matrix);
 	free_data(&data);
 	return (0);
 }
-
-// Vfs1@gmail

@@ -14,20 +14,69 @@
 
 char	**allocation_of_environment_variable_with_space(char **cpy_matrix, char **matrix, t_data *data)
 {
-	int		i;
+	int		i1;
+	int		i2;
 	char	**new_matrix;
 
-	i = 0;
+	i1 = 0;
+	i2 = 0;
 	(void)data;
 	(void)matrix;
-	(void)new_matrix;
-	while (cpy_matrix[i])
+	new_matrix = (char **)ft_calloc(len_matrix(matrix) + 100, sizeof(char *));
+	while (cpy_matrix[i1])
 	{
-		ft_printf("%i - {%s}", i, matrix[i]);
-		ft_printf("[%s]\n", cpy_matrix[i]);
-		i++;
+		//  export A="ab  cd"  B="ef  gh"
+		// ft_printf("%i - {%s}", i, matrix[i]); ft_printf("[%s]\n", cpy_matrix[i]);
+		if (ft_strchr(cpy_matrix[i1], '$'))
+		{
+			i1 = 0;
+			while (cpy_matrix[i1][i2])
+			{
+				if (cpy_matrix[i1][i2] == '$')
+				{
+					int		end;
+					char	*env_var;
+					char	*env_var_value;
+
+					end = i2;
+					end++;
+					while (ft_isalpha(cpy_matrix[i1][end]) || cpy_matrix[i1][end] == '_')
+						end++;
+					env_var = substring(cpy_matrix[i1], i2, end);
+					env_var_value = get_env(env_var + 1, data);
+					/////////////// int __name__(char *env_var_value)
+					int	i;
+					int	f;
+
+					i = 0;
+					f = 0;
+					while (env_var_value[f])
+					{
+						while (env_var_value[f] ==  ' ')
+							f++;
+						while (env_var_value[f] && env_var_value[f] != ' ')
+							f++;
+						if (env_var_value[f] ==  ' ' || env_var_value[f] ==  '\0')
+						{
+							while (env_var_value[i] ==  ' ')
+								i++;
+							ft_printf("(%i %i) - [%s]\n", i, f, substring(env_var_value, i, f));
+							i = f;
+						}
+					}
+					///////////////
+					free(env_var);					
+					i2 = end - 1;
+				}
+				ft_printf("\n");
+				i2++;
+			}
+		}
+		else
+			new_matrix[i1] = ft_strdup(cpy_matrix[i1]);
+		i1++;
 	}
-	//  free_matrix(new_matrix) free_matrix(matrix)
+	//  free_matrix(cpy_matrix) free_matrix(matrix)
 	return (NULL);
 }
 

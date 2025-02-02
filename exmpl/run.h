@@ -109,6 +109,7 @@ typedef struct s_index_str
 	char		*str;
 }				t_index_str;
 
+
 void		init_data(t_data *data);
 void		free_matrix(char **matrix);
 char		**split_2(char *str, char chr);
@@ -144,6 +145,7 @@ bool	first_str(char chr, char *str);
 int		count_chr(char chr, char *str);
 int		get_position_chr(char chr, char *str);
 int		ft_strnpos(const char *big, const char *little, size_t len);
+int		ft_strnpos2(const char *big, const char *little, size_t len);
 
 
 
