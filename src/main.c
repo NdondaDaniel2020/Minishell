@@ -21,25 +21,23 @@ void	ctrl_d(t_data *data)
 	exit(data->value_output);
 }
 
-void	master(char *command, t_data *data)
+int	master(char *command, t_data *data)
 {
 	int	value_redirection;
 
 	if (has_unclosed_quotes(command))
 	{
-		ft_putstr_fd("syntax error: unclosed quotes\n", 2);
-		free_all_data(data); /* testar pode dar vazamento ou bug*/
-		return ;
+		ft_putstr_fd("syntax error: unclosed quotes\n", 2);		
+		return (free(command), free_all_data(data), 1);
 	}
 	if (simple_error(command))
-		return ;
+		return (free(command), free_all_data(data), 1);
 	value_redirection = is_redirection(command);
 	insert_data(data, command);
 	if (is_pipe_heredoc(command))
 	{
 		ft_putstr_fd("syntax error: unclosed pipe\n", 2);
-		free_all_data(data);  /* testar pode dar vazamento ou bug */
-		return ;
+		return (free_all_data(data), 1);
 	}
 	if (is_heredoc_redirection(data))
 		get_name_for_heredoc_redirection(data);
@@ -47,7 +45,7 @@ void	master(char *command, t_data *data)
 		execute_commands_without_pipe(value_redirection, data);
 	else
 		execute_commands_with_pipe(data);
-	free_all_data(data);
+	return (free_all_data(data), 0);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -70,7 +68,9 @@ int	main(int ac, char **av, char **envp)
 		{
 			add_history(input);
 			if (all_is_space(input) == false)
+			{
 				master(input, &data);
+			}
 		}
 	}
 	return (0);

@@ -358,12 +358,16 @@ int	main(int ac, char **av, char **envp)
 	ft_printf("{{{%c{%i}}}}\n", 1, 1);
 	init_data(&data);
 	data.envp = get_all_environment(envp);
+<<<<<<< HEAD
 	matrix = split_2("ls:'-'ls'-'", ':');
+=======
+	matrix = split_2("ls:''", ':');
+>>>>>>> 7c421f3 (ultimo commit do dia)
 	environment_variation_expansion(&matrix, &data);
-	printf("\n\n\n");
+	printf("\n");
 	while (matrix[i])
 	{
-		printf("[%s]\n", matrix[i]);
+		printf("[%s][%c][%i]\n", matrix[i], matrix[i][0], matrix[i][0]);
 		// int j = 0;
 		// while (matrix[i][j])
 		// {
