@@ -356,7 +356,7 @@ int	main(int ac, char **av, char **envp)
 	ft_printf("{{{%c{%i}}}}\n", 1, 1);
 	init_data(&data);
 	data.envp = get_all_environment(envp);
-	matrix = split_2("ls:$LS", ':');
+	matrix = split_2("ls:''", ':');
 	environment_variation_expansion(&matrix, &data);
 	printf("\n\n\n");
 	while (matrix[i])

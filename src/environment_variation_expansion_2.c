@@ -64,6 +64,7 @@ static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 		{
 			(*join) = ft_charjoin(NULL, 1);
 			(*join) = ft_charjoin_free((*join), 1);
+			free(value_env->str);
 		}
 		else
 			(*join) = value_env->str;
