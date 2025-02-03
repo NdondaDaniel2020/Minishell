@@ -58,6 +58,17 @@ typedef struct s_data
 	t_new_list	*list;
 }				t_data;
 
+typedef struct s_split_env
+{
+	int		i1;
+	int		i2;
+	int		len;
+	int		start;
+	int		index;
+	int		break_point;
+	char	**new_matrix;
+}			t_split_env;
+
 typedef struct s_split
 {
 	int		len;
@@ -302,5 +313,14 @@ bool		all_is_space(char *str);
 bool		is_pipe_heredoc(char *command);
 bool		has_unclosed_quotes(const char *str);
 char		character_of_unclosed_quotes(const char *str);
+
+void		init_split_env(t_split_env *split_env);
+int			ft_strnpos2(const char *big, const char *little, size_t len);
+int			len_env_var_with_space(char **matrix, char **matrix_exp, t_data *data);
+int			get_break_position(t_index_str *str, char *string, char *string_exp, t_data *data);
+int			get_the_string_break_position(int index, char *string, char *string_exp, t_data *data);
+char		**split_env_var_with_space(char **matrix, char **matrix_exp, t_data *data);
+char		**dup_matrix(char **matrix);
+char		**all_adjustments_in_the_matrix(char ***matrix, t_data *data);
 
 #endif

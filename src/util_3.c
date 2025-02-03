@@ -12,108 +12,12 @@
 
 #include "minishell.h"
 
-char	**allocation_of_environment_variable_with_space(char **cpy_matrix, char **matrix, t_data *data)
-{
-	int		i1;
-	int		i2;
-	char	**new_matrix;
-
-	i1 = 0;
-	i2 = 0;
-	(void)data;
-	(void)matrix;
-	new_matrix = (char **)ft_calloc(len_matrix(matrix) + 100, sizeof(char *));
-	while (cpy_matrix[i1])
-	{
-		//  export A="ab  cd"  B="ef  gh"
-		// ft_printf("%i - {%s}", i, matrix[i]); ft_printf("[%s]\n", cpy_matrix[i]);
-		if (ft_strchr(cpy_matrix[i1], '$'))
-		{
-			i1 = 0;
-			while (cpy_matrix[i1][i2])
-			{
-				if (cpy_matrix[i1][i2] == '$')
-				{
-					int		end;
-					char	*env_var;
-					char	*env_var_value;
-
-					end = i2;
-					end++;
-					while (ft_isalpha(cpy_matrix[i1][end]) || cpy_matrix[i1][end] == '_')
-						end++;
-					env_var = substring(cpy_matrix[i1], i2, end);
-					env_var_value = get_env(env_var + 1, data);
-					/////////////// int __name__(char *env_var_value)
-					int	i;
-					int	f;
-
-					i = 0;
-					f = 0;
-					while (env_var_value[f])
-					{
-						while (env_var_value[f] ==  ' ')
-							f++;
-						while (env_var_value[f] && env_var_value[f] != ' ')
-							f++;
-						if (env_var_value[f] ==  ' ' || env_var_value[f] ==  '\0')
-						{
-							while (env_var_value[i] ==  ' ')
-								i++;
-							ft_printf("(%i %i) - [%s]\n", i, f, substring(env_var_value, i, f));
-							i = f;
-						}
-					}
-					///////////////
-					free(env_var);					
-					i2 = end - 1;
-				}
-				ft_printf("\n");
-				i2++;
-			}
-		}
-		else
-			new_matrix[i1] = ft_strdup(cpy_matrix[i1]);
-		i1++;
-	}
-	//  free_matrix(cpy_matrix) free_matrix(matrix)
-	return (NULL);
-}
-
-char	**dup_matrix(char **matrix)
-{
-	int		i;
-	int		len;
-	char	**new_matrix;
-
-	len = len_matrix(matrix);
-	new_matrix = (char **)ft_calloc((len + 1), sizeof(char *));
-	if (!new_matrix)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		new_matrix[i] = strdup(matrix[i]);
-		if (!new_matrix[i])
-		{
-			while (i > 0)
-				free(new_matrix[--i]);
-			free(new_matrix);
-			return (NULL);
-		}
-		i++;
-	}
-	new_matrix[len] = NULL;
-	return (new_matrix);
-}
-
 void	insert_data(t_data *data, char *command)
 {
 	int		i;
 	int		len_m;
 	char	**matrix;
 	char	**spliting;
-	char	**new_matrix;
 
 	i = 0;
 	data->command = command;
@@ -126,18 +30,7 @@ void	insert_data(t_data *data, char *command)
 	while (spliting[i])
 	{
 		matrix = split_2(spliting[i], ' ');
-		matrix_space_position_adjustment(&matrix);
-		null_string(&matrix);
-		//////////////////////////////////////////////////////////////////////////////////
-		new_matrix = dup_matrix(matrix);
-		environment_variation_expansion(&matrix, data);
-		//////////////////////////////////////////////////////////////////////////////////
-		matrix_space_position_adjustment(&new_matrix);
-		matrix_space_position_adjustment(&matrix);
-		//////////////////////////////////////////////////////////////////////////////////
-		// matrix = 
-		allocation_of_environment_variable_with_space(new_matrix, matrix, data);
-		//////////////////////////////////////////////////////////////////////////////////
+		matrix = all_adjustments_in_the_matrix(&matrix, data);
 		ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
 		free(spliting[i]);
 		i++;

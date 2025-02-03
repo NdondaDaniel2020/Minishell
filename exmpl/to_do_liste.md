@@ -80,3 +80,7 @@ typedef struct s_split_env
 	int		break_point;
 	char	**new_matrix;
 }			t_split_env;
+
+
+get_value_break_position
+

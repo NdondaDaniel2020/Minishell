@@ -23,6 +23,7 @@ typedef struct s_split_env
 	int		start;
 	int		index;
 	int		break_point;
+	char	*env_var;
 	char	**new_matrix;
 }			t_split_env;
 
@@ -84,33 +85,36 @@ void	init_split_env(t_split_env *split_env)
 	split_env->start = 0;
 	split_env->index = 0;
 	split_env->break_point = 0;
+	split_env->env_var = NULL;
 	split_env->new_matrix = NULL;
 }
 
-static int	get_pos_break_position(char	*env_var_value, char *string, char *string_exp, t_data *data)
+static int	get_value_break_position(char *env_var_value, char **matrix, char **matrix_exp, t_split_env *s_e)
 {
 	int value1;
 	int value2;
 	int value3;
 
-	value1 = ft_strnpos2(string_exp, env_var_value, ft_strlen(string_exp));
-	value2 = ft_strnpos2(string, env_var_value, ft_strlen(string_exp));
+	value1 = ft_strnpos2(matrix_exp[s_e->i1], env_var_value,
+		ft_strlen(matrix_exp[s_e->i1]));
+	value2 = ft_strnpos2(matrix[s_e->i1], env_var_value,
+		ft_strlen(matrix_exp[s_e->i1]));
 	if (value2 == value1)
 	{
-		value3 = ft_strnpos2(string_exp + (ft_strlen(env_var_value) - 1),
-			env_var_value, ft_strlen(string_exp + (ft_strlen(
-				env_var_value) - 1)));
+		value3 = ft_strnpos2(matrix_exp[s_e->i1] + \
+			(ft_strlen(env_var_value) - 1), env_var_value,
+			ft_strlen(matrix_exp[s_e->i1] + (ft_strlen(env_var_value) - 1)));
 		return ((ft_strlen(env_var_value) - 1) + value3);
 	}
 	return (value1);
 }
 
-int	get_break_position(t_index_str *str, char *string, char *string_exp, t_data *data)
+static int	get_break_position(char **matrix, char **matrix_exp, t_split_env *s_e, t_data *data)
 {
 	int 	f;
 	char	*env_var_value;
 
-	env_var_value = get_env(str->str + 1, data);
+	env_var_value = get_env(s_e->env_var + 1, data);
 	if (ft_strchr(env_var_value, ' '))
 	{
 		f = 0;
@@ -122,17 +126,15 @@ int	get_break_position(t_index_str *str, char *string, char *string_exp, t_data 
 				f++;
 			if (env_var_value[f] ==  ' ')
 			{
-				if (str->index == 0)
-					return (get_pos_break_position(env_var_value,
-						string, string_exp, data) + f);
-				str->index--;
+				if (s_e->index == 0)
+					return (get_value_break_position(env_var_value,
+						matrix, matrix_exp, s_e) + f);
+				s_e->index--;
 			}
 		}
 	}
 	return (-1);
 }
-
-////
 
 static void	validation_quotes(char *string, int *i)
 {
@@ -147,62 +149,67 @@ static void	validation_quotes(char *string, int *i)
 	}
 }
 
-static t_index_str	*ini_and_set_index_str(int index)
+int	get_the_string_break_position(char **matrix, char **matrix_exp, t_split_env *s_e, t_data *data)
 {
-	t_index_str	*str;
-
-	str = (t_index_str *)ft_calloc(1, sizeof(t_index_str));
-	str->index = index;
-	return (str);
-}
-
-int	get_the_string_break_position(int index, char *string, char *string_exp, t_data *data)
-{
-	int			i;
-	int			end;
-	int			value;
-	t_index_str	*str;
+	int		i;
+	int		end;
+	int		value;
 
 	i = 0;
-	str = ini_and_set_index_str(index);
-	while (string[i])
+	while (matrix[s_e->i1][i])
 	{
-		validation_quotes(string, &i);
-		if (string[i] == '$')
+		validation_quotes(matrix[s_e->i1], &i);
+		if (matrix[s_e->i1][i] == '$')
 		{
 			end = i + 1;
-			while (ft_isalpha(string[end]) || string[end] == '_')
+			while (ft_isalpha(matrix[s_e->i1][end])
+				|| matrix[s_e->i1][end] == '_')
 				end++;
-			str->str = substring(string, i, end);
-			value = get_break_position(str, string, string_exp, data);
+			s_e->env_var = substring(matrix[s_e->i1], i, end);
+			value = get_break_position(matrix, matrix_exp, s_e, data);
 			if (value != -1)
-				return (free(str->str), free(str), value);
-			free(str->str);
+				return (free(s_e->env_var), value);
+			free(s_e->env_var);
 			i = end - 1;
 		}
 		i++;
 	}
-	return (free(str), -1);
+	return (-1);
 }
 
 /// ===>> len
 static void	get_len_break_position(char **matrix, char **matrix_exp, t_split_env *s_e, t_data *data)
 {
 	s_e->index = 0;
+	s_e->start = 0;
 	s_e->break_point = 0;
 	while (s_e->break_point != -1)
 	{
-		s_e->break_point = get_the_string_break_position(s_e->index,
-			matrix[s_e->i1], matrix_exp[s_e->i1], data);
-		if (s_e->index == 0 && s_e->break_point == -1)
-			s_e->i2++, s_e->i1++;
-		else
-		{
-			if (s_e->break_point == -1)
-				s_e->i2++, s_e->i1++;
-			else
-				s_e->i2++;
-		}
+		s_e->break_point = get_the_string_break_position(matrix, matrix_exp, s_e, data);
+		ft_printf("{%i}\n", s_e->index);
+		// ft_printf("{{}}{%i}{%i}{%i}\n", s_e->index, s_e->start, s_e->break_point);
+		// if (s_e->index == 0 && s_e->break_point == -1 && s_e->start == 0)
+		// {
+		// 	ft_printf("[%s]\n", ft_strdup(matrix_exp[s_e->i1]));
+		// 	s_e->i2++, s_e->i1++;
+		// 	break ;
+		// }
+		// else
+		// {
+		// 	while (matrix_exp[s_e->i1][s_e->start] == ' ')
+		// 		s_e->start++;
+		// 	if (s_e->break_point == -1)
+		// 	{
+		// 		ft_printf("[%s]\n", substring(matrix_exp[s_e->i1], s_e->start, ft_strlen(matrix_exp[s_e->i1])));
+		// 		s_e->i2++, s_e->i1++;
+		// 	}
+		// 	else
+		// 	{
+		// 		ft_printf("[%s]\n", substring(matrix_exp[s_e->i1], s_e->start, s_e->break_point));
+		// 		s_e->i2++;
+		// 		s_e->start = s_e->break_point;
+		// 	}
+		// }
 		s_e->index++;
 	}
 }
@@ -252,9 +259,8 @@ static void	env_var_with_space(char **matrix, char **matrix_exp, t_split_env *s_
 	s_e->break_point = 0;
 	while (s_e->break_point != -1)
 	{
-		s_e->break_point = get_the_string_break_position(s_e->index,
-			matrix[s_e->i1], matrix_exp[s_e->i1], data);
-		if (s_e->index == 0 && s_e->break_point == -1)
+		s_e->break_point = get_the_string_break_position(matrix, matrix_exp, s_e, data);
+		if (s_e->index == 0 && s_e->break_point == -1 && s_e->start == 0)
 		{
 			s_e->new_matrix[s_e->i2++] = ft_strdup(matrix_exp[s_e->i1++]);
 			break ;
@@ -298,14 +304,14 @@ int	main(int ac, char **av, char **envp)
 
 	init_data(&data);
 	data.envp = get_all_environment(envp);
-	matrix = split_2("export:$A", ':'); // :ab  cd$A  // :$A$B
-	matrix_exp = split_2("export:ab  cd", ':'); // :ab  cdab  cd // ab  cdef  gh
+	matrix = split_2("export:$A$B", ':'); // :ab  cd$A  // :$A$B
+	matrix_exp = split_2("export:ab  cdef  gh", ':'); // :ab  cdab  cd // ab  cdef  gh
 	new_matrix = split_env_var_with_space(matrix, matrix_exp, &data);
 	ft_printf("\n");
 	int i = 0;
 	while (new_matrix[i])
 	{
-		ft_printf("[%s]\n", new_matrix[i++]);
+		ft_printf("{{%s}}\n", new_matrix[i++]);
 	}
 	free_matrix(new_matrix);
 	free_data(&data);

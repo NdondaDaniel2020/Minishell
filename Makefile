@@ -34,8 +34,8 @@ FILES = adjust_file_name.c \
 		exec_redirection.c \
 		exec_redirection_util.c \
 		execute_commands_without_pipe.c \
-		execute_commands_with_pipe_util.c \
 		execute_commands_with_pipe.c \
+		execute_commands_with_pipe_util.c \
 		exit_1.c \
 		exit_2.c \
 		export_1.c \
@@ -63,6 +63,9 @@ FILES = adjust_file_name.c \
 		redirection_util_9.c \
 		signs_handler.c \
 		split_2.c \
+		split_env_var_with_space.c \
+		split_env_var_with_space_util_1.c \
+		split_env_var_with_space_util_2.c \
 		unset.c \
 		util_1.c \
 		util_2.c \
