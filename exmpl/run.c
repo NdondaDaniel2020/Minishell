@@ -266,6 +266,7 @@ static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 		(*pos) += value_env->index;
 		if (ft_strlen(value_env->str) == 0)
 		{
+			(*pos)--;
 			(*join) = ft_charjoin(NULL, 1);
 			(*join) = ft_charjoin_free((*join), 1);
 		}
@@ -299,8 +300,9 @@ char	*get_environment_variation_expansion(char *str, t_data *data)
 	// ft_printf("%i\n", len);
 	while (pos < len)
 	{
-		// ft_printf("[%s] [%s] (%i)", str, str + pos, pos);
+		ft_printf("[%s] [%s] (%i)\n", str, str + pos, pos);
 		value_env = extract_value_env(str + pos, data);
+		// ft_printf("[%s]\n", value_env->str);
 		if (value_env->str)
 			join_value_env(value_env, &join, &pos);
 		else
@@ -356,7 +358,7 @@ int	main(int ac, char **av, char **envp)
 	ft_printf("{{{%c{%i}}}}\n", 1, 1);
 	init_data(&data);
 	data.envp = get_all_environment(envp);
-	matrix = split_2("ls:''", ':');
+	matrix = split_2("ls:'-'ls'-'", ':');
 	environment_variation_expansion(&matrix, &data);
 	printf("\n\n\n");
 	while (matrix[i])
