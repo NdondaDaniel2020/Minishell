@@ -14,16 +14,17 @@
 
 void	adjustment_001(t_new_list *aux)
 {
-	t_new_list *new_aux;
+	int			i;
+	t_new_list	*new_aux;
 
 	new_aux = aux;
 	while (new_aux)
 	{
-		int i = 0;
+		i = 0;
 		while (new_aux->content[i])
 		{
 			if (ft_strlen(new_aux->content[i]) == 2
-			&& new_aux->content[i][0] == 1 && new_aux->content[i][1] == 1)
+				&& new_aux->content[i][0] == 1 && new_aux->content[i][1] == 1)
 			{
 				new_aux->content[i][0] = 0;
 				new_aux->content[i][1] = 0;

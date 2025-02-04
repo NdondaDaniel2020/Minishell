@@ -12,15 +12,6 @@
 
 #include "minishell.h"
 
-void	free_data(t_data *data)
-{
-	if (data->path)
-		free_matrix(data->path);
-	if (data->envp)
-		free_matrix(data->envp);
-	free_all_data(data);
-}
-
 static bool	skip_and_sign(const char *str, int *i, int *sign)
 {
 	while (str[*i] == ' ' || str[*i] == '\t')
@@ -37,21 +28,11 @@ static bool	skip_and_sign(const char *str, int *i, int *sign)
 	return (true);
 }
 
-long long	ft_atoll(const char *str, bool *error)
+static long long	ft_util_atoll(int i, int sign, char *str, bool *error)
 {
 	long long	num;
-	int			sign;
-	int			i;
 
 	num = 0;
-	sign = 1;
-	i = 0;
-	*error = false;
-	if (!skip_and_sign(str, &i, &sign))
-	{
-		*error = true;
-		return (0);
-	}
 	while (ft_isdigit(str[i]))
 	{
 		if (num > (LLONG_MAX - (str[i] - '0')) / 10)
@@ -68,6 +49,22 @@ long long	ft_atoll(const char *str, bool *error)
 	if (str[i] != '\0')
 		*error = true;
 	return (num * sign);
+}
+
+long long	ft_atoll(const char *str, bool *error)
+{
+	int			i;
+	int			sign;
+
+	i = 0;
+	sign = 1;
+	*error = false;
+	if (!skip_and_sign(str, &i, &sign))
+	{
+		*error = true;
+		return (0);
+	}
+	return (ft_util_atoll(i, sign, (char *)str, error));
 }
 
 static void	free_and_exit(int ex, t_data *data)

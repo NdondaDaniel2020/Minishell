@@ -12,6 +12,15 @@
 
 #include "minishell.h"
 
+void	free_data(t_data *data)
+{
+	if (data->path)
+		free_matrix(data->path);
+	if (data->envp)
+		free_matrix(data->envp);
+	free_all_data(data);
+}
+
 bool	is_not_number(char *str)
 {
 	int	i;
