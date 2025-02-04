@@ -32,7 +32,6 @@ void	create_pipe(t_data *data)
 
 	if (pipe(pipefd) == -1)
 	{
-		perror("Failed to create pipe");
 		exit(EXIT_FAILURE);
 	}
 	data->write_pipe_operation = pipefd[1];
@@ -60,14 +59,12 @@ void	wait_for_children(void)
 		{
 			if (WEXITSTATUS(status) != 0)
 			{
-				ft_putstr_fd("Error", 2);
 				ft_putnbr_fd(WEXITSTATUS(status), 2);
 				ft_putstr_fd("\n", 2);
 			}
 		}
 		else if (WIFSIGNALED(status))
 		{
-			ft_putstr_fd("Child", 2);
 			ft_putnbr_fd(WEXITSTATUS(status), 2);
 			ft_putstr_fd("\n", 2);
 		}
