@@ -31,11 +31,11 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
         echo edson'finda'
         echo edson'finda'"efinda"luanda
         echo edson"finda""efinda"42''
-
         echo edson'finda'"efinda"'                   '42
         echo -n
         echo -
-        echo -nnnnnnnn -n -n -nnnn edsonn
+
+		echo -nnnnnnnn -n -n -nnnn edsonn
         echo -nnnnnnnn -n -n - -nnnn edsonn
         echo -nnnnnnnn -n "-n" -nnnn edsonn
         echo -nnnnnnnn -n "-n " -nnnn edsonn

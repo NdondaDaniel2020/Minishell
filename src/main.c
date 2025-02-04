@@ -48,6 +48,15 @@ int	master(char *command, t_data *data)
 	return (free_all_data(data), 0);
 }
 
+void	enter_master(char *input, t_data *data)
+{
+	add_history(input);
+	if (all_is_space(input) == false)
+		master(input, data);
+	else
+		free(input);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_data	data;
@@ -65,13 +74,9 @@ int	main(int ac, char **av, char **envp)
 		if (input == NULL)
 			ctrl_d(&data);
 		else if (input[0] != '\0')
-		{
-			add_history(input);
-			if (all_is_space(input) == false)
-			{
-				master(input, &data);
-			}
-		}
+			enter_master(input, &data);
+		else
+			free(input);
 	}
 	return (0);
 }

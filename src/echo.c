@@ -14,14 +14,14 @@
 
 int	echo(t_new_list *aux, t_data *data)
 {
-	bool	no_newline;
 	int		i;
 	int		len;
+	bool	no_newline;
 
 	if (echo_is_empty(aux))
 		return (change_environment_variables_question_mark(0, data));
-	no_newline = false;
 	i = 1;
+	no_newline = false;
 	len = len_matrix(aux->content);
 	while (i < len && ft_strncmp(aux->content[i], "-n", 2) == 0 && \
 	only_valid_n(aux->content[i]))
