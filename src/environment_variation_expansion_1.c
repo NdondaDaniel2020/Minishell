@@ -32,7 +32,10 @@ char	*adjustment_in_the_extraction_string(char *str, t_data *data)
 	aux = get_env(str, data);
 	if (aux == NULL)
 	{
-		void_str = ft_calloc(1, sizeof(char));
+		void_str = ft_calloc(3, sizeof(char));
+		void_str[0] = 1;
+		void_str[1] = 1;
+		void_str[2] = 0;
 		return (void_str);
 	}
 	return (ft_strdup(aux));

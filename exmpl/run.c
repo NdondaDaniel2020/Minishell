@@ -70,8 +70,10 @@ char	*adjustment_in_the_extraction_string(char *str, t_data *data)
 	aux = get_env(str, data);
 	if (aux == NULL)
 	{
-		void_str = ft_calloc(1, sizeof(char));
-		void_str[0] = '\0';
+		void_str = ft_calloc(3, sizeof(char));
+		void_str[0] = 1;
+		void_str[1] = 1;
+		void_str[2] = 0;
 		return (void_str);
 	}
 	return (ft_strdup(aux));
@@ -259,7 +261,7 @@ t_index_str	*extract_value_env(char *str, t_data *data)
 
 /////////////////////////////////
 
-static void	join_value_env(t_index_str *value_env, char **join, int *pos)
+static void join_value_env(t_index_str *value_env, char **join, int *pos)
 {
 	if ((*join) == NULL)
 	{
@@ -269,6 +271,7 @@ static void	join_value_env(t_index_str *value_env, char **join, int *pos)
 			(*pos)--;
 			(*join) = ft_charjoin(NULL, 1);
 			(*join) = ft_charjoin_free((*join), 1);
+			free(value_env->str);
 		}
 		else
 			(*join) = value_env->str;
@@ -358,16 +361,12 @@ int	main(int ac, char **av, char **envp)
 	ft_printf("{{{%c{%i}}}}\n", 1, 1);
 	init_data(&data);
 	data.envp = get_all_environment(envp);
-<<<<<<< HEAD
-	matrix = split_2("ls:'-'ls'-'", ':');
-=======
-	matrix = split_2("ls:''", ':');
->>>>>>> 7c421f3 (ultimo commit do dia)
+	matrix = split_2("ls:$HOMES", ':');
 	environment_variation_expansion(&matrix, &data);
 	printf("\n");
 	while (matrix[i])
 	{
-		printf("[%s][%c][%i]\n", matrix[i], matrix[i][0], matrix[i][0]);
+		printf("[%s]\n", matrix[i]);
 		// int j = 0;
 		// while (matrix[i][j])
 		// {
