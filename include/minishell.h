@@ -70,16 +70,6 @@ typedef struct s_split_env
 	char	**new_matrix;
 }			t_split_env;
 
-typedef struct s_split
-{
-	int		len;
-	int		in_quotes;
-	int		substr_count;
-	char	**result;
-	char	*start;
-	char	*end;
-} 			t_split;
-
 typedef struct s_extract
 {
 	char	*string;
@@ -191,7 +181,7 @@ char		*ft_charjoin_free(char *s1, char c);
 
 
 /* functions */
-char		**split_2(char *str, char chr);
+char		**split(char *str, char chr);
 
 int			other_command(int i, t_new_list *aux, t_data *data);
 char		*get_valid_path(t_new_list *aux, t_data *data);

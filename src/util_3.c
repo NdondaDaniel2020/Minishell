@@ -21,7 +21,7 @@ void	insert_data(t_data *data, char *command)
 
 	i = 0;
 	data->command = command;
-	spliting = split_2(command, '|');
+	spliting = split(command, '|');
 	len_m = len_matrix(spliting);
 	if (len_m > 1)
 		data->is_pipe = true;
@@ -29,7 +29,7 @@ void	insert_data(t_data *data, char *command)
 		data->is_pipe = false;
 	while (spliting[i])
 	{
-		matrix = split_2(spliting[i], ' ');
+		matrix = split(spliting[i], ' ');
 		matrix = all_adjustments_in_the_matrix(&matrix, data);
 		ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
 		free(spliting[i]);

@@ -62,7 +62,7 @@ FILES = adjust_file_name.c \
 		redirection_util_8.c \
 		redirection_util_9.c \
 		signs_handler.c \
-		split_2.c \
+		split.c \
 		split_env_var_with_space.c \
 		split_env_var_with_space_util_1.c \
 		split_env_var_with_space_util_2.c \

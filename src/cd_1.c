@@ -29,7 +29,7 @@ void	add_in_list(char *value_env, t_new_list *aux, t_data *data)
 
 	i = 0;
 	value_env = ft_strtrim(value_env, "\"'");
-	split_cmd = split_2(value_env, ' ');
+	split_cmd = split(value_env, ' ');
 	new_content = ft_calloc(len_matrix(split_cmd) + 2, sizeof(char *));
 	new_content[i] = ft_strdup(aux->content[0]);
 	while (split_cmd[i])

@@ -45,7 +45,7 @@ int	len_env_var_with_space(char **matrix, char **matrix_exp, t_data *data)
 	int			i;
 	t_split_env	*s_e;
 
-	s_e = (t_split_env *)ft_calloc(1, sizeof(t_split));
+	s_e = (t_split_env *)ft_calloc(1, sizeof(t_split_env));
 	init_split_env(s_e);
 	while (matrix[s_e->i1])
 	{
@@ -108,7 +108,7 @@ char	**split_env_var_with_space(char **matrix, char **matrix_exp,
 	t_split_env	*s_e;
 	char		**new_matrix;
 
-	s_e = (t_split_env *)ft_calloc(1, sizeof(t_split));
+	s_e = (t_split_env *)ft_calloc(1, sizeof(t_split_env));
 	init_split_env(s_e);
 	s_e->len = len_env_var_with_space(matrix, matrix_exp, data);
 	s_e->new_matrix = (char **)ft_calloc(s_e->len + 1, sizeof(char *));
