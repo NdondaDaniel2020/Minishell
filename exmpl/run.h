@@ -147,7 +147,7 @@ int		get_position_chr(char chr, char *str);
 int		ft_strnpos(const char *big, const char *little, size_t len);
 int		ft_strnpos2(const char *big, const char *little, size_t len);
 
-
+int		is_redirection(char *str);
 
 
 #endif

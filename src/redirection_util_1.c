@@ -86,7 +86,7 @@ int	is_redirection(char *str)
 		while (red.list_error[i2])
 		{
 			if (redirection_is_string(i1, &red, str))
-				return (0);
+				return (free_extract_matrix(red.extract_matrix), 0);
 			if (check_redirection_error(i1, i2, &red, str))
 				return (2);
 			i2++;

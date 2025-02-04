@@ -308,34 +308,6 @@ int	ft_strnpos(const char *big, const char *little, size_t len)
 	return (0);
 }
 
-int	ft_strnpos(const char *big, const char *little, size_t len)
-{
-	size_t	i;
-	size_t	c;
-	size_t	l_lit;
-
-	i = 0;
-	l_lit = ft_strlen(little);
-	if (len == 0 && !little)
-		return (0);
-	if (big == little || l_lit == 0)
-		return (0);
-	while (*big && i < len)
-	{
-		c = 0;
-		if (*big == little[0])
-		{
-			while (little[c] == big[c] && little[c] && big[c] && i + c < len)
-				c++;
-		}
-		if (c == l_lit)
-			return (i);
-		++big;
-		i++;
-	}
-	return (0);
-}
-
 ///////////
 
 ///////////
@@ -401,7 +373,7 @@ int	is_redirection(char *str)
 		while (red.list_error[i2])
 		{
 			if (redirection_is_string(i1, &red, str))
-				return (0);
+				return (free_extract_matrix(red.extract_matrix), 0);
 			if (check_redirection_error(i1, i2, &red, str))
 				return (2);
 			i2++;
