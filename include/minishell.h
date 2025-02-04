@@ -16,6 +16,7 @@
 #include "libft.h"
 #include <fcntl.h>
 #include <errno.h>
+#include <limits.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>

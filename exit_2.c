@@ -21,7 +21,7 @@ bool	is_not_number(char *str)
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 		i++;
-	if (!ft_isdigit(str[i]))
+	if(!ft_isdigit(str[i]))
 		return (true);
 	while (str[i])
 	{

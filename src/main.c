@@ -27,7 +27,7 @@ int	master(char *command, t_data *data)
 
 	if (has_unclosed_quotes(command))
 	{
-		ft_putstr_fd("syntax error: unclosed quotes\n", 2);		
+		ft_putstr_fd("syntax error: unclosed quotes\n", 2);
 		return (free(command), free_all_data(data), 1);
 	}
 	if (simple_error(command))
