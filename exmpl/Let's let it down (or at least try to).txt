@@ -110,7 +110,7 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
     export a=edso
     export a='edson finda' (e de seguida echo $a)
     export a='edson "          " finda' (e de seguida echo $a)
-    export a -oi 9mm _obs 
+    export a -oi 9mm _obs
     Sair pra verificar leak.
 
 .unset

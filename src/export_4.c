@@ -23,18 +23,11 @@ static void	print_env_order(t_data *data)
 		j = 0;
 		while (data->envp[j])
 		{
-			if (data->envp[j][0] == alpha)
+			if (data->envp[j][0] == alpha && !ft_strchr(data->envp[j], '?'))
 				ft_printf("declare -x %s\n", data->envp[j]);
 			j++;
 		}
 		alpha++;
-	}
-	j = 0;
-	while (data->envp[j])
-	{
-		if (ft_isalpha(data->envp[j][0]) == 0 && !ft_strchr(data->envp[j], '?'))
-			ft_printf("declare -x %s\n", data->envp[j]);
-		j++;
 	}
 }
 

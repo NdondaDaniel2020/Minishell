@@ -76,7 +76,7 @@ char	**get_all_environment(char **envp)
 	char	**new_env;
 
 	i = len_matrix(envp);
-	new_env = ft_calloc(i + 2, sizeof(char *));
+	new_env = ft_calloc(i + 3, sizeof(char *));
 	i = 0;
 	while (envp[i])
 	{

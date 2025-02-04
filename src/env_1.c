@@ -25,8 +25,10 @@ char	*get_env(char *env, t_data *data)
 			|| data->envp[i][ft_strlen(env)] == '\0'))
 		{
 			ix = 0;
-			while (data->envp[i][ix] != '=')
+			while (data->envp[i][ix] && data->envp[i][ix] != '=')
 				ix++;
+			if (data->envp[i][ix] == '\0')
+				return (NULL);
 			return (data->envp[i] + ix + 1);
 		}
 		i++;

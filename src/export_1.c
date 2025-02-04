@@ -20,9 +20,9 @@ int	change_environment_variables_question_mark(int value, t_data *data)
 	char	*value_str;
 
 	i = 0;
-	while (data->envp[i])
+	while (ft_strncmp(data->envp[i], "?=", 2) != 0)
 		i++;
-	if (ft_atoi(data->envp[i - 1] + 2) != value)
+	if (ft_atoi(data->envp[i] + 2) != value)
 	{
 		len = ft_nblen(value, 10);
 		new_env = ft_calloc(3 + len, sizeof(char));
