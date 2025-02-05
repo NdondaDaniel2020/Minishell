@@ -274,7 +274,7 @@ void		redirect_main_execution(t_red_fd *red_fd, t_data *data, t_new_list *aux);
 
 bool		is_other_file(char *str);
 void		setup_signal(void);
-void		heredoc(t_data *data, char *delimiter);
+int			heredoc(t_data *data, char *delimiter);
 void		put_warning(int line, char *delimiter);
 void		environment_variation_expansion_in_heredoc(char **line, t_data *data);
 void		null_string(char ***matrix);
