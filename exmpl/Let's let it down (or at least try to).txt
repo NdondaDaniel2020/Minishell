@@ -173,7 +173,7 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
     echo "$USER$USER"
     echo "$USER "
     echo $"USER"
-    echo "$"USER
+    echo "$"USER X
     echo $'USER'
     echo '$USER'
     echo '$'USER
