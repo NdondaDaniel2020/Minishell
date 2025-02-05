@@ -190,9 +190,7 @@ char	*expand_double_quote_content(char *env_var, t_index_str *index, t_data *dat
 
 	end = 0;
 	start = 0;
-	sub = NULL;
 	join = NULL;
-	string_exp = NULL;
 	while (end < ft_strlen(env_var) && env_var[end])
 	{
 		sub == NULL;
