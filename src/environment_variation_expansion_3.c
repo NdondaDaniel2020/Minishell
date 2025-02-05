@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-char	*break_the_content_of_double_quotes(int start, int end, char *env_var, t_data *data)
+char	*break_the_content_of_double_quotes(int start, int end, char *env_var,
+	t_data *data)
 {
 	char	*string;
 	char	*string_exp;
@@ -32,10 +33,11 @@ char	*break_the_content_of_double_quotes(int start, int end, char *env_var, t_da
 	return (string_exp);
 }
 
-static void	join_expanded_content_util(char **sub, char **string_exp, char **join)
+static void	join_expanded_content_util(char **sub, char **string_exp,
+	char **join)
 {
 	if ((*join) == NULL)
-	{	
+	{
 		(*join) = ft_strjoin_free((*sub), (*string_exp));
 		free((*string_exp));
 	}
@@ -67,13 +69,14 @@ void	join_expanded_content(char **sub, char **string_exp, char **join)
 	}
 }
 
-char	*expand_double_quote_content(char *env_var, t_index_str *index, t_data *data)
+char	*expand_double_quote_content(char *env_var, t_index_str *index,
+	t_data *data)
 {
 	int		end;
 	int		start;
 	char	*sub;
-	char	*string_exp;
 	char	*join;
+	char	*string_exp;
 
 	end = 0;
 	start = 0;
@@ -85,14 +88,16 @@ char	*expand_double_quote_content(char *env_var, t_index_str *index, t_data *dat
 		sub = get_sub(env_var, &end);
 		start = end;
 		get_the_range_of_the_string(env_var, &end);
-		string_exp = break_the_content_of_double_quotes(start, end, env_var, data);
+		string_exp = break_the_content_of_double_quotes(start, end,
+				env_var, data);
 		join_expanded_content(&sub, &string_exp, &join);
 	}
 	index->index++;
 	return (free(env_var), join);
 }
 
-t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data)
+t_index_str	*exolate_the_content_with_double_quotes(char *str,
+	t_index_str *index, t_data *data)
 {
 	char	*env_var;
 
@@ -100,7 +105,7 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *inde
 	while (str[index->index] && str[index->index] != '\"')
 		index->index++;
 	env_var = substring(str, 1, index->index);
-	if (ft_strlen(env_var) != 0) 
+	if (ft_strlen(env_var) != 0)
 		index->str = expand_double_quote_content(env_var, index, data);
 	else
 		index->str = env_var;
