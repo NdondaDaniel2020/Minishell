@@ -29,7 +29,11 @@ static int	len_split(char *str, char chr)
 				end++;
 		}
 		if (str[end] == chr)
+		{
 			len++;
+			while (str[end + 1] == ' ')
+				end++;
+		}
 		end++;
 	}
 	return (len + 1);
@@ -45,6 +49,15 @@ static void	jump_quotes(char *str, int *end)
 		while (str[*end] && str[*end] != aux)
 			(*end)++;
 	}
+}
+
+static char	*last_str(char *str, int start, int end)
+{
+	while (str[start] == ' ')
+		start++;
+	if (start != end)
+		return (substring(str, start, end));
+	return (NULL);
 }
 
 char	**split(char *str, char chr)
@@ -66,12 +79,12 @@ char	**split(char *str, char chr)
 			while (str[start] == ' ')
 				start++;
 			matrix[i++] = substring(str, start, end);
+			while (str[end + 1] == ' ')
+				end++;
 			start = end;
 		}
 		end++;
 	}
-	while (str[start] == ' ')
-		start++;
-	matrix[i] = substring(str, start, end);
+	matrix[i] = last_str(str, start, end);
 	return (matrix);
 }
