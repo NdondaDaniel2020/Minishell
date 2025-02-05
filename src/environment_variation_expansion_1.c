@@ -12,18 +12,6 @@
 
 #include "minishell.h"
 
-bool	valid_extract(char *str, int index)
-{
-	int		i;
-	char	*str_aux;
-
-	str_aux = ft_substr(str, 0, index + 1);
-	i = count_chr('$', str_aux);
-	if (i == 1 && str[index] == ' ')
-		return (free(str_aux), false);
-	return (free(str_aux), true);
-}
-
 char	*adjustment_in_the_extraction_string(char *str, t_data *data)
 {
 	char	*aux;

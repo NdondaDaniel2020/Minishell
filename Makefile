@@ -27,6 +27,7 @@ FILES = adjust_file_name.c \
 		env_2.c \
 		environment_variation_expansion_1.c \
 		environment_variation_expansion_2.c \
+		environment_variation_expansion_3.c \
 		environment_variation_expansion_util.c \
 		exec_all_redirect_directions.c \
 		exec_main_redirect.c \

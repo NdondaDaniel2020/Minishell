@@ -159,6 +159,8 @@ t_index_str	*exolate_the_content(char *str, t_index_str *index)
 }
 
 ////////////////////////////////
+////////////////////////////////
+////////////////////////////////
 char	*get_sub(char *env_var, int *end)
 {
 	int		start;
@@ -179,6 +181,68 @@ char	*get_sub(char *env_var, int *end)
 	return (sub);
 }
 
+void	get_the_range_of_the_string(char *env_var, int *end)
+{
+	while (*end < ft_strlen(env_var) && env_var[*end]
+		&& (ft_isalnum(env_var[*end]) || env_var[*end] == '_'
+			|| env_var[*end] == '?'))
+		(*end)++;
+}
+
+char	*break_the_content_of_double_quotes(int start, int end, char *env_var, t_data *data)
+{
+	char	*string;
+	char	*string_exp;
+
+	string = NULL;
+	string_exp = NULL;
+	if (start == end && env_var[end - 1] == '$')
+	{
+		string_exp = ft_strdup("$");
+	}
+	else if (start != end)
+	{
+		string = substring(env_var, start, end);
+		string_exp = adjustment_in_the_extraction_string(string, data);
+		free(string);
+	}
+	return (string_exp);
+}
+
+static void	join_expanded_content_util(char **sub, char **string_exp, char **join)
+{
+	if ((*join) == NULL)
+	{	
+		(*join) = ft_strjoin_free((*sub), (*string_exp));
+		free((*string_exp));
+	}
+	else
+	{
+		(*join) = ft_strjoin_free((*join), (*sub));
+		(*join) = ft_strjoin_free((*join), (*string_exp));
+		free((*string_exp));
+		free((*sub));
+	}
+}
+
+void	join_expanded_content(char **sub, char **string_exp, char **join)
+{
+	if ((*sub) == NULL && (*string_exp))
+	{
+		if ((*join) == NULL)
+			(*join) = ft_strdup((*string_exp));
+		else
+			(*join) = ft_strjoin_free((*join), (*string_exp));
+		free((*string_exp));
+	}
+	else if ((*sub) && (*string_exp))
+		join_expanded_content_util(sub, string_exp, join);
+	else
+	{
+		(*join) = ft_strjoin_free((*join), (*sub));
+		free((*sub));
+	}
+}
 
 char	*expand_double_quote_content(char *env_var, t_index_str *index, t_data *data)
 {
@@ -197,53 +261,12 @@ char	*expand_double_quote_content(char *env_var, t_index_str *index, t_data *dat
 		string_exp = NULL;
 		sub = get_sub(env_var, &end);
 		start = end;
-		/////
-		while (end < ft_strlen(env_var) && env_var[end] && (ft_isalnum(env_var[end]) || env_var[end] == '_' || env_var[end] == '?'))
-			end++;
-		/////
-		if (start == end && env_var[end - 1] == '$')
-			string_exp = ft_strdup("$");
-		else if (start != end)
-		{
-			char *string;
-	
-			string = substring(env_var, start, end);
-			string_exp = adjustment_in_the_extraction_string(string, data);
-			free(string);
-		}
-		/////
-		if (sub == NULL && string_exp)
-		{
-			if (join == NULL)
-				join = ft_strdup(string_exp);
-			else
-				join = ft_strjoin_free(join, string_exp);
-			free(string_exp);
-		}
-		else if (sub && string_exp)
-		{
-			if (join == NULL)
-			{	
-				join = ft_strjoin_free(sub, string_exp);
-				free(string_exp);
-			}
-			else
-			{
-				join = ft_strjoin_free(join, sub);
-				join = ft_strjoin_free(join, string_exp);
-				free(string_exp);
-				free(sub);
-			}
-		}
-		else
-		{
-			join = ft_strjoin_free(join, sub);
-			free(sub);
-		}
+		get_the_range_of_the_string(env_var, &end);
+		string_exp = break_the_content_of_double_quotes(start, end, env_var, data);
+		join_expanded_content(&sub, &string_exp, &join);
 	}
 	index->index++;
-	free(env_var);
-	return (join);
+	return (free(env_var), join);
 }
 
 t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *index, t_data *data)
@@ -263,6 +286,8 @@ t_index_str	*exolate_the_content_with_double_quotes(char *str, t_index_str *inde
 	return (index);
 }
 
+////////////////////////////////
+////////////////////////////////
 ////////////////////////////////
 
 t_index_str	*extract_value_env(char *str, t_data *data)
@@ -381,7 +406,7 @@ int	main(int ac, char **av, char **envp)
 	matrix = NULL;
 	init_data(&data);
 	data.envp = get_all_environment(envp);
-	matrix = split_2("echo:\"$HOME$HOME   $HOME  ''$HOME''  $  \"", ':');
+	matrix = split_2("echo:\"$HOME$HOME   $HOME  ''$HOME''  $  \"   $HOME  ", ':');
 	environment_variation_expansion(&matrix, &data);
 	printf("\n");
 	while (matrix[i])

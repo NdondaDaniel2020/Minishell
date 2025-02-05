@@ -1,3 +1,5 @@
+
+
 void	get_the_range_of_the_string(char *env_var, int *start, int *end)
 {
 	*start = *end;
