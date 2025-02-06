@@ -183,10 +183,3 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
     echo $
     echo $fdasfwed32r43wr2rferfrefewe
     Sair pra verificar leak.
-
-
-=======
-cat '' v/
-=======
-cat "" X
-=======

@@ -39,8 +39,12 @@ int	master(char *command, t_data *data)
 		ft_putstr_fd("syntax error: unclosed pipe\n", 2);
 		return (free_all_data(data), 1);
 	}
+	
+	/////////////////////////////////////////////////////////
 	if (is_heredoc_redirection(data))
 		get_name_for_heredoc_redirection(data);
+	/////////////////////////////////////////////////////////
+
 	if (data->is_pipe == false)
 		execute_commands_without_pipe(value_redirection, data);
 	else

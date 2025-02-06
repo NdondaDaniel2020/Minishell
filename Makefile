@@ -73,6 +73,7 @@ FILES = adjust_file_name.c \
 		util_3.c \
 		util_4.c \
 		util_5.c \
+		util_6.c \
 
 SRC_FILES = $(addprefix $(SRC),$(FILES))
 OBJ = $(FILES:.c=.o)

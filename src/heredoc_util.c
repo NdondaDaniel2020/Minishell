@@ -35,26 +35,6 @@ void	put_warning(int line, char *delimiter)
 	ft_putstr_fd("')\n", 2);
 }
 
-bool	is_heredoc_redirection(t_data *data)
-{
-	int			i;
-	t_new_list	*aux;
-
-	aux = data->list;
-	while (aux)
-	{
-		i = 0;
-		while (aux->content[i])
-		{
-			if (ft_strncmp(aux->content[i], "<<", 2) == 0)
-				return (true);
-			i++;
-		}
-		aux = aux->next;
-	}
-	return (false);
-}
-
 int	count_heredoc_redirection(t_data *data)
 {
 	int			n;
