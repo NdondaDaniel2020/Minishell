@@ -14,7 +14,7 @@
 
 bool	all_str_is_chr(char *str, char chr)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])

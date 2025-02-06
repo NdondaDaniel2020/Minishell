@@ -119,4 +119,3 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 		ret = other_case_execution(aux, data);
 	return (free(path), change_environment_variables_question_mark(ret, data));
 }
-
