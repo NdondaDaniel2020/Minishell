@@ -185,6 +185,7 @@ char		**split(char *str, char chr);
 
 int			other_command(int i, t_new_list *aux, t_data *data);
 char		*get_valid_path(t_new_list *aux, t_data *data);
+bool		all_str_is_chr(char *str, char chr);
 void		insert_data(t_data *data, char *command);
 t_index_str	*get_absolute_path(int i, t_new_list *aux, t_data *data);
 

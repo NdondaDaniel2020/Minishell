@@ -12,6 +12,20 @@
 
 #include "minishell.h"
 
+bool	all_str_is_chr(char *str, char chr)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != chr)
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
 void	init_index_str(t_index_str *index_str)
 {
 	index_str->index = -1;

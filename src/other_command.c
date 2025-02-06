@@ -12,9 +12,10 @@
 
 #include "minishell.h"
 
-void	adjustment_001(t_new_list *aux)
+static void	adjustment_001(t_new_list *aux)
 {
 	int			i;
+	int			j;
 	t_new_list	*new_aux;
 
 	new_aux = aux;
@@ -23,11 +24,11 @@ void	adjustment_001(t_new_list *aux)
 		i = 0;
 		while (new_aux->content[i])
 		{
-			if (ft_strlen(new_aux->content[i]) == 2
-				&& new_aux->content[i][0] == 1 && new_aux->content[i][1] == 1)
+			if (all_str_is_chr(new_aux->content[i], 1))
 			{
-				new_aux->content[i][0] = 0;
-				new_aux->content[i][1] = 0;
+				j = 0;
+				while (j < (int)ft_strlen(new_aux->content[i]))
+					new_aux->content[i][j++] = 0;
 			}
 			i++;
 		}
@@ -118,3 +119,4 @@ int	other_command(int i, t_new_list *aux, t_data *data)
 		ret = other_case_execution(aux, data);
 	return (free(path), change_environment_variables_question_mark(ret, data));
 }
+

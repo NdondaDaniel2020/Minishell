@@ -157,7 +157,7 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
         Testa ctrl-C e ctrl-D dentro dele tbm.
         Testa com delimitador do tipo 'a ' ou 'a b' e sem delimitador tbm
     Sair pra verificar leak.
-    
+
 .Pipes
     Aqui é mesmo só testes de syntax, tipo pipe seguido de redir e o crlh
     Pipe na primeira posição da linha 
