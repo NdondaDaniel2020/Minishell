@@ -135,6 +135,8 @@ t_index_str	*extracting_the_value_with_single_quotes(char *str, t_index_str *ind
 	while (str[index->index] && (ft_isalnum(str[index->index])
 		|| str[index->index] == '_' || str[index->index] == '?'))
 		index->index++;
+	if (str[index->index] == '@')
+		index->index++;
 	env_var = substring(str, 1, index->index);
 	value_env_var = adjustment_in_the_extraction_string(env_var, data);
 	index->str = value_env_var;
@@ -186,6 +188,8 @@ void	get_the_range_of_the_string(char *env_var, int *end)
 	while (*end < ft_strlen(env_var) && env_var[*end]
 		&& (ft_isalnum(env_var[*end]) || env_var[*end] == '_'
 			|| env_var[*end] == '?'))
+		(*end)++;
+	if (*end < ft_strlen(env_var) && env_var[*end] == '@')
 		(*end)++;
 }
 
@@ -406,7 +410,7 @@ int	main(int ac, char **av, char **envp)
 	matrix = NULL;
 	init_data(&data);
 	data.envp = get_all_environment(envp);
-	matrix = split_2("echo:\"$HOME$HOME   $HOME  ''$HOME''  $  \"   $HOME  ", ':');
+	matrix = split_2("echo:\"$@@\"", ':');
 	environment_variation_expansion(&matrix, &data);
 	printf("\n");
 	while (matrix[i])

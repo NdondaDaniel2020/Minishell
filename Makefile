@@ -84,25 +84,22 @@ PLIBFT = ./libft
 all:    $(NAME)
 
 $(NAME): $(LIBFT)
-	@$(CC) $(FLAGS) -c $(SRC_FILES) -I$(INCLUDE) -I$(DIR_LIBFT)
-	@$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(FLAGRL) -I$(INCLUDE) -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft
+	$(CC) $(FLAGS) -c $(SRC_FILES) -I$(INCLUDE) -I$(DIR_LIBFT)
+	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(FLAGRL) -I$(INCLUDE) -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft
 
 $(LIBFT):
-	@$(MAKE) bonus -C $(DIR_LIBFT)
+	$(MAKE) bonus -C $(DIR_LIBFT)
 
 r:
-	@cc exmpl/run.c exmpl/run_util.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
-
-rr:
-	@cc $(FLAGS) exmpl/run.c exmpl/run_util.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
+	cc exmpl/run.c exmpl/run_util.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
 
 clean:
-	@/bin/rm -f $(OBJ)
-	@$(MAKE) clean -C $(DIR_LIBFT)
+	/bin/rm -f $(OBJ)
+	$(MAKE) clean -C $(DIR_LIBFT)
 
 fclean: clean
-	@/bin/rm -f $(NAME)
-	@$(MAKE) fclean -C $(DIR_LIBFT)
+	/bin/rm -f $(NAME)
+	$(MAKE) fclean -C $(DIR_LIBFT)
 
 re:     fclean all
 
