@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-bool	if_heredoc_redirection_exist(t_data *data)
+static bool	if_heredoc_redirection_exist(t_data *data)
 {
 	int			i;
 	t_new_list	*aux;
@@ -32,16 +32,12 @@ bool	if_heredoc_redirection_exist(t_data *data)
 	return (false);
 }
 
-bool	is_heredoc_redirection(t_data *data)
+static bool	first_check_heredoc_redirection(int *save, t_new_list **aux_2,
+	t_data *data)
 {
 	int			i;
-	int			save;
 	t_new_list	*aux;
-	t_new_list	*aux_2;
 
-	if (if_heredoc_redirection_exist(data) == false)
-		return (false);
-	save = -1;
 	aux = data->list;
 	while (aux)
 	{
@@ -52,27 +48,45 @@ bool	is_heredoc_redirection(t_data *data)
 				&& i + 1 < len_matrix(aux->content))
 				return (true);
 			if (ft_strnstr(aux->content[i], "<<", ft_strlen(aux->content[i])))
-			{	
-				save = i;
-				aux_2 = aux;
+			{
+				*save = i;
+				(*aux_2) = aux;
 			}
 			i++;
 		}
 		aux = aux->next;
 	}
-	////////////////////////////////////////////////////////////////////
+	return (false);
+}
+
+bool	is_heredoc_redirection(t_data *data)
+{
+	int			i;
+	int			save;
+	char		*line;
+	t_new_list	*aux_2;
+	bool		first_heredoc;
+
+	save = -1;
+	aux_2 = NULL;
+	first_heredoc = false;
+	if (if_heredoc_redirection_exist(data) == false)
+		return (false);
+	first_heredoc = first_check_heredoc_redirection(&save, &aux_2, data);
+	if (first_heredoc)
+		return (true);
 	if (save != -1)
 	{
-		int		i;
-		char	*line;
-
-		i = 0;
-		line = ft_strnstr(aux_2->content[save], "<<", ft_strlen(aux_2->content[save]));
-
-		if ((line + 2))
-		ft_printf("[%s]\n", line);
+		i = 2;
+		line = ft_strnstr(aux_2->content[save],
+			"<<", ft_strlen(aux_2->content[save]));
+		while ((line + i)[0] == ' ')
+			i++;
 		
+		if ((line + i)[0] == '\0')
+			return (false);
+		else
+			return (true);
 	}
-	exit(0);
 	return (false);
 }
