@@ -314,9 +314,13 @@ char		**split_env_var_with_space(char **matrix, char **matrix_exp, t_data *data)
 char		**dup_matrix(char **matrix);
 char		**all_adjustments_in_the_matrix(char ***matrix, t_data *data);
 
-char	*get_sub(char *env_var, int *end);
-void	get_the_range_of_the_string(char *env_var, int *end);
-char	*break_the_content_of_double_quotes(int start, int end, char *env_var, t_data *data);
-char	*expand_double_quote_content(char *env_var, t_index_str *index, t_data *data);
+char		*get_sub(char *env_var, int *end);
+void		get_the_range_of_the_string(char *env_var, int *end);
+char		*break_the_content_of_double_quotes(int start, int end, char *env_var, t_data *data);
+char		*expand_double_quote_content(char *env_var, t_index_str *index, t_data *data);
+
+void		ctrl_d(t_data *data);
+int			master(char *command, t_data *data);
+void		enter_master(char *input, t_data *data);
 
 #endif

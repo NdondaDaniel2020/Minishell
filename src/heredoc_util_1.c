@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-static void	count_heredoc_redirection_util(int i, t_new_list *aux, int len, int *n)
+static void	count_heredoc_redirection_util(int i, t_new_list *aux, int len,
+	int *n)
 {
 	int		pos;
 	char	*tmp;
@@ -44,7 +45,7 @@ int	count_heredoc_redirection(t_data *data)
 			len = ft_strlen(aux->content[i]);
 			if (ft_strnpos2(aux->content[i], "<<", len) != -1
 				&& ft_strncmp(aux->content[i], "<<", 2) == 0)
-					n++;
+				n++;
 			else if (ft_strnpos2(aux->content[i], "<<", len) != -1)
 				count_heredoc_redirection_util(i, aux, len, &n);
 			i++;
@@ -57,7 +58,7 @@ int	count_heredoc_redirection(t_data *data)
 static void	first_enter_heredoc(int len, int *pos, char **new_content,
 	t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (new_content[i])
@@ -77,7 +78,7 @@ static void	first_enter_heredoc(int len, int *pos, char **new_content,
 static void	second_enter_heredoc(int len, int *pos, t_new_list *aux,
 	t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (aux->content[i])

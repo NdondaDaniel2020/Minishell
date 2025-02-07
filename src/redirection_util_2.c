@@ -32,7 +32,7 @@ static int	last_adjust(int len, char **end, char **start, char ***matrix)
 	{
 		if (*start != NULL || start != NULL)
 			free(start);
-		return (free(end), 1);	
+		return (free(end), 1);
 	}
 	while (i < len)
 	{

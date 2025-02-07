@@ -79,7 +79,7 @@ bool	is_heredoc_redirection(t_data *data)
 	{
 		i = 2;
 		line = ft_strnstr(aux_2->content[save],
-			"<<", ft_strlen(aux_2->content[save]));
+				"<<", ft_strlen(aux_2->content[save]));
 		while ((line + i)[0] == ' ')
 			i++;
 		if ((line + i)[0] != '\0' || aux_2->content[save + 1] != NULL)

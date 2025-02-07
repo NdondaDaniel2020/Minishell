@@ -26,25 +26,20 @@ int	master(char *command, t_data *data)
 	int	value_redirection;
 
 	if (has_unclosed_quotes(command))
-	{
-		ft_putstr_fd("syntax error: unclosed quotes\n", 2);
-		return (free(command), free_all_data(data), 1);
-	}
+		return (ft_putstr_fd("syntax error: unclosed quotes\n", 2),
+			free(command), free_all_data(data),
+			change_environment_variables_question_mark(1, data));
 	if (simple_error(command))
-		return (free(command), free_all_data(data), 1);
+		return (free(command), free_all_data(data),
+			change_environment_variables_question_mark(1, data));
 	value_redirection = is_redirection(command);
 	insert_data(data, command);
 	if (is_pipe_heredoc(command))
-	{
-		ft_putstr_fd("syntax error: unclosed pipe\n", 2);
-		return (free_all_data(data), 1);
-	}
-	
-	/////////////////////////////////////////////////////////
+		return (ft_putstr_fd("syntax error: unclosed pipe\n", 2),
+			free_all_data(data),
+			change_environment_variables_question_mark(1, data));
 	if (is_heredoc_redirection(data))
 		get_name_for_heredoc_redirection(data);
-	/////////////////////////////////////////////////////////
-
 	if (data->is_pipe == false)
 		execute_commands_without_pipe(value_redirection, data);
 	else

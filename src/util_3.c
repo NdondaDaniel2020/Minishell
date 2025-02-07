@@ -61,7 +61,7 @@ int	execute_command(int i, t_new_list *aux, t_data *data)
 		re = unset(data);
 	else
 		re = other_command(i, aux, data);
-	return (re);
+	return (change_environment_variables_question_mark(re, data));
 }
 
 bool	valid_redirection_syntax(t_new_list *aux)
