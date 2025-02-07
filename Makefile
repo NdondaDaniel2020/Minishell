@@ -92,9 +92,6 @@ $(NAME): $(LIBFT)
 $(LIBFT):
 	$(MAKE) bonus -C $(DIR_LIBFT)
 
-r:
-	cc exmpl/run.c exmpl/run_util.c -o run -lreadline -lncurses -I$(DIR_LIBFT) -L$(DIR_LIBFT) -lft;./run
-
 clean:
 	/bin/rm -f $(OBJ)
 	$(MAKE) clean -C $(DIR_LIBFT)

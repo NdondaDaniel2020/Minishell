@@ -1,11 +1,13 @@
-Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem leak. De preferência n testar muita coisa ao mesmo tempo, porque senão depois fica difícil saber qual dos comandos causou o leak.
+Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem leak.
+De preferência n testar muita coisa ao mesmo tempo, porque senão depois fica difícil saber qual dos comandos causou o leak.
 
 .Compile
     Testes gerais no Makefile: compilador usado, checkar as flags, verificar relink e os targets mandatórios e afins.
 
 .Simple Command & global variables
     Executar comandos com caminho absoluto, mas sem opção or argumento. Exemplo: /bin/ls, /bin/clear, etc.
-    Checkar as variáveis globais, se tiverem usado, e garantir q n guardam outras informações para além do número do sinal recebido.
+    Checkar as variáveis globais, se tiverem usado,
+		e garantir q n guardam outras informações para além do número do sinal recebido.
     Testa um comando vazio: "" ou '' e compara com a saída do bash.
     Testa linha com apenas espaços ou tabs e checka se estão a ser guardados no histórico.
     Sair pra verificar leak.
@@ -68,7 +70,8 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
     Sair pra verificar leak.
 
 .Return value of a process
-    Essa parte é só pra saber se o exit status dos comando está correcto, então é bwé chato tentar testar ele só, por isso é melhor irem testando enquanto estão a testar os comandos, faz ais sentido.
+    Essa parte é só pra saber se o exit status dos comando está correcto, então é bwé chato tentar testar ele só,
+		por isso é melhor irem testando enquanto estão a testar os comandos, faz ais sentido.
     É só depois do comando, dar um echo $? e compara com a saída do bash tbm.
     Sair pra verificar leak.
 
@@ -78,7 +81,8 @@ Faz todos os testes usando o valgrind e vai saindo do programa pra ver se tem le
     Sair pra verificar leak.
 
 .Double Quotes
-    Compara tbm com o bash, se o pipe ou redir estiver dentro de aspas, ele tem q ser considerado argumento do comando e perde o seu 'poder'
+    Compara tbm com o bash, se o pipe ou redir estiver dentro de aspas,
+		ele tem q ser considerado argumento do comando e perde o seu 'poder'
     echo "cat lol.c | cat > lol.c"
     echo something '>' aaa
     echo something '|' cat
