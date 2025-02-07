@@ -37,7 +37,7 @@ static int	handle_redir(t_data *data, t_new_list *aux, int fd_target)
 				|| ft_strncmp(data->redirection_matrix[i], ">", 1) == 0
 				|| ft_strncmp(data->redirection_matrix[i], ">>", 2) == 0)
 			&& ft_strlen(data->redirection_matrix[i]) == 1 && red_fd->fd == -1)
-			return (free(red_fd),
+			return (free(red_fd), free_redirection_matrix(data),
 				change_environment_variables_question_mark(1, data));
 		i++;
 	}

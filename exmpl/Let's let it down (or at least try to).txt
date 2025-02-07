@@ -48,17 +48,17 @@ De preferência n testar muita coisa ao mesmo tempo, porque senão depois fica d
     Aqui é só ir comparando tudo com o bash e sempre checkar o estado com que o programa terminou, usando echo $?:
         exit
         exit ""
-        exit -9223372036854775809
-        exit -9223372036854775808
+        exit -9223372036854775809 -> 2   v/
+        exit -9223372036854775808 -> 0   v/
         exit -1
         exit 0
         exit 1
-        exit 9223372036854775807
-        exit 9223372036854775808
+        exit 9223372036854775807 -> 255 v/
+        exit 9223372036854775808 -> 2   X
         exit a
         exit a a
-        exit 1 1
-        exit 1 a
+        exit 1 1                 -> 1 X
+        exit 1 a				 -> 1 X
         exit a 1
         exit 123a 
         exit 123a a
@@ -177,7 +177,7 @@ De preferência n testar muita coisa ao mesmo tempo, porque senão depois fica d
     echo "$USER$USER"
     echo "$USER "
     echo $"USER"
-    echo "$"USER X
+    echo "$"USER
     echo $'USER'
     echo '$USER'
     echo '$'USER
