@@ -280,7 +280,6 @@ void		put_warning(int line, char *delimiter);
 void		environment_variation_expansion_in_heredoc(char **line, t_data *data);
 void		null_string(char ***matrix);
 bool 		is_heredoc_redirection(t_data *data);
-int			count_heredoc_redirection(t_data *data);
 void		get_name_for_heredoc_redirection(t_data *data);
 
 void		close_fd(int *fd);

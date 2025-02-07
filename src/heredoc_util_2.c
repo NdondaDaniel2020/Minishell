@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_util.c                                     :+:      :+:    :+:   */
+/*   heredoc_util_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -33,54 +33,4 @@ void	put_warning(int line, char *delimiter)
 	ft_putstr_fd(" delimited by end-of-file (wanted `", 2);
 	ft_putstr_fd(delimiter, 2);
 	ft_putstr_fd("')\n", 2);
-}
-
-int	count_heredoc_redirection(t_data *data)
-{
-	int			n;
-	int			i;
-	t_new_list	*aux;
-
-	n = 0;
-	aux = data->list;
-	while (aux)
-	{
-		i = 0;
-		while (aux->content[i])
-		{
-			if (ft_strncmp(aux->content[i], "<<", 2) == 0)
-				n++;
-			i++;
-		}
-		aux = aux->next;
-	}
-	return (n);
-}
-
-void	get_name_for_heredoc_redirection(t_data *data)
-{
-	int			i;
-	int			pos;
-	int			len;
-	t_new_list	*aux;
-
-	pos = 0;
-	aux = data->list;
-	len = count_heredoc_redirection(data);
-	while (aux)
-	{
-		i = 0;
-		while (aux->content[i])
-		{
-			if (ft_strncmp(aux->content[i], "<<", 2) == 0)
-			{
-				pos++;
-				heredoc(data, aux->content[i + 1]);
-				if (pos != len)
-					close(data->read_in_the_pipe);
-			}
-			i++;
-		}
-		aux = aux->next;
-	}
 }
