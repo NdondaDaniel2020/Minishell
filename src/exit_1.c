@@ -83,12 +83,12 @@ int	exit_(t_new_list *aux, t_data *data)
 	len = len_matrix(aux->content);
 	ft_putstr_fd("exit\n", 1);
 	if (len == 1)
-		free_and_exit(0, data);
+		free_and_exit(ft_atoi(get_env("?", data)), data);
 	exit_code = ft_atoll(aux->content[1], &error);
 	if (error)
 	{
 		if ((int)((aux->content[1][ft_strlen(aux->content[1]) - 1]) - '0')
-			 == (int)(-1 * (exit_code % 10)))
+			== (int)(-1 * (exit_code % 10)))
 			free_and_exit(0, data);
 		else
 		{
