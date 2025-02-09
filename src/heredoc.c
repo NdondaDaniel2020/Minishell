@@ -21,14 +21,15 @@ static void	local_handle_sigint(int sig)
 
 static void	handle_error(char *msg)
 {
-	ft_putstr_fd("TeamWork> ", STDERR_FILENO);
+	ft_putstr_fd("\nTeamWork> ", STDERR_FILENO);
 	ft_putendl_fd(msg, STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }
 
 static bool	condition_break(char *line, char *delimiter)
 {
-	return (!line || ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
+	return (!line || (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
+			&& ft_strlen(delimiter) == ft_strlen(line))
 		|| (delimiter[0] == 1 && line[0] == 0));
 }
 

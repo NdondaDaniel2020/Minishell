@@ -89,12 +89,10 @@ int	exit_(t_new_list *aux, t_data *data)
 	{
 		if ((int)((aux->content[1][ft_strlen(aux->content[1]) - 1]) - '0')
 			== (int)(-1 * (exit_code % 10)))
-			free_and_exit(0, data);
+			return (free_and_exit(0, data));
 		else
-		{
-			numeric_argument_required(aux->content[1]);
-			free_and_exit(2, data);
-		}
+			return (numeric_argument_required(aux->content[1]),
+				free_and_exit(2, data));
 	}
 	if (len > 2)
 	{
