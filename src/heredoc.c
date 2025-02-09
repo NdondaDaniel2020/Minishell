@@ -21,7 +21,6 @@ static void	local_handle_sigint(int sig)
 
 static void	handle_error(char *msg)
 {
-	ft_putstr_fd("\nTeamWork> ", STDERR_FILENO);
 	ft_putendl_fd(msg, STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }
