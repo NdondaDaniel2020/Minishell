@@ -138,7 +138,7 @@ bool		only_valid_n(const char *str);
 
 
 /*builtin exit*/
-void		exit_(t_new_list *aux, t_data *data);
+int			exit_(t_new_list *aux, t_data *data);
 void		free_data(t_data *data);
 int			numeric_argument_required(char *str);
 int			check_error_exit(int ex, t_new_list *aux);

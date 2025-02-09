@@ -46,7 +46,7 @@ int	execute_command(int i, t_new_list *aux, t_data *data)
 	re = 0;
 	len = ft_strlen(aux->content[i]);
 	if (!ft_strncmp(aux->content[i], "exit", len))
-		exit_(aux, data);
+		re = exit_(aux, data);
 	else if (!ft_strncmp(aux->content[i], "pwd", len))
 		re = pwd(data);
 	else if (!ft_strncmp(aux->content[i], "cd", len))

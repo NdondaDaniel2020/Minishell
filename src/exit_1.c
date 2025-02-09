@@ -67,13 +67,14 @@ long long	ft_atoll(const char *str, bool *error)
 	return (ft_util_atoll(i, sign, (char *)str, error));
 }
 
-static void	free_and_exit(int ex, t_data *data)
+static int	free_and_exit(int ex, t_data *data)
 {
 	free_data(data);
 	exit(ex);
+	return (ex);
 }
 
-void	exit_(t_new_list *aux, t_data *data)
+int	exit_(t_new_list *aux, t_data *data)
 {
 	int			len;
 	long long	exit_code;
@@ -86,14 +87,19 @@ void	exit_(t_new_list *aux, t_data *data)
 	exit_code = ft_atoll(aux->content[1], &error);
 	if (error)
 	{
-		numeric_argument_required(aux->content[1]);
-		free_and_exit(2, data);
+		if ((int)((aux->content[1][ft_strlen(aux->content[1]) - 1]) - '0')
+			 == (int)(-1 * (exit_code % 10)))
+			free_and_exit(0, data);
+		else
+		{
+			numeric_argument_required(aux->content[1]);
+			free_and_exit(2, data);
+		}
 	}
 	if (len > 2)
 	{
 		write(2, "exit: too many arguments\n", 25);
-		change_environment_variables_question_mark(1, data);
-		return ;
+		return (change_environment_variables_question_mark(1, data));
 	}
-	free_and_exit((unsigned char)exit_code, data);
+	return (free_and_exit((unsigned char)exit_code, data));
 }
