@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,30 @@
 
 #include "minishell.h"
 
-int	pwd(t_data *data)
+int	echo(t_new_list *aux, t_data *data)
 {
-	char	*cwd;
+	int		i;
+	int		len;
+	bool	no_newline;
 
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return (change_environment_variables_question_mark(2, data));
-	getcwd(cwd, 5048);
-	ft_printf("%s\n", cwd);
-	free(cwd);
+	if (echo_is_empty(aux))
+		return (change_environment_variables_question_mark(0, data));
+	i = 1;
+	no_newline = false;
+	len = len_matrix(aux->content);
+	while (i < len && ft_strncmp(aux->content[i], "-n", 2) == 0 && \
+	only_valid_n(aux->content[i]))
+	{
+		no_newline = true;
+		i++;
+	}
+	while (i < len)
+	{
+		ft_putstr_fd(aux->content[i], 1);
+		if (++i < len)
+			ft_putchar_fd(' ', 1);
+	}
+	if (!no_newline)
+		ft_putchar_fd('\n', 1);
 	return (change_environment_variables_question_mark(0, data));
 }

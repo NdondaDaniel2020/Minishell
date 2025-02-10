@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   util_2.c                                           :+:      :+:    :+:   */
+/*   util_3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,25 +12,114 @@
 
 #include "minishell.h"
 
-bool	first_str(char chr, char *str)
+void	insert_data(t_data *data, char *command)
 {
-	if (str[0] == chr)
+	int		i;
+	int		len_m;
+	char	**matrix;
+	char	**spliting;
+
+	i = 0;
+	data->command = command;
+	spliting = split(command, '|');
+	len_m = len_matrix(spliting);
+	if (len_m > 1)
+		data->is_pipe = true;
+	else
+		data->is_pipe = false;
+	while (spliting[i])
+	{
+		matrix = split(spliting[i], ' ');
+		matrix = all_adjustments_in_the_matrix(&matrix, data);
+		ft_lstnew_addback(&data->list, ft_lstnew_new(matrix));
+		free(spliting[i]);
+		i++;
+	}
+	free(spliting);
+}
+
+int	execute_command(int i, t_new_list *aux, t_data *data)
+{
+	int	re;
+	int	len;
+
+	re = 0;
+	len = ft_strlen(aux->content[i]);
+	if (!ft_strncmp(aux->content[i], "exit", len))
+		re = exit_(aux, data);
+	else if (!ft_strncmp(aux->content[i], "pwd", len))
+		re = pwd(data);
+	else if (!ft_strncmp(aux->content[i], "cd", len))
+		re = cd(aux, data);
+	else if (!ft_strncmp(aux->content[i], "echo", len))
+		re = echo(aux, data);
+	else if (!ft_strncmp(aux->content[i], "env", len))
+		re = env(aux, data);
+	else if (!ft_strncmp(aux->content[i], "export", len))
+		re = export(aux, data);
+	else if (!ft_strncmp(aux->content[i], "unset", len))
+		re = unset(data);
+	else
+		re = other_command(i, aux, data);
+	return (change_environment_variables_question_mark(re, data));
+}
+
+bool	valid_redirection_syntax(t_new_list *aux)
+{
+	int	i;
+	int	len;
+
+	i = 0;
+	len = len_matrix(aux->content);
+	if ((valid_string_condition_for_redirection(aux->content[len - 1]))
+		|| ((ft_strlen(aux->content[len - 1]) == 0)
+			&& valid_string_condition_for_redirection(aux->content[len - 2])))
+	{
+		ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
 		return (true);
+	}
+	while (aux->content[i])
+	{
+		if (valid_string_condition_for_redirection(aux->content[i])
+			&& is_directory_valid(aux->content[i + 1]))
+		{
+			ft_putstr_fd(aux->content[i + 1], 2);
+			ft_putstr_fd(": Is a directory\n", 2);
+			return (true);
+		}
+		i++;
+	}
 	return (false);
 }
 
-int	count_chr(char chr, char *str)
+static bool	check_pipe_valid(char *command)
 {
 	int	i;
-	int	count;
+	int	len_pipe;
 
 	i = 0;
-	count = 0;
-	while (str[i])
+	len_pipe = 0;
+	while (command[i])
 	{
-		if (str[i] == chr)
-			count++;
+		if (command[i] == '|')
+			len_pipe++;
+		if (command[i] != '|' && command[i] != ' ')
+			len_pipe = 0;
+		if (len_pipe > 1)
+			return (true);
 		i++;
 	}
-	return (count);
+	return (false);
+}
+
+bool	simple_error(char *command)
+{
+	if (command[0] == '|' || check_pipe_valid(command))
+	{
+		ft_putstr("syntax error near unexpected token `", 2);
+		ft_putstr("|", 2);
+		ft_putstr("'\n", 2);
+		return (true);
+	}
+	return (false);
 }

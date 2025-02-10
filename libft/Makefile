@@ -76,21 +76,21 @@ all:	$(NAME)
 
 $(NAME):
 ifeq ($(B), 0)
-	@gcc $(FLAGS) -c $(FILES)
-	@ar rcs $(NAME) $(OBJS)
+	gcc $(FLAGS) -c $(FILES)
+	ar rcs $(NAME) $(OBJS)
 else
-	@gcc $(FLAGS) -c $(FILES) $(BFILES)
-	@ar rcs $(NAME) $(OBJS) $(BOBJS)
+	gcc $(FLAGS) -c $(FILES) $(BFILES)
+	ar rcs $(NAME) $(OBJS) $(BOBJS)
 endif
 
 bonus: 
-	@$(MAKE) B=1
+	$(MAKE) B=1
 
 clean:
-	@/bin/rm -f $(OBJS) $(BOBJS)
+	/bin/rm -f $(OBJS) $(BOBJS)
 
 fclean:	clean
-	@/bin/rm -f $(NAME)
+	/bin/rm -f $(NAME)
 
 re:	fclean all
 

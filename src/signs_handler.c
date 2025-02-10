@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   signs_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: cramos-c <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/06 10:05:31 by nmatondo          #+#    #+#             */
-/*   Updated: 2024/11/06 10:05:31 by nmatondo         ###   ########.fr       */
+/*   Created: 2024/12/02 10:55:19 by cramos-c          #+#    #+#             */
+/*   Updated: 2024/12/02 11:27:20 by cramos-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	pwd(t_data *data)
+static void	handle_sigint(int sig)
 {
-	char	*cwd;
+	g_satatus = sig;
+	write(STDOUT_FILENO, "\nTeamWork> ", 12);
+}
 
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return (change_environment_variables_question_mark(2, data));
-	getcwd(cwd, 5048);
-	ft_printf("%s\n", cwd);
-	free(cwd);
-	return (change_environment_variables_question_mark(0, data));
+void	setup_signal(void)
+{
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }

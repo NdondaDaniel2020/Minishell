@@ -12,7 +12,32 @@
 
 #include "minishell.h"
 
-static char	*read_all_path(int i, t_new_list *aux, t_data *data, DIR *open_dir)
+static void	adjustment_001(t_new_list *aux)
+{
+	int			i;
+	int			j;
+	t_new_list	*new_aux;
+
+	new_aux = aux;
+	while (new_aux)
+	{
+		i = 0;
+		while (new_aux->content[i])
+		{
+			if (all_str_is_chr(new_aux->content[i], 1))
+			{
+				j = 0;
+				while (j < (int)ft_strlen(new_aux->content[i]))
+					new_aux->content[i][j++] = 0;
+			}
+			i++;
+		}
+		new_aux = new_aux->next;
+	}
+}
+
+static char	*read_all_path(int i, t_new_list *aux, t_data *data,
+	DIR *open_dir)
 {
 	char			*dir_path;
 	struct dirent	*entry;
@@ -22,7 +47,7 @@ static char	*read_all_path(int i, t_new_list *aux, t_data *data, DIR *open_dir)
 	{
 		if (!ft_strncmp(entry->d_name, aux->content[0],
 				ft_strlen(entry->d_name)) && ft_strlen(entry->d_name)
-			== ft_strlen(data->list->content[0]))
+			== ft_strlen(aux->content[0]))
 		{
 			dir_path = ft_charjoin(data->path[i], '/');
 			dir_path = ft_strjoin_free(dir_path, entry->d_name);
@@ -36,13 +61,14 @@ static char	*read_all_path(int i, t_new_list *aux, t_data *data, DIR *open_dir)
 
 char	*get_valid_path(t_new_list *aux, t_data *data)
 {
-	int				i;
-	char			*dir_path;
-	DIR				*open_dir;
+	int		i;
+	char	*dir_path;
+	DIR		*open_dir;
 
 	i = 0;
 	if (data->path == NULL)
 		return (NULL);
+	adjustment_001(aux);
 	while (data->path[i])
 	{
 		open_dir = opendir(data->path[i]);
@@ -58,35 +84,38 @@ char	*get_valid_path(t_new_list *aux, t_data *data)
 	return (NULL);
 }
 
-static void	error_command_not_found(t_new_list *aux)
+static int	other_case_execution( t_new_list *aux, t_data *data)
 {
 	ft_putstr_fd(aux->content[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
+	return (change_environment_variables_question_mark(127, data));
 }
 
-void	other_command(int i, t_new_list *aux, t_data *data)
+int	other_command(int i, t_new_list *aux, t_data *data)
 {
-	int		pid;
-	char	*path;
+	int			pid;
+	int			ret;
+	t_index_str	*path;
 
-	if (ft_strnstr(aux->content[i], "/", ft_strlen(aux->content[i])))
-		path = ft_strdup(aux->content[i]);
-	else
-		path = get_valid_path(aux, data);
-	if (path)
+	ret = 0;
+	path = get_absolute_path(i, aux, data);
+	if (path->index == -1)
+		return (free(path), 1);
+	if (path->index == 0)
 	{
 		pid = fork();
 		if (pid == 0)
-			execve(path, aux->content, data->envp);
-		else
-			wait(NULL);
+		{
+			if (execve(path->str, aux->content, data->envp) == -1)
+				exit(EXIT_FAILURE);
+			exit(0);
+		}
+		wait(&ret);
+		free(path->str);
 		free(path);
+		return (change_environment_variables_question_mark(ret, data));
 	}
 	else
-	{
-		if (ft_strchr(aux->content[i], '$'))
-			check_environment_variable_expansion(aux, data);
-		else
-			error_command_not_found(aux);
-	}
+		ret = other_case_execution(aux, data);
+	return (free(path), change_environment_variables_question_mark(ret, data));
 }

@@ -14,30 +14,20 @@
 
 static void	print_env_order(t_data *data)
 {
-	int		i;
 	int		j;
 	char	alpha;
 
-	i = 0;
-	alpha = 'a';
-	while (i < 26)
+	alpha = 64;
+	while (alpha < 125)
 	{
 		j = 0;
 		while (data->envp[j])
 		{
-			if (data->envp[j][0] == alpha || data->envp[j][0] == alpha - 32)
+			if (data->envp[j][0] == alpha && !ft_strchr(data->envp[j], '?'))
 				ft_printf("declare -x %s\n", data->envp[j]);
 			j++;
 		}
 		alpha++;
-		i++;
-	}
-	j = 0;
-	while (data->envp[j])
-	{
-		if (ft_isalpha(data->envp[j][0]) == 0 && !ft_strchr(data->envp[j], '?'))
-			ft_printf("declare -x %s\n", data->envp[j]);
-		j++;
 	}
 }
 
@@ -54,7 +44,6 @@ bool	print_export(t_data *data)
 			ft_strlen(aux->content[i1 - 1])))
 	{
 		print_env_order(data);
-		change_environment_variables_question_mark(0, data);
 		return (true);
 	}
 	return (false);

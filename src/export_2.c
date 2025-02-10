@@ -33,6 +33,12 @@ static void	reallocation_envp_str(int point_equal, char *env_var, t_data *data)
 	data->envp[point_equal] = env_var;
 }
 
+static void	is_unique(int i, bool *unique, char *env_var, t_data *data)
+{
+	if (!ft_strncmp(env_var, data->envp[i], ft_strlen(env_var)))
+		(*unique) = false;
+}
+
 void	add_environment_variable(char *env_var, t_data *data)
 {
 	int		i;
@@ -43,8 +49,7 @@ void	add_environment_variable(char *env_var, t_data *data)
 	init_environment_variable(&i, &unique, &is_equal);
 	while (data->envp[i])
 	{
-		if (!ft_strncmp(env_var, data->envp[i], ft_strlen(env_var)))
-			unique = false;
+		is_unique(i, &unique, env_var, data);
 		if (!ft_strnchrcmp(env_var, data->envp[i],
 				ft_strlen(data->envp[i]), '='))
 		{
@@ -58,5 +63,7 @@ void	add_environment_variable(char *env_var, t_data *data)
 		reallocation_envp(i, env_var, data);
 	else if (is_equal)
 		reallocation_envp_str(point_equal, env_var, data);
+	else
+		free(env_var);
 	change_environment_variables_question_mark(0, data);
 }

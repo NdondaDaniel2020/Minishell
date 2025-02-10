@@ -87,21 +87,23 @@ static bool	check_error_unset(char *env)
 	return (true);
 }
 
-void	unset(t_data *data)
+int	unset(t_data *data)
 {
 	int		i;
 	int		i1;
+	int		re;
 	bool	rev_var;
 
 	i = 1;
 	i1 = 0;
+	re = 0;
 	while (data->list->content[i])
 	{
 		rev_var = check_error_unset(data->list->content[i]);
 		if (rev_var)
 			remove_env(i1, data->list->content[i], data);
 		else
-			change_environment_variables_question_mark(1, data);
+			re = change_environment_variables_question_mark(1, data);
 		i++;
 	}
 	if (get_env("PATH", data) == NULL)
@@ -109,4 +111,5 @@ void	unset(t_data *data)
 		free_matrix(data->path);
 		data->path = NULL;
 	}
+	return (re);
 }

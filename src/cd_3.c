@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   cd_3.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,17 @@
 
 #include "minishell.h"
 
-int	pwd(t_data *data)
+void	chdir_(char *dir)
 {
-	char	*cwd;
+	int	status;
 
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return (change_environment_variables_question_mark(2, data));
-	getcwd(cwd, 5048);
-	ft_printf("%s\n", cwd);
-	free(cwd);
-	return (change_environment_variables_question_mark(0, data));
+	status = chdir(dir);
+	if (status != 0)
+	{
+		ft_putstr_fd("cd: ", 2);
+		ft_putstr_fd(dir, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
+	}
 }

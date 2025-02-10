@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   echo_util.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,39 @@
 
 #include "minishell.h"
 
-int	pwd(t_data *data)
+bool	echo_is_empty(t_new_list *aux)
 {
-	char	*cwd;
+	if (len_matrix(aux->content) == 1)
+	{
+		ft_putchar_fd('\n', 1);
+		return (true);
+	}
+	return (false);
+}
 
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return (change_environment_variables_question_mark(2, data));
-	getcwd(cwd, 5048);
-	ft_printf("%s\n", cwd);
-	free(cwd);
-	return (change_environment_variables_question_mark(0, data));
+bool	only_valid_n(const char *str)
+{
+	int	i;
+
+	i = 2;
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+void	add_bar_n(t_new_list *aux)
+{
+	if (ft_strncmp(aux->content[1], "-n", 2) != 0)
+		ft_putchar_fd('\n', 1);
+}
+
+void	traverse_n(int *i, t_data *data)
+{
+	while (data->list->content[*i] && ft_strnstr(data->list->content[*i],
+			"-n", ft_strlen(data->list->content[*i])))
+		(*i)++;
 }

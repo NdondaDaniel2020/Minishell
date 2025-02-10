@@ -66,14 +66,15 @@ bool	add_expanded_variable(t_new_list *aux, t_data *data)
 			new_content = ft_calloc(3, sizeof(char *));
 			new_content[0] = ft_strdup("cd");
 			new_content[1] = ft_strdup(get_env("HOME", data));
-			ft_lstnew_addback(&data->list, ft_lstnew_new(new_content));
+			ft_lstnew_addafter_pos(&data->list, data->list,
+				ft_lstnew_new(new_content));
 		}
 		return (true);
 	}
 	return (false);
 }
 
-bool	check_many_arguments(t_new_list *aux, t_data *data)
+bool	check_many_arguments(t_new_list *aux)
 {
 	int		i;
 	int		len;
@@ -90,10 +91,12 @@ bool	check_many_arguments(t_new_list *aux, t_data *data)
 		i++;
 		len++;
 	}
-	if (len > 2)
+	if (len > 2 || len == 1)
 	{
-		ft_putstr_fd("cd: too many arguments\n", 2);
-		change_environment_variables_question_mark(1, data);
+		if (len == 1)
+			ft_putstr_fd("cd: too few arguments\n", 2);
+		else
+			ft_putstr_fd("cd: too many arguments\n", 2);
 		return (true);
 	}
 	return (false);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   exec_all_redirect_directions_are_handled_here.c    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,19 @@
 
 #include "minishell.h"
 
-int	pwd(t_data *data)
+void	all_redirect_directions_are_handled_here(int i, t_red_fd *red_fd,
+	t_data *data)
 {
-	char	*cwd;
-
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return (change_environment_variables_question_mark(2, data));
-	getcwd(cwd, 5048);
-	ft_printf("%s\n", cwd);
-	free(cwd);
-	return (change_environment_variables_question_mark(0, data));
+	if (ft_strncmp(data->redirection_matrix[i], "<>", 2) == 0)
+		red_fd->fd = left_right_redirection(i, data,
+				O_WRONLY | O_CREAT | O_APPEND);
+	else if (ft_strncmp(data->redirection_matrix[i], ">>", 2) == 0)
+		red_fd->fd = double_right_redirect(i, data,
+				O_WRONLY | O_CREAT | O_APPEND);
+	else if (ft_strncmp(data->redirection_matrix[i], "<<", 2) == 0)
+		red_fd->fd = double_left_redirect(i, data, red_fd);
+	else if (ft_strncmp(data->redirection_matrix[i], ">", 1) == 0)
+		red_fd->fd = right_redirect(i, data, O_WRONLY | O_CREAT | O_TRUNC);
+	else if (ft_strncmp(data->redirection_matrix[i], "<", 1) == 0)
+		red_fd->fd = left_redirect(i, data, O_RDONLY, red_fd);
 }

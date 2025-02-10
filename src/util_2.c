@@ -86,3 +86,20 @@ int	get_last_position(t_new_list *aux)
 		return (i - 2);
 	return (i - 1);
 }
+
+bool	is_other_file(char *str)
+{
+	int	len;
+
+	len = ft_strlen(str);
+	if (str[len - 1] != '/' && ft_strchr(str, '/'))
+	{
+		while ((len - 1) >= 0 && str[len - 1] && str[len - 1] != '/')
+		{
+			if (!ft_isalpha(str[len - 1]) && str[len - 1] != '/')
+				return (true);
+			len--;
+		}
+	}
+	return (false);
+}

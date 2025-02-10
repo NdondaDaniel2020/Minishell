@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   execute_commands_without_pipe.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,24 @@
 
 #include "minishell.h"
 
-int	pwd(t_data *data)
+void	execute_commands_without_pipe(int value_redirection, t_data *data)
 {
-	char	*cwd;
+	int			i;
+	t_new_list	*aux;
 
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return (change_environment_variables_question_mark(2, data));
-	getcwd(cwd, 5048);
-	ft_printf("%s\n", cwd);
-	free(cwd);
-	return (change_environment_variables_question_mark(0, data));
+	aux = data->list;
+	if (ft_strlen(data->list->content[0]) == 0
+		&& len_matrix(data->list->content) == 1)
+		return ;
+	while (aux)
+	{
+		i = 0;
+		if (ft_strlen(aux->content[i]) == 0)
+			i++;
+		if (value_redirection == 1)
+			redirection(aux, data);
+		else if (value_redirection == 0)
+			execute_command(i, aux, data);
+		aux = aux->next;
+	}
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit_2.c                                           :+:      :+:    :+:   */
+/*   execute_commands_with_pipe_util.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,57 +12,62 @@
 
 #include "minishell.h"
 
-void	free_data(t_data *data)
-{
-	if (data->path)
-		free_matrix(data->path);
-	if (data->envp)
-		free_matrix(data->envp);
-	free_all_data(data);
-}
-
-bool	is_not_number(char *str)
+bool	new_is_redirection(char **matix)
 {
 	int	i;
 
 	i = 0;
-	while (str[i] == ' ' || str[i] == '\t')
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	if (!ft_isdigit(str[i]))
-		return (true);
-	while (str[i])
+	while (matix[i])
 	{
-		if (!ft_isdigit(str[i]))
+		if (valid_string_condition_for_redirection(matix[i]))
 			return (true);
 		i++;
 	}
 	return (false);
 }
 
-int	check_error_exit(int ex, t_new_list *aux)
+void	create_pipe(t_data *data)
 {
-	int	len_m;
+	int	pipefd[2];
 
-	len_m = len_matrix(aux->content);
-	if (len_m > 1)
+	if (pipe(pipefd) == -1)
 	{
-		if (is_not_number(aux->content[1]))
-		{
-			ft_putstr_fd("exit: ", 2);
-			ft_putstr_fd(aux->content[1], 2);
-			ft_putstr_fd(": numeric argument required\n", 2);
-			return (2);
-		}
+		exit(EXIT_FAILURE);
 	}
-	return (ex);
+	data->write_pipe_operation = pipefd[1];
+	data->read_pipe_operation = pipefd[0];
 }
 
-int	numeric_argument_required(char *str)
+void	close_fd(int *fd)
 {
-	ft_putstr_fd("exit: ", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd(": numeric argument required\n", 2);
-	return (2);
+	if (*fd != -1)
+	{
+		close(*fd);
+		*fd = -1;
+	}
+}
+
+void	wait_for_children(void)
+{
+	int		status;
+	pid_t	pid;
+
+	pid = wait(&status);
+	while ((pid) > 0)
+	{
+		if (WIFEXITED(status))
+		{
+			if (WEXITSTATUS(status) != 0)
+			{
+				ft_putnbr_fd(WEXITSTATUS(status), 2);
+				ft_putstr_fd("\n", 2);
+			}
+		}
+		else if (WIFSIGNALED(status))
+		{
+			ft_putnbr_fd(WEXITSTATUS(status), 2);
+			ft_putstr_fd("\n", 2);
+		}
+		pid = wait(&status);
+	}
 }

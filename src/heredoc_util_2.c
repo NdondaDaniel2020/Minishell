@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   heredoc_util_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmatondo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,15 +12,25 @@
 
 #include "minishell.h"
 
-int	pwd(t_data *data)
+void	environment_variation_expansion_in_heredoc(char **line, t_data *data)
 {
-	char	*cwd;
+	int		old_size;
+	int		new_size;
+	char	*value_env;
 
-	cwd = ft_calloc(5048, sizeof(char));
-	if (!cwd)
-		return (change_environment_variables_question_mark(2, data));
-	getcwd(cwd, 5048);
-	ft_printf("%s\n", cwd);
-	free(cwd);
-	return (change_environment_variables_question_mark(0, data));
+	value_env = get_environment_variation_expansion((*line), data);
+	old_size = ft_strlen((*line));
+	new_size = ft_strlen(value_env);
+	(*line) = ft_realloc((*line), old_size, new_size + 1);
+	ft_strlcpy((*line), value_env, new_size + 1);
+	free(value_env);
+}
+
+void	put_warning(int line, char *delimiter)
+{
+	ft_putstr_fd("warning: here-document at line ", 2);
+	ft_putnbr_fd(line, 2);
+	ft_putstr_fd(" delimited by end-of-file (wanted `", 2);
+	ft_putstr_fd(delimiter, 2);
+	ft_putstr_fd("')\n", 2);
 }

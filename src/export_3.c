@@ -18,7 +18,7 @@ static char	*reorganization(char *env, int len)
 	char	*new_env;
 
 	i = 0;
-	new_env = (char *) malloc(len + 3);
+	new_env = (char *)malloc(len + 3);
 	if (!new_env)
 		return (NULL);
 	i = 0;

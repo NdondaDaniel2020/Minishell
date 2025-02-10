@@ -68,13 +68,21 @@ void	init_data(t_data *data)
 	data->path = NULL;
 	data->list = NULL;
 	data->space = false;
-	data->output = NULL;
+	data->value_output = 0;
 	data->command = NULL;
 	data->put_amb = NULL;
 	data->is_pipe = false;
+	data->heredoc_fd = -1;
 	data->automatic_input = false;
 	data->read_in_the_pipe = -1;
 	data->write_on_the_pipe = -1;
+	data->write_pipe_operation = -1;
+	data->read_pipe_operation = -1;
+	data->cpy_read_pipe_operation = -1;
+	data->cpy_write_operation = -1;
+	data->cpy_read_operation = -1;
+	data->redirection_matrix = NULL;
+	data->heredoc_line_delimited = 2;
 }
 
 void	free_matrix(char **matrix)
@@ -98,6 +106,11 @@ void	free_all_data(t_data *data)
 {
 	if (!data)
 		return ;
+	if (data->command)
+	{
+		free(data->command);
+		data->command = NULL;
+	}
 	if (data->list)
 	{
 		while (data->list)
